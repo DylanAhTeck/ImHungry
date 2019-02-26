@@ -1,4 +1,4 @@
-# CSCI310-project1
+# CSCI 310 Project 1
 
 ## Team Members:
 - William Borie
@@ -9,6 +9,6 @@
 
 ## Info
 
-This repository contains the source code and unit tests for Project 1 of the Spring 2019 section of CSCI 310 at USC. Branches of work are created using the pattern `/feature/<FIRST_NAME>-<BRANCH_NAME>`, e.g. `/feature/ankur-setting-up-controllers`.
+This repository contains the source code and unit tests for Project 1 of the Spring 2019 section of CSCI 310 at USC. Branches of work are created using the pattern `/feature/<FIRST_NAME>-<BRANCH_NAME>`, e.g. `/feature/ankur-setting-up-controllers`
 
 
