@@ -10,6 +10,7 @@ public class Controller {
 
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
+	private ListManagement listManager;
 
 	// @RequestMapping("/greeting")
 	// public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
