@@ -1,6 +1,7 @@
 package hello;
 
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.ArrayList;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,7 @@ public class Controller {
 
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
-	private ListManagement listManager;
+	private ListManager listManager = new ListManager();
 
 	// @RequestMapping("/greeting")
 	// public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
@@ -20,8 +21,19 @@ public class Controller {
 	@RequestMapping("/search")
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
+		
+
 		return "Thanks for searching!";
 
+
+	}
+
+	@RequestMapping("/addItemToFavorites") 
+	public String addItemToFavorites() {
+		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()), "{woo}");
+		listManager.addToList(tempResult, "favorites");
+		String favoritesString = listManager.getFavorites().toString();
+		return "favorites: " + favoritesString;
 	}
 
 	/*

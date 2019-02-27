@@ -12,4 +12,8 @@ public class Result {
 		this.jsonContent = jsonContent;
 	}
 
+	public String getUniqueId() {
+		return this.uniqueId;
+	}
+
 }
