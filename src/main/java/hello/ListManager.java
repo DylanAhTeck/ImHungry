@@ -51,7 +51,7 @@ public class ListManager {
 	}
 
 
-	public boolean removeFromList(Result itemToremove, String originListName) {
+	public boolean removeFromList(String uniqueId, String originListName) {
 		// TODO Fill this in!
 		return true;
 	}

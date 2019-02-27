@@ -13,4 +13,17 @@ This repository contains the source code and unit tests for Project 1 of the Spr
 
 To run this you'll need to have Maven installed, which can be done by running `brew install maven` in the terminal assuming you have HomeBrew installed.
 
+### Build Instructions
+0. Ensure Maven is installed. You should be able to do this with a `brew install maven` as long as you have HomeBrew installed. Goolge around for htis.
+1. Navigate to the root directory.
+2. Run `./mvnw spring-boot:run` to compile and execute the program.
+3. Visit the server at `localhost:8080`. To test if it's working, visit (or send a GET request via Postman to) `localhost:8080/test`. You should get the string `Looks like you're up and running!` back.
+4. Good luck working!
+
+### Quick Notes
+1. The entry point of this application is `Application.java` in `src/main/hava/hello`. 
+2. The routes and function calls exist in `Controller.java` in `src/main/hava/hello`. 
+3. Most work that needs to be done has been labeled with a `TODO: ` tag -- searching for this might make your life easier.
+
+
 

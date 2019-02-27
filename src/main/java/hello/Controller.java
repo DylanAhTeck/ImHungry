@@ -12,6 +12,11 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
+	
+	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
+	private ArrayList<Result> mostRecentResults = new ArrayList<Result>(); 
+
+
 
 
 	///////////////////////////////////////////////////
@@ -20,7 +25,13 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
+	@RequestMapping("/test")
+	public String handleTestRequest() {
+		return "Look's like you're up and running!";
+	}
+
 	@RequestMapping("/search")
+	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
 		return "Thanks for searching!";
@@ -34,7 +45,7 @@ public class Controller {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()), "{woo}");
 		listManager.addToList(tempResult, "favorites");
 		String favoritesString = listManager.getFavorites().toString();
-		return "favorites: " + favoritesString + getTestString();
+		return "favorites: " + favoritesString;
 	}
 
 
@@ -43,22 +54,22 @@ public class Controller {
 	public String handleAddToList(@RequestParam String itemToAdd, @RequestParam String targetListName) {
 		Result temp = new Result("1", "temp");
 		listManager.addToList(temp, targetListName);
+		return "Added item:" + temp.getUniqueId() + " to list: " + targetListName;
 	}
 
 	// TODO: Need to write this.
 	@RequestMapping("/removeFromList")
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
 		listManager.removeFromList(itemToRemoveId, originListName);
+		return "Removed item:" + itemToRemoveId + " from list: " + originListName;
 	}
 
 	// TODO: Need to write this.
 	@RequestMapping("/moveBetweenLists")
-	public String handleMoveLists(@RequestParam String itemToRemoveId, @RequestParam String originListName, @RequestParam String originListName) {
-		listManager.removeFromList(itemToMoveId, originListName, targetListName);
+	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
+		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
+		return "Moved item:" + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
-
-
-
 
 
 
@@ -69,6 +80,10 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
+	public Result getResult(String uniqueId) {
+		// TOOD: iterate over the items in the most recently generated results and return it if there's a matching one.
+		return new Result("placholder", "placeholder");
+	}
 	
 	// TOOD: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
@@ -86,12 +101,11 @@ public class Controller {
 	// NOTE: will likely need submethods here...
 	public String createCollage(String searchQuery) {
 		// TODO: Pull restaurants from external API and grab relevant information.
-
 		return "placeholder";
 	}
 
 
-	public String packageResponse(ArrayList<Result> restaurants, ArrayList<Result> recipes, String collagePath) {
-
+	public String packageResponseString(ArrayList<Result> restaurants, ArrayList<Result> recipes, String collagePath) {
+		return "placeholder";
 	}
 }
