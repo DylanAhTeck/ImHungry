@@ -1,3 +1,5 @@
-hello/Greeting.class
+hello/Controller.class
 hello/Application.class
-hello/GreetingController.class
+hello/Result.class
+hello/Restaurant.class
+hello/Recipe.class
