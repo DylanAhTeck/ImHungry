@@ -2,6 +2,7 @@ package hello;
 
 
 // Result class which Recipe and Restaurant will both subclass off of...
+// Will use Google Places API
 
 public class Restaurant extends Result {
 
