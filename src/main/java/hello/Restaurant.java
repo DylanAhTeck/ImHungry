@@ -8,7 +8,7 @@ public class Restaurant extends Result {
 
 	private String name;
 	private double rating;
-	private Integer drivingTime;
+	private String drivingTime;
 	private String phoneNumber; 
 	private String address;
 	private String website;
@@ -40,12 +40,12 @@ public class Restaurant extends Result {
 	}
 
 
-	public Integer getDrivingTime() {
+	public String getDrivingTime() {
 		return drivingTime;
 	}
 
 
-	public void setDrivingTime(Integer drivingTime) {
+	public void setDrivingTime(String drivingTime) {
 		this.drivingTime = drivingTime;
 	}
 

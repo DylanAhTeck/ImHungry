@@ -105,8 +105,8 @@ public class Controller {
 	}
 	
 	
-	//get a JSON object from Google Places API
-	private String getRestaurantsResults(String url) throws MalformedURLException, IOException {
+	//API call / get request
+	private String callAPI(String url) throws MalformedURLException, IOException {
 
 	      URL uurl = new URL(url);
 	      HttpURLConnection conn = (HttpURLConnection) uurl.openConnection();
@@ -121,8 +121,24 @@ public class Controller {
 	      rd.close();
 	      return result.toString();
 	}
+	
+	//Google distance matrix API
+	private String getDuration(String place_id) throws MalformedURLException, IOException {
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyB9ygmPGReQW95GCkHazFsVPZBDI3MJoc0";
+		String res = callAPI(distanceRequestURL);
+		JSONObject json = new JSONObject(res);
+		JSONArray rows = json.getJSONArray("rows");
+		JSONObject temp = (JSONObject) rows.get(0);
+		JSONArray element = temp.getJSONArray("elements");
+		
+		JSONObject elements = (JSONObject) element.get(0);
+
+		JSONObject duration = elements.getJSONObject("duration");
+
+		return duration.getString("text");
+	}
 	  
-	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults){
+	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 	    JSONArray results = json.getJSONArray("results");
 	    
 	    //to avoid out of bound error
@@ -138,10 +154,12 @@ public class Controller {
 	    	//API does not always provide price level info
 	    	if(dataObj.has("price_level")){
 	    		priceLevel = dataObj.getInt("price_level");
+	    		String drivingTime = getDuration(place_id);
 		    	System.out.println("place_id: " + place_id);
 		    	System.out.println("name: " + name);
 		    	System.out.println("address: " + address);
 		    	System.out.println("rating: " + rating);
+		    	System.out.println("driving time: " + drivingTime);
 		    	System.out.println("price_level: " + priceLevel);
 	    	} else {
 	    	    size++;
@@ -155,14 +173,11 @@ public class Controller {
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		searchQuery = "burger"; // hard coded for now; TODO: remove this line
-		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		
-		//String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
-		
-		String res = getRestaurantsResults(sampleGetRequestURL);
+		String res = callAPI(placesRequestURL);
 		
 		JSONObject json = new JSONObject(res);
-	    System.out.print(json);
 	    
 		return parseJSON(json, numResults);
 	}
