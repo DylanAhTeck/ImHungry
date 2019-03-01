@@ -1,7 +1,12 @@
 package hello;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +32,12 @@ public class Controller {
 
 	@RequestMapping("/test")
 	public String handleTestRequest() {
+		try {
+			retrieveRestaurants("test", 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "Look's like you're up and running!";
 	}
 
@@ -86,8 +97,18 @@ public class Controller {
 	}
 	
 	// TOOD: Need to write this. 
-	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
+	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
+		//String paramValue
+		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		
+		URL url = new URL("sampleGetRequestURL");
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setDoOutput(true);
+		DataOutputStream out = new DataOutputStream(con.getOutputStream());
+		System.out.println(out);
+		
 		return new ArrayList<Result>();
 	}
 
