@@ -151,7 +151,9 @@ public class Controller {
 	}
 	
 	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
-	    JSONArray results = json.getJSONArray("results");
+		ArrayList<Result> res = new ArrayList<Result>();
+		
+		JSONArray results = json.getJSONArray("results");
 	    
 	    //to avoid out of bound error
 	    int size = Math.min(numResults, results.length());
@@ -169,19 +171,24 @@ public class Controller {
 	    		String address = placesDetail(place_id)[0];
 	    		String phone = placesDetail(place_id)[1];
 	    		String website = placesDetail(place_id)[2];
-		    	System.out.println("place_id: " + place_id);
-		    	System.out.println("name: " + name);
-		    	System.out.println("address: " + address);
-		    	System.out.println("rating: " + rating);
-		    	System.out.println("driving time: " + drivingTime);
-		    	System.out.println("price_level: " + priceLevel);
-		    	System.out.println("phone: " + phone);
-		    	System.out.println("website: " + website);
+	    		
+		    	Restaurant restaurant = new Restaurant(place_id);
+		    	restaurant.setName(name);
+		    	restaurant.setAddress(address);
+		    	restaurant.setDrivingTime(drivingTime);
+		    	restaurant.setPhoneNumber(phone);
+		    	restaurant.setPlaceId(place_id);
+		    	restaurant.setPriceLevel(priceLevel);
+		    	restaurant.setRating(rating);
+		    	restaurant.setWebsite(website);
+		    	restaurant.writeToJSON();
+		    	res.add(restaurant); 	
+		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
 	    	}	    	
 	    }		
-		return new ArrayList<Result>();
+		return res;
 	}
 	
 	

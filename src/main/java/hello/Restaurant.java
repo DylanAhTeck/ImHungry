@@ -1,8 +1,12 @@
 package hello;
+import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Result class which Recipe and Restaurant will both subclass off of...
-// Will use Google Places API
 
 public class Restaurant extends Result {
 
@@ -18,6 +22,27 @@ public class Restaurant extends Result {
 	public Restaurant(String uniqueId) {
 		super(uniqueId);
 
+	}
+	
+	
+	public JSONObject writeToJSON() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString = "empty";
+		try {
+			jsonString = objectMapper.writeValueAsString(this);
+		} catch (JsonProcessingException exception) {
+			System.out.println(exception);
+		}
+		JSONObject json = new JSONObject(jsonString);
+		return json;
+
+	}
+	
+	@Override
+	public String toString() {
+		return "Restaurant [name=" + name + ", rating=" + rating + ", drivingTime=" + drivingTime + ", phoneNumber="
+				+ phoneNumber + ", address=" + address + ", website=" + website + ", priceLevel=" + priceLevel
+				+ ", placeId=" + placeId + "]";
 	}
 
 	public String getName() {
