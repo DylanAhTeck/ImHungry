@@ -2,18 +2,34 @@ package hello;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 // Result class which Recipe and Restaurant will both subclass off of...
 
 public class Recipe extends Result {
 	private String name;
-	private double numStars; // nnumber of stars out of 5
+	private double numStars; // number of stars out of 5
 	private double prepTime; // in mins
 	private double cookTime;
 	private ArrayList<String> ingredients; // by line, including quantity and item name
-	private ArrayList<String> instructions; // prep instructrions
+	private ArrayList<String> instructions; // prep instructions
 	private String sourceURL; // source url for our own reference...
 
+	public String writeToJSON() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString = "empty";
+		try {
+			jsonString = objectMapper.writeValueAsString(this);
+		} catch (JsonProcessingException exception) {
+			System.out.println(exception);
+		}
+		return jsonString;
+
+	}
 
 	public Recipe(String uniqueId) {
 		super(uniqueId);
