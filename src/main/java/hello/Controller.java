@@ -1,7 +1,8 @@
 package hello;
 
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,13 +33,17 @@ public class Controller {
 
 	@RequestMapping("/test")
 	public String handleTestRequest() {
+		return "Look's like you're up and running!";
+	}
+	
+	@RequestMapping("/testRecipe")
+	public void handleTestRecipeRequest() {
 		try {
 			retrieveRestaurants("test", 5);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "Look's like you're up and running!";
 	}
 
 	@RequestMapping("/search")
@@ -102,12 +107,22 @@ public class Controller {
 		//String paramValue
 		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		
-		URL url = new URL("sampleGetRequestURL");
+		URL url = new URL(sampleGetRequestURL);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
-		con.setDoOutput(true);
-		DataOutputStream out = new DataOutputStream(con.getOutputStream());
-		System.out.println(out);
+
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+
+		//print result
+		System.out.println(response.toString());
 		
 		return new ArrayList<Result>();
 	}
