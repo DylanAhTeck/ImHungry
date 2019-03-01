@@ -12,6 +12,8 @@ public class Restaurant extends Result {
 	private String address;
 	private String website;
 	private Integer priceLevel; // price range as expressed by Google Places API
+	private String placeId; // string pulled from Google Places API
+	
 	public String getName() {
 		return name;
 	}
@@ -90,9 +92,6 @@ public class Restaurant extends Result {
 	public void setPlaceId(String placeId) {
 		this.placeId = placeId;
 	}
-
-
-	private String placeId; // string pulled from Google Places API
 
 
 	public Restaurant(String uniqueId, String jsonContent) {
