@@ -12,10 +12,9 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
-	
-	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
-	private ArrayList<Result> mostRecentResults = new ArrayList<Result>(); 
 
+	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
+	private ArrayList<Result> mostRecentResults = new ArrayList<Result>();
 
 
 
@@ -30,6 +29,12 @@ public class Controller {
 		return "Look's like you're up and running!";
 	}
 
+	@RequestMapping("/testRecipe")
+	public String handleTestRecipeRequest() {
+		return getTestRecipeString();
+	}
+
+
 	@RequestMapping("/search")
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
@@ -40,7 +45,7 @@ public class Controller {
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
-	@RequestMapping("/addItemToFavorites") 
+	@RequestMapping("/addItemToFavorites")
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
 		listManager.addToList(tempResult, "favorites");
@@ -80,12 +85,37 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
+	public String getTestRecipeString() {
+
+		ArrayList<String> ingredients = new ArrayList<String>();
+		ingredients.add("1 oz ham");
+		ingredients.add("2oz cheese");
+		ingredients.add("2 slices bread");
+
+		ArrayList<String> instructions = new ArrayList<String>();
+		instructions.add("1. do the thing");
+		instructions.add("2. finish the thing");
+
+		Recipe r = new Recipe("1");
+		r.setIngredients(ingredients);
+		r.setName("best recipe");
+		r.setSourceURL("http://localhost:1000");
+		r.setPrepTime(40);
+		r.setInstructions(instructions);
+		r.setNumStars(2);
+
+		r.setCookTime(20);
+
+		return r.writeToJSON();
+
+	}
+
 	public Result getResult(String uniqueId) {
 		// TOOD: iterate over the items in the most recently generated results and return it if there's a matching one.
 		return new Result("placholder");
 	}
-	
-	// TOOD: Need to write this. 
+
+	// TOOD: Need to write this.
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		return new ArrayList<Result>();
@@ -97,7 +127,7 @@ public class Controller {
 		return new ArrayList<Result>();
 	}
 
-	// should take the searchQuery as a parameter and return a path to the collage. 
+	// should take the searchQuery as a parameter and return a path to the collage.
 	// NOTE: will likely need submethods here...
 	public String createCollage(String searchQuery) {
 		// TODO: Pull restaurants from external API and grab relevant information.
