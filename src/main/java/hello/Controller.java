@@ -2,15 +2,14 @@ package hello;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -105,36 +104,67 @@ public class Controller {
 		return new Result("placholder");
 	}
 	
+	
+	//get a JSON object from Google Places API
 	private String getRestaurantsResults(String url) throws MalformedURLException, IOException {
-		InputStream is = new URL(url).openStream();
-	    try {
-	        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 
-		  	StringBuilder sb = new StringBuilder();
-		    int cp;
-		    while ((cp = rd.read()) != -1) {
-		      sb.append((char) cp);
-		    }
-		    
-		    return sb.toString();
-	    } finally {
-	      is.close();
-	    }		
+	      URL uurl = new URL(url);
+	      HttpURLConnection conn = (HttpURLConnection) uurl.openConnection();
+	      conn.setRequestMethod("GET");
+	      BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	      String line;
+	      StringBuilder result = new StringBuilder();
+	      
+	      while ((line = rd.readLine()) != null) {
+	         result.append(line);
+	      }
+	      rd.close();
+	      return result.toString();
 	}
 	  
-	  
+	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults){
+	    JSONArray results = json.getJSONArray("results");
+	    
+	    //to avoid out of bound error
+	    int size = Math.min(numResults, results.length());
+	    
+	    for(int i = 0 ; i < size && i < results.length(); i++) {
+	    	JSONObject dataObj = (JSONObject) results.get(i);
+	    	String place_id = dataObj.getString("place_id");
+	    	String name = dataObj.getString("name");
+	    	String address = dataObj.getString("vicinity");
+	    	double rating = dataObj.getDouble("rating");
+	    	int priceLevel = 0;
+	    	//API does not always provide price level info
+	    	if(dataObj.has("price_level")){
+	    		priceLevel = dataObj.getInt("price_level");
+		    	System.out.println("place_id: " + place_id);
+		    	System.out.println("name: " + name);
+		    	System.out.println("address: " + address);
+		    	System.out.println("rating: " + rating);
+		    	System.out.println("price_level: " + priceLevel);
+	    	} else {
+	    	    size++;
+	    	}	    	
+	    }		
+		return new ArrayList<Result>();
+	}
+	
+	
 	// TOOD: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-
-		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
-	    
+		searchQuery = "burger"; // hard coded for now; TODO: remove this line
+		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		
+		//String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		
 		String res = getRestaurantsResults(sampleGetRequestURL);
 		
 		JSONObject json = new JSONObject(res);
 	    System.out.print(json);
-		
-		return new ArrayList<Result>();
+	    
+		return parseJSON(json, numResults);
 	}
 
 	// TOOD: Need to write this.
