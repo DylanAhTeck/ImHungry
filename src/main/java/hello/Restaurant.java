@@ -13,6 +13,13 @@ public class Restaurant extends Result {
 	private String address;
 	private String website;
 	private Integer priceLevel; // price range as expressed by Google Places API
+	private String placeId; // string pulled from Google Places API
+
+	public Restaurant(String uniqueId) {
+		super(uniqueId);
+
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -93,13 +100,7 @@ public class Restaurant extends Result {
 	}
 
 
-	private String placeId; // string pulled from Google Places API
-
-
-	public Restaurant(String uniqueId, String jsonContent) {
-		super(uniqueId, jsonContent);
-
-	}
+	
 	
 	//lat and lon for tommy trojan: 34.021240,-118.287209
 }

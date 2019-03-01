@@ -10,9 +10,8 @@ public class Result {
 	// look up Jackson ObjectWriter for how to convert Java objects to JSON
 	protected String jsonContent; 
 
-	public Result(String uniqueId, String jsonContent) {
+	public Result(String uniqueId) {
 		this.uniqueId = uniqueId;
-		this.jsonContent = jsonContent;
 	}
 
 	public String getUniqueId() {
