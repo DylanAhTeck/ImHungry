@@ -2,12 +2,16 @@ package hello;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +40,8 @@ public class Controller {
 		return "Look's like you're up and running!";
 	}
 	
-	@RequestMapping("/testRecipe")
-	public void handleTestRecipeRequest() {
+	@RequestMapping("/testRestaurant")
+	public void handleTestRecipeRestaurant() {
 		try {
 			retrieveRestaurants("test", 5);
 		} catch (IOException e) {
@@ -101,28 +105,34 @@ public class Controller {
 		return new Result("placholder");
 	}
 	
+	private String getRestaurantsResults(String url) throws MalformedURLException, IOException {
+		InputStream is = new URL(url).openStream();
+	    try {
+	        BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+
+		  	StringBuilder sb = new StringBuilder();
+		    int cp;
+		    while ((cp = rd.read()) != -1) {
+		      sb.append((char) cp);
+		    }
+		    
+		    return sb.toString();
+	    } finally {
+	      is.close();
+	    }		
+	}
+	  
+	  
 	// TOOD: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		//String paramValue
+
 		String sampleGetRequestURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=coffee&inputtype=textquery&fields=place_id,formatted_address,name,rating,price_level&locationbias=circle:2000@34.021240,-118.287209&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+	    
+		String res = getRestaurantsResults(sampleGetRequestURL);
 		
-		URL url = new URL(sampleGetRequestURL);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
-
-		BufferedReader in = new BufferedReader(
-		        new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-
-		//print result
-		System.out.println(response.toString());
+		JSONObject json = new JSONObject(res);
+	    System.out.print(json);
 		
 		return new ArrayList<Result>();
 	}
