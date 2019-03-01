@@ -7,6 +7,62 @@ import java.util.ArrayList;
 
 public class Recipe extends Result {
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getNumStars() {
+		return numStars;
+	}
+
+	public void setNumStars(double numStars) {
+		this.numStars = numStars;
+	}
+
+	public double getPrepTime() {
+		return prepTime;
+	}
+
+	public void setPrepTime(double prepTime) {
+		this.prepTime = prepTime;
+	}
+
+	public double getCookTime() {
+		return cookTime;
+	}
+
+	public void setCookTime(double cookTime) {
+		this.cookTime = cookTime;
+	}
+
+	public ArrayList<String> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(ArrayList<String> ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	public ArrayList<String> getInstructions() {
+		return instructions;
+	}
+
+	public void setInstructions(ArrayList<String> instructions) {
+		this.instructions = instructions;
+	}
+
+	public String getSourceURL() {
+		return sourceURL;
+	}
+
+	public void setSourceURL(String sourceURL) {
+		this.sourceURL = sourceURL;
+	}
+
 	private String name;
 	private double numStars; // nnumber of stars out of 5
 	private double prepTime; // in mins
