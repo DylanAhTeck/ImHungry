@@ -1,4 +1,7 @@
 hello/ListManager.class
+<<<<<<< HEAD
 hello/Controller.class
 hello/Application.class
+=======
+>>>>>>> updated pom.xml
 hello/Result.class
