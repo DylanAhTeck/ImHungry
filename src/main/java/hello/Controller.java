@@ -42,7 +42,7 @@ public class Controller {
 	// to the end of the favorites list.
 	@RequestMapping("/addItemToFavorites") 
 	public String addItemToFavorites() {
-		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()), "{woo}");
+		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
 		listManager.addToList(tempResult, "favorites");
 		String favoritesString = listManager.getFavorites().toString();
 		return "favorites: " + favoritesString;
@@ -52,7 +52,7 @@ public class Controller {
 	// TODO: Need to write this.
 	@RequestMapping("/addToList")
 	public String handleAddToList(@RequestParam String itemToAdd, @RequestParam String targetListName) {
-		Result temp = new Result("1", "temp");
+		Result temp = new Result("1");
 		listManager.addToList(temp, targetListName);
 		return "Added item:" + temp.getUniqueId() + " to list: " + targetListName;
 	}
