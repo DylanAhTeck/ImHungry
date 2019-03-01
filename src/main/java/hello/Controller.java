@@ -82,7 +82,7 @@ public class Controller {
 
 	public Result getResult(String uniqueId) {
 		// TOOD: iterate over the items in the most recently generated results and return it if there's a matching one.
-		return new Result("placholder", "placeholder");
+		return new Result("placholder");
 	}
 	
 	// TOOD: Need to write this. 

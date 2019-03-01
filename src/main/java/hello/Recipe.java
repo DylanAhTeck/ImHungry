@@ -74,8 +74,4 @@ public class Recipe extends Result {
 		this.sourceURL = sourceURL;
 	}
 
-	
-
-	
-
 }
