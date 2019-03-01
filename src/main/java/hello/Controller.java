@@ -138,6 +138,18 @@ public class Controller {
 		return duration.getString("text");
 	}
 	  
+	
+	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		String res = callAPI(placesDetailURL);
+		JSONObject json = new JSONObject(res);
+		JSONObject result = json.getJSONObject("result");
+		String address = result.getString("formatted_address");
+		String phone = result.getString("formatted_phone_number");
+		String website = result.getString("website");
+		return new String[]{address, phone, website};
+	}
+	
 	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 	    JSONArray results = json.getJSONArray("results");
 	    
@@ -148,19 +160,23 @@ public class Controller {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
 	    	String place_id = dataObj.getString("place_id");
 	    	String name = dataObj.getString("name");
-	    	String address = dataObj.getString("vicinity");
 	    	double rating = dataObj.getDouble("rating");
 	    	int priceLevel = 0;
 	    	//API does not always provide price level info
 	    	if(dataObj.has("price_level")){
 	    		priceLevel = dataObj.getInt("price_level");
 	    		String drivingTime = getDuration(place_id);
+	    		String address = placesDetail(place_id)[0];
+	    		String phone = placesDetail(place_id)[1];
+	    		String website = placesDetail(place_id)[2];
 		    	System.out.println("place_id: " + place_id);
 		    	System.out.println("name: " + name);
 		    	System.out.println("address: " + address);
 		    	System.out.println("rating: " + rating);
 		    	System.out.println("driving time: " + drivingTime);
 		    	System.out.println("price_level: " + priceLevel);
+		    	System.out.println("phone: " + phone);
+		    	System.out.println("website: " + website);
 	    	} else {
 	    	    size++;
 	    	}	    	
