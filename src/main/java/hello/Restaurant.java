@@ -12,4 +12,5 @@ public class Restaurant extends Result {
 		// this.jsonContent = jsonContent;
 	}
 	
+	//lat and lon for tommy trojan: 34.021240,-118.287209
 }
