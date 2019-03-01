@@ -2,12 +2,13 @@ package hello;
 
 
 // Result class which Recipe and Restaurant will both subclass off of...
+// Will use Google Places API
 
 public class Restaurant extends Result {
 
 	private String name;
 	private double rating;
-	private Integer drivingTime;
+	private String drivingTime;
 	private String phoneNumber; 
 	private String address;
 	private String website;
@@ -39,12 +40,12 @@ public class Restaurant extends Result {
 	}
 
 
-	public Integer getDrivingTime() {
+	public String getDrivingTime() {
 		return drivingTime;
 	}
 
 
-	public void setDrivingTime(Integer drivingTime) {
+	public void setDrivingTime(String drivingTime) {
 		this.drivingTime = drivingTime;
 	}
 
@@ -101,4 +102,5 @@ public class Restaurant extends Result {
 
 	
 	
+	//lat and lon for tommy trojan: 34.021240,-118.287209
 }
