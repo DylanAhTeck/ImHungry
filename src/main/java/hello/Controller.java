@@ -158,9 +158,26 @@ public class Controller {
 	    //to avoid out of bound error
 	    int size = Math.min(numResults, results.length());
 	    
+	    String doNotShow = "", fav = "";
+	    
+	    for(Result result: listManager.getdoNotShow()) {
+	    	doNotShow += result.getUniqueId();
+	    }
+	    
+	    for(Result result: listManager.getFavorites()) {
+	    	fav += result.getUniqueId();
+	    }
+	    
 	    for(int i = 0 ; i < size && i < results.length(); i++) {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
 	    	String place_id = dataObj.getString("place_id");
+	    	
+	    	//check for do not show
+	    	if(doNotShow.contains(place_id)) {
+	    		size++;
+	    		continue;
+	    	}
+	    	
 	    	String name = dataObj.getString("name");
 	    	double rating = dataObj.getDouble("rating");
 	    	int priceLevel = 0;
@@ -182,7 +199,13 @@ public class Controller {
 		    	restaurant.setRating(rating);
 		    	restaurant.setWebsite(website);
 		    	restaurant.writeToJSON();
-		    	res.add(restaurant); 	
+		    	//check for fav
+		    	if(fav.contains(place_id)) {
+		    		res.add(0, restaurant); //add to front
+		    	} else {
+		    		res.add(restaurant); 
+		    	}
+		    		
 		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
