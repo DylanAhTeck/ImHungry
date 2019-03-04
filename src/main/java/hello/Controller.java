@@ -153,6 +153,7 @@ public class Controller {
 
 		*/
 
+		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 
 
@@ -167,7 +168,6 @@ public class Controller {
 			String allDataString = response.getBody().toString();
 
 			// convert to a usable jackson JSONNode
-			ObjectMapper mapper = new ObjectMapper();
     		JsonNode root = mapper.readTree(allDataString);
     		
     		JsonNode resultsNode = root.path("results");
@@ -177,11 +177,22 @@ public class Controller {
 
     		for (JsonNode result : resultsNode) {
     			// identify the sourceURL, use it to construct the recipes and set the unique id the uniqueID
-
-
+				Recipe r = new Recipe(result.get("id").toString());
+				r.setName(result.get("title").toString().replaceAll("\"", "")); // get rid of quotes in actual results
+				r.setImageURL("https://spoonacular.com/recipeImages/" + result.get("image").toString().replaceAll("\"", ""));
+				recipes.add(r);
     		}
-    		
-    		return actualObj.toString();
+
+    		// now that we have all the recipes and their IDs, we need to go get the individual info for them....
+
+
+
+
+
+
+
+
+    		return root.toString() + mapper.writeValueAsString(recipes);
 
 
 		} catch (UnirestException e) {
