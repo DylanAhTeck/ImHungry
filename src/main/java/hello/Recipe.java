@@ -18,6 +18,7 @@ public class Recipe extends Result {
 	private ArrayList<String> ingredients; // by line, including quantity and item name
 	private ArrayList<String> instructions; // prep instructions
 	private String sourceURL; // source url for our own reference...
+	private String imageURL;
 
 	public String writeToJSON() {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -88,6 +89,14 @@ public class Recipe extends Result {
 
 	public void setSourceURL(String sourceURL) {
 		this.sourceURL = sourceURL;
+	}
+
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 
 }
