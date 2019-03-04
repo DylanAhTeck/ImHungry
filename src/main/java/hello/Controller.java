@@ -42,7 +42,7 @@ public class Controller {
 	@RequestMapping("/testRestaurant")
 	public void handleTestRecipeRestaurant() {
 		try {
-			retrieveRestaurants("test", 5);
+			retrieveRestaurants("test", 25);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,9 +144,20 @@ public class Controller {
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
-		String address = result.getString("formatted_address");
-		String phone = result.getString("formatted_phone_number");
-		String website = result.getString("website");
+		String address = "unknown";
+		if(result.has("formatted_address")) {
+			address = result.getString("formatted_address");
+		}
+		
+		String phone = "unknown";
+		if(result.has("formatted_phone_number")) {
+			phone = result.getString("formatted_phone_number");
+		}
+				
+		String website = "unknown";
+		if(result.has("website")) {
+			website = result.getString("website");
+		}
 		return new String[]{address, phone, website};
 	}
 	
@@ -154,7 +165,22 @@ public class Controller {
 		ArrayList<Result> res = new ArrayList<Result>();
 		
 		JSONArray results = json.getJSONArray("results");
-	    
+		
+		//it takes too long for the API to response
+//	    System.out.println(results.length());
+//		if(json.has("next_page_token") && numResults > 20) {
+//			String token = json.getString("next_page_token");
+//			String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" + token + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+//			url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=CtQDygEAAOh-eG-aiixPeEmRuKLrGoEtSgSRiAMeCdkDt0Y7a8hXYCPu2aHNyhgeBpLusNBpc4fM8IapHdI60CfCu6SMSgYeXiFT68JiuFemHVsZeowfAl5mqP_-8z11rPiFUz3gGWs3PGroJZM2std2ycGK5OKJwDM9vK-b5eIdga4dl7jaOEC4n9UTI6d6T2PeMSIyYdJVOOj4T23F3bwWHQqxS8588IeF9sh7LdD6drhke7Mj9AkT4HCNpo5nNBNfAKb1a9Ck_-Fcq6lafWbZPaVQPB3gaFX1j_yrXAodt9FpsOXXlixe2Nedgl1izj16jRoAWTjggJnwGtdBF2Amb78lUM-zJPXdKWnNdfbKrTW2rmyEEVIj5tpunUAbKGfCquR-MajCteSnQLLJFzp3ZTaxoZRvGoDz1f05D0fzGHmMEeij6N5eSzeXokAQfrbplk2O-8cohYfewn_v_n3yDm59GNNw4-Kgt-Geb4vxowDnWpCKTKTg5TUMBzVLnyymgHteg0evnx7Jlu5jKQ80pK25OosqIW08_Q5wJslsIABAGzo7xP7vicNJA4WqqFnH2ygcenyp3rtNQd-0OZ8EutG5YUEvp1eG3ILoVRWIQ63XJHffEhBXpcGLtKRO_Z-r3HeDADjUGhRdNKo8kIj3AOfV8BgFRKavuc_rJw&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+//			String more = callAPI(url);
+//			JSONObject moreJSON = new JSONObject(more);
+//			JSONArray moreResults = moreJSON.getJSONArray("results");
+//			System.out.println(moreResults.length());
+//			for (int i = 0; i < moreResults.length(); i++) {
+//				results.put(moreResults.getJSONObject(i));
+//			}
+//		}
+//		System.out.println(results.length());
 	    //to avoid out of bound error
 	    int size = Math.min(numResults, results.length());
 	    
@@ -181,7 +207,7 @@ public class Controller {
 	    	String name = dataObj.getString("name");
 	    	double rating = dataObj.getDouble("rating");
 	    	int priceLevel = 0;
-	    	//API does not always provide price level info
+	    	//API does not always provide price level
 	    	if(dataObj.has("price_level")){
 	    		priceLevel = dataObj.getInt("price_level");
 	    		String drivingTime = getDuration(place_id);
@@ -218,7 +244,7 @@ public class Controller {
 	// TOOD: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		searchQuery = "burger"; // hard coded for now; TODO: remove this line
+		searchQuery = "asian"; // hard coded for now; TODO: remove this line
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		
 		String res = callAPI(placesRequestURL);
