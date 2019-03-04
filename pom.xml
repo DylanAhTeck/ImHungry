@@ -29,6 +29,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+<<<<<<< HEAD
                 <groupId>com.mashape.unirest</groupId>
                 <artifactId>unirest-java</artifactId>
                 <version>1.4.9</version>
@@ -69,6 +70,8 @@
                 <scope>test</scope>
         </dependency>
         <dependency>
+=======
+>>>>>>> c7a0446f492e67550c1dc8d7e85a18ec32e8a266
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.9.4</version>

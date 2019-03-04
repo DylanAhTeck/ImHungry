@@ -130,6 +130,7 @@ public class Controller {
 	}
 
 	// TODO: Need to write this.
+
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		return new ArrayList<Result>();
