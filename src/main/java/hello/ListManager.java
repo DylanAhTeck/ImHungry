@@ -46,13 +46,66 @@ public class ListManager {
 
 	
 	public boolean moveBetweenLists(String uniqueId, String originListName, String targetListName) {
-		// TODO: Fill this in!
+		// removes object from originList
+		Result itemToMove = removeFromList(uniqueId, originListName);
+		
+		// itemToMove was not in origin list
+		if (itemToMove == null) return false;
+		
+		// target list is favorites
+		if (targetListName.equals("favorites")) {
+			favorites.add(itemToMove);
+		} 
+		// target list is toExplore
+		else if (targetListName.equals("toExplore")) {
+			toExplore.add(itemToMove);
+		}
+		// target list is doNotDisturb
+		else if (targetListName.equals("doNotShow")) {
+			doNotShow.add(itemToMove);
+		}
 		return true;
 	}
 
-
-	public boolean removeFromList(String uniqueId, String originListName) {
-		// TODO Fill this in!
-		return true;
+	// given uniqueId of item to remove and origin list, removes object from list and returns it 
+	public Result removeFromList(String uniqueId, String originListName) {
+		Result itemToRemove = null;
+		// if toMove originates in favorites list
+		if (originListName.equals("favorites")) {
+			// removes item from originList
+			for(int i=0; i<favorites.size(); i++) {
+				// if object in list matches the one to remove 
+				if (favorites.get(i).uniqueId.equals(uniqueId)) {
+					itemToRemove = favorites.get(i);
+					favorites.remove(i);
+					break;
+				}
+			}
+		} 
+		// if toMove originates in toExplore list
+		else if (originListName.equals("toExplore")) {
+			// removes item from originList
+			for(int i=0; i<toExplore.size(); i++) {
+				// if object in list matches the one to remove 
+				if (toExplore.get(i).uniqueId.equals(uniqueId)) {
+					itemToRemove = toExplore.get(i);
+					toExplore.remove(i);
+					break;
+				}
+			}
+		}
+		// if toMove originates in doNotShow list
+		else if (originListName.equals("doNotDisturb")) {
+			// removes item from originList
+			for(int i=0; i<doNotShow.size(); i++) {
+				// if object in list matches the one to remove 
+				if (doNotShow.get(i).uniqueId.equals(uniqueId)) {
+					itemToRemove = doNotShow.get(i);
+					doNotShow.remove(i);
+					break;
+				}
+			}
+		}
+		return itemToRemove;
 	}
 }

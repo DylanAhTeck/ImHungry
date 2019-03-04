@@ -6,11 +6,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -211,13 +214,92 @@ public class Controller {
 		return new ArrayList<Result>();
 	}
 
-	// should take the searchQuery as a parameter and return a path to the collage. 
-	// NOTE: will likely need submethods here...
-	public String createCollage(String searchQuery) {
+	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
+	// NOTE: instead of creating collage on backend, ArrayList containing thumbnail links 
+	// will be passed to the frontend 
+	public ArrayList<String> createCollage(String searchQuery) {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		return "placeholder";
+		
+		// TODO: HOW MANY PICTURES DO WE WANT IN THE COLLAGE?
+		
+		// TODO: Do we want a data structure to hold the data for queries? 
+		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+		final String cx = "001349756157526882706%3An5pmkqrjpfc";
+		final String searchType = "image";
+		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
+		
+		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
+		String jsonResponse = getImagesJson(requestUrl);
+		ArrayList<String> thumbnailLinks = getThumbnailLinks(jsonResponse);
+		
+		return thumbnailLinks;
 	}
+	
+	// creates the GET request for the Google Image Custom Search
+	public String constructRequest(String GET_URL, String searchQuery, String cx, String searchType, String key) {
+		return GET_URL + "q=" + searchQuery + "&cx=" + cx + "&searchType=" + searchType + "&key=" + key;
+	}
+	
+	// uses GET request to produce a JSON response for given searchQuery
+	public String getImagesJson(String requestUrl) {
+		try {
+			// creates URL object with previously constructed requestURL (see above) 
+			URL obj = new URL(requestUrl);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			// response code == 200 means success 
+			int responseCode = con.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) { // success
+				// reads data from response 
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
 
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+
+				// print result
+				System.out.println(response.toString());
+				// returns the formatted json 
+				return response.toString();
+			} else {
+				return "GET request not worked";
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "GET request not worked";
+	}
+	
+	// extracts thumbnail links from JSON and returns them in ArrayList
+	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
+		ArrayList<String> thumbnailLinks = new ArrayList<String>();
+		JSONParser parser = new JSONParser();
+		try {
+			// obtains JSON to be parsed
+			Object obj = parser.parse(jsonResponse);
+			JSONObject jsonObject = (JSONObject) obj;
+			// extracts results set from query JSON
+			JSONArray results = (JSONArray) jsonObject.get("items");
+			// adds thumbnail links to thumbnailLinks array
+			Iterator<Object> iterator =  results.iterator();
+			// TODO: CHANGE TO AMOUNT OF PICTURES NEEDED IN COLLAGE
+			for(int i=0; i<10; i++) {
+				JSONObject resultItem = (JSONObject) iterator.next();
+				String thumbnailLink = (String) resultItem.get("link");
+				System.out.println(i+1 + ") " + thumbnailLink);
+				thumbnailLinks.add(thumbnailLink);
+			}
+		} catch (org.json.simple.parser.ParseException e) {
+			e.printStackTrace();
+		}
+		return thumbnailLinks;
+	}
 
 	public String packageResponseString(ArrayList<Result> restaurants, ArrayList<Result> recipes, String collagePath) {
 		return "placeholder";
