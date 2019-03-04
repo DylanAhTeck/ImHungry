@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 hello/ListManager.class
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -10,3 +11,5 @@ hello/Controller.class
 hello/Application.class
 >>>>>>> json stringification of recipes working
 hello/Result.class
+=======
+>>>>>>> working on recipe processing

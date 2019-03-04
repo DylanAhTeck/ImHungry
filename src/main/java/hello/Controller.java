@@ -1,7 +1,16 @@
 package hello;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.ArrayList;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mashape.unirest.http.HttpResponse;
+// import com.mashape.unirest.http.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +41,11 @@ public class Controller {
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
 		return getTestRecipeString();
+	}
+
+	@RequestMapping("/testSearchRecipe")
+	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
+		return retrieveRecipes(searchQuery, numResults);
 	}
 
 
@@ -111,20 +125,74 @@ public class Controller {
 	}
 
 	public Result getResult(String uniqueId) {
-		// TOOD: iterate over the items in the most recently generated results and return it if there's a matching one.
+		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
 		return new Result("placholder");
 	}
 
-	// TOOD: Need to write this.
+	// TODO: Need to write this.
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		return new ArrayList<Result>();
 	}
 
-	// TOOD: Need to write this.
-	public ArrayList<Result> retrieveRecipes(String searchQuery, Integer numResults) {
+	// TODO: Need to write this.
+	// TODO: this will need to return an ArrayList<Result> when it's done
+	public String retrieveRecipes(String searchQuery, Integer numResults) {
 		// TODO: Pull recipes from external API and grab relevant information.
-		return new ArrayList<Result>();
+
+
+		/* need these pieces of information
+
+			name
+			rating
+			image
+			prepTime
+			cookTime
+			ingredients
+			instructions
+
+		*/
+
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+
+
+		try {
+			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
+					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
+					.queryString("query", searchQuery)
+					.queryString("maxResults", numResults)
+					.asJson();
+
+			
+			String allDataString = response.getBody().toString();
+
+			// convert to a usable jackson JSONNode
+			ObjectMapper mapper = new ObjectMapper();
+    		JsonNode root = mapper.readTree(allDataString);
+    		
+    		JsonNode resultsNode = root.path("results");
+
+
+
+
+    		for (JsonNode result : resultsNode) {
+    			// identify the sourceURL, use it to construct the recipes and set the unique id the uniqueID
+
+
+    		}
+    		
+    		return actualObj.toString();
+
+
+		} catch (UnirestException e) {
+			System.out.println(e);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+
+		return "failure";
+
+
 	}
 
 	// should take the searchQuery as a parameter and return a path to the collage.
