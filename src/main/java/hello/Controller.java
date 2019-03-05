@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,17 +38,20 @@ public class Controller {
 	///////////////////////////////////////////////////
 
 	@RequestMapping("/test")
+	@CrossOrigin
 	public String handleTestRequest() {
 		return "Look's like you're up and running!";
 	}
 	
 	@RequestMapping("/testCollage")
+	@CrossOrigin
     public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
         ArrayList<String> imageURLs = createCollage(searchQuery);
         return imageURLs.toString();
     }
 
 	@RequestMapping("/testRestaurant")
+	@CrossOrigin
 	public void handleTestRecipeRestaurant() {
 		try {
 			retrieveRestaurants("test", 5);
@@ -56,8 +60,28 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping("/testAddToList")
+	@CrossOrigin
+	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
+		ListManager m = new ListManager();
+		
+		// quick test of add to list
+		m.addToList(new Result(uniqueId), targetList);
+		ArrayList<Result> favorites = m.getFavorites();
+		if (favorites.get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("It worked! Added <" + uniqueId + "> to <" + targetList + ">");
+		} else {
+			System.out.println("It didn't work :(");
+		}
+		
+		
+	}
+	
+	
 
 	@RequestMapping("/search")
+	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
@@ -68,6 +92,7 @@ public class Controller {
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
 	@RequestMapping("/addItemToFavorites") 
+	@CrossOrigin
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
 		listManager.addToList(tempResult, "favorites");
@@ -78,6 +103,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/addToList")
+	@CrossOrigin
 	public String handleAddToList(@RequestParam String itemToAdd, @RequestParam String targetListName) {
 		Result temp = new Result("1");
 		listManager.addToList(temp, targetListName);
@@ -86,6 +112,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/removeFromList")
+	@CrossOrigin
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
 		listManager.removeFromList(itemToRemoveId, originListName);
 		return "Removed item:" + itemToRemoveId + " from list: " + originListName;
@@ -93,6 +120,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/moveBetweenLists")
+	@CrossOrigin
 	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
 		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
 		return "Moved item:" + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
