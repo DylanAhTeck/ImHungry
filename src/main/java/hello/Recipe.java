@@ -19,6 +19,7 @@ public class Recipe extends Result {
 	private ArrayList<String> instructions; // prep instructions
 	private String sourceURL; // source url for our own reference...
 	private String imageURL;
+	private String type;
 
 	public String writeToJSON() {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -34,9 +35,18 @@ public class Recipe extends Result {
 
 	public Recipe(String uniqueId) {
 		super(uniqueId);
+		type = "recipe";
 		// set default image url for those cases where there is no image url
 		this.imageURL = "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg";
 	}
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getName() {
 		return name;
 	}
