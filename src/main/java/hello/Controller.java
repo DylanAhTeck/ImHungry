@@ -193,7 +193,9 @@ public class Controller {
     			// identify the sourceURL, use it to construct the recipes and set the unique id the uniqueID
 				Recipe r = new Recipe(result.get("id").toString());
 				r.setName(result.get("title").toString().replaceAll("\"", "")); // get rid of quotes in actual results
-				r.setImageURL("https://spoonacular.com/recipeImages/" + result.get("image").toString().replaceAll("\"", ""));
+				if (result.get("image") != null) {
+					r.setImageURL("https://spoonacular.com/recipeImages/" + result.get("image").toString().replaceAll("\"", ""));
+				}
 				recipes.add(r);
     		}
 
@@ -210,9 +212,17 @@ public class Controller {
 				allDataString = response.getBody().toString();
 				root = mapper.readTree(allDataString);
 
-				recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));
-				recipe.setSourceURL(root.get("sourceUrl").toString().replaceAll("\"", ""));
-				recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));
+				if (root.get("spoonacularScore") != null) {
+					recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));	
+				}
+
+				if (root.get("sourceUrl") != null) {
+					recipe.setSourceURL(root.get("sourceUrl").toString().replaceAll("\"", ""));	
+				}
+				
+				if (root.get("readyInMinutes") != null) {
+					recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));	
+				}
 
 				// if these fields exist, adjust them.
 				if (root.get("preparationMinutes") != null) {
