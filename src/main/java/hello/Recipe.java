@@ -34,6 +34,8 @@ public class Recipe extends Result {
 
 	public Recipe(String uniqueId) {
 		super(uniqueId);
+		// set default image url for those cases where there is no image url
+		this.imageURL = "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg";
 	}
 	public String getName() {
 		return name;
