@@ -333,7 +333,7 @@ public class Controller {
 	}
 	
 	
-	// TOOD: Need to write this. 
+	// TODO: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		searchQuery = "asian"; // hard coded for now; TODO: remove this line
@@ -452,21 +452,16 @@ public class Controller {
 
 
 	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
-	// NOTE: instead of creating collage on backend, ArrayList containing thumbnail links 
-	// will be passed to the frontend 
 	public ArrayList<String> createCollage(String searchQuery) {
-		// TODO: Pull restaurants from external API and grab relevant information.
-		
-		// TODO: HOW MANY PICTURES DO WE WANT IN THE COLLAGE?
-		
-		// TODO: Do we want a data structure to hold the data for queries? 
 		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 		final String cx = "001349756157526882706%3An5pmkqrjpfc";
 		final String searchType = "image";
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
-		
+		// constructs requestUrl with function call
 		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
+		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
+		// extracts thumbnail links from JSON, puts in ArrayList
 		ArrayList<String> thumbnailLinks = getThumbnailLinks(jsonResponse);
 		
 		return thumbnailLinks;
@@ -486,18 +481,15 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success 
 			int responseCode = con.getResponseCode();
-			
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response 
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
 				StringBuffer response = new StringBuffer();
-
 				while ((inputLine = in.readLine()) != null) {
 					response.append(inputLine);
 				}
 				in.close();
-
 				// print result
 				System.out.println(response.toString());
 				// returns the formatted json 
@@ -510,10 +502,12 @@ public class Controller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		// request did not work because an exception was thrown
 		return "GET request not worked";
 	}
 	
 	// extracts thumbnail links from JSON and returns them in ArrayList
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
 		ArrayList<String> thumbnailLinks = new ArrayList<String>();
 		JSONParser parser = new JSONParser();
@@ -530,7 +524,6 @@ public class Controller {
 			}
 			// adds thumbnail links to thumbnailLinks array
 			Iterator<Object> iterator =  results.iterator();
-			// TODO: CHANGE TO AMOUNT OF PICTURES NEEDED IN COLLAGE
 			for(int i=0; i<10; i++) {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
