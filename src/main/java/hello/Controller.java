@@ -18,10 +18,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,10 +51,16 @@ public class Controller {
 		return "Look's like you're up and running!";
 	}
 	
+	@RequestMapping("/testCollage")
+    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+        ArrayList<String> imageURLs = createCollage(searchQuery);
+        return imageURLs.toString();
+    }
+
 	@RequestMapping("/testRestaurant")
 	public void handleTestRecipeRestaurant() {
 		try {
-			retrieveRestaurants("test", 5);
+			retrieveRestaurants("test", 25);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -225,9 +233,20 @@ public class Controller {
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
-		String address = result.getString("formatted_address");
-		String phone = result.getString("formatted_phone_number");
-		String website = result.getString("website");
+		String address = "unknown";
+		if(result.has("formatted_address")) {
+			address = result.getString("formatted_address");
+		}
+		
+		String phone = "unknown";
+		if(result.has("formatted_phone_number")) {
+			phone = result.getString("formatted_phone_number");
+		}
+				
+		String website = "unknown";
+		if(result.has("website")) {
+			website = result.getString("website");
+		}
 		return new String[]{address, phone, website};
 	}
 	
@@ -235,17 +254,49 @@ public class Controller {
 		ArrayList<Result> res = new ArrayList<Result>();
 		
 		JSONArray results = json.getJSONArray("results");
-	    
+		
+		//it takes too long for the API to response
+//	    System.out.println(results.length());
+//		if(json.has("next_page_token") && numResults > 20) {
+//			String token = json.getString("next_page_token");
+//			String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=" + token + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+//			url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken=CtQDygEAAOh-eG-aiixPeEmRuKLrGoEtSgSRiAMeCdkDt0Y7a8hXYCPu2aHNyhgeBpLusNBpc4fM8IapHdI60CfCu6SMSgYeXiFT68JiuFemHVsZeowfAl5mqP_-8z11rPiFUz3gGWs3PGroJZM2std2ycGK5OKJwDM9vK-b5eIdga4dl7jaOEC4n9UTI6d6T2PeMSIyYdJVOOj4T23F3bwWHQqxS8588IeF9sh7LdD6drhke7Mj9AkT4HCNpo5nNBNfAKb1a9Ck_-Fcq6lafWbZPaVQPB3gaFX1j_yrXAodt9FpsOXXlixe2Nedgl1izj16jRoAWTjggJnwGtdBF2Amb78lUM-zJPXdKWnNdfbKrTW2rmyEEVIj5tpunUAbKGfCquR-MajCteSnQLLJFzp3ZTaxoZRvGoDz1f05D0fzGHmMEeij6N5eSzeXokAQfrbplk2O-8cohYfewn_v_n3yDm59GNNw4-Kgt-Geb4vxowDnWpCKTKTg5TUMBzVLnyymgHteg0evnx7Jlu5jKQ80pK25OosqIW08_Q5wJslsIABAGzo7xP7vicNJA4WqqFnH2ygcenyp3rtNQd-0OZ8EutG5YUEvp1eG3ILoVRWIQ63XJHffEhBXpcGLtKRO_Z-r3HeDADjUGhRdNKo8kIj3AOfV8BgFRKavuc_rJw&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+//			String more = callAPI(url);
+//			JSONObject moreJSON = new JSONObject(more);
+//			JSONArray moreResults = moreJSON.getJSONArray("results");
+//			System.out.println(moreResults.length());
+//			for (int i = 0; i < moreResults.length(); i++) {
+//				results.put(moreResults.getJSONObject(i));
+//			}
+//		}
+//		System.out.println(results.length());
 	    //to avoid out of bound error
 	    int size = Math.min(numResults, results.length());
+	    
+	    String doNotShow = "", fav = "";
+	    
+	    for(Result result: listManager.getdoNotShow()) {
+	    	doNotShow += result.getUniqueId();
+	    }
+	    
+	    for(Result result: listManager.getFavorites()) {
+	    	fav += result.getUniqueId();
+	    }
 	    
 	    for(int i = 0 ; i < size && i < results.length(); i++) {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
 	    	String place_id = dataObj.getString("place_id");
+	    	
+	    	//check for do not show
+	    	if(doNotShow.contains(place_id)) {
+	    		size++;
+	    		continue;
+	    	}
+	    	
 	    	String name = dataObj.getString("name");
 	    	double rating = dataObj.getDouble("rating");
 	    	int priceLevel = 0;
-	    	//API does not always provide price level info
+	    	//API does not always provide price level
 	    	if(dataObj.has("price_level")){
 	    		priceLevel = dataObj.getInt("price_level");
 	    		String drivingTime = getDuration(place_id);
@@ -263,7 +314,13 @@ public class Controller {
 		    	restaurant.setRating(rating);
 		    	restaurant.setWebsite(website);
 		    	restaurant.writeToJSON();
-		    	res.add(restaurant); 	
+		    	//check for fav
+		    	if(fav.contains(place_id)) {
+		    		res.add(0, restaurant); //add to front
+		    	} else {
+		    		res.add(restaurant); 
+		    	}
+		    		
 		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
@@ -276,7 +333,7 @@ public class Controller {
 	// TOOD: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		searchQuery = "burger"; // hard coded for now; TODO: remove this line
+		searchQuery = "asian"; // hard coded for now; TODO: remove this line
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		
 		String res = callAPI(placesRequestURL);
@@ -390,13 +447,98 @@ public class Controller {
 
 	}
 
-	// should take the searchQuery as a parameter and return a path to the collage.
-	// NOTE: will likely need submethods here...
-	public String createCollage(String searchQuery) {
-		// TODO: Pull restaurants from external API and grab relevant information.
-		return "placeholder";
-	}
 
+	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
+	// NOTE: instead of creating collage on backend, ArrayList containing thumbnail links 
+	// will be passed to the frontend 
+	public ArrayList<String> createCollage(String searchQuery) {
+		// TODO: Pull restaurants from external API and grab relevant information.
+		
+		// TODO: HOW MANY PICTURES DO WE WANT IN THE COLLAGE?
+		
+		// TODO: Do we want a data structure to hold the data for queries? 
+		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+		final String cx = "001349756157526882706%3An5pmkqrjpfc";
+		final String searchType = "image";
+		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
+		
+		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
+		String jsonResponse = getImagesJson(requestUrl);
+		ArrayList<String> thumbnailLinks = getThumbnailLinks(jsonResponse);
+		
+		return thumbnailLinks;
+	}
+	
+	// creates the GET request for the Google Image Custom Search
+	public String constructRequest(String GET_URL, String searchQuery, String cx, String searchType, String key) {
+		return GET_URL + "q=" + searchQuery + "&cx=" + cx + "&searchType=" + searchType + "&key=" + key;
+	}
+	
+	// uses GET request to produce a JSON response for given searchQuery
+	public String getImagesJson(String requestUrl) {
+		try {
+			// creates URL object with previously constructed requestURL (see above) 
+			URL obj = new URL(requestUrl);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			// response code == 200 means success 
+			int responseCode = con.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) { // success
+				// reads data from response 
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+
+				// print result
+				System.out.println(response.toString());
+				// returns the formatted json 
+				return response.toString();
+			} else {
+				return "GET request not worked";
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "GET request not worked";
+	}
+	
+	// extracts thumbnail links from JSON and returns them in ArrayList
+	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
+		ArrayList<String> thumbnailLinks = new ArrayList<String>();
+		JSONParser parser = new JSONParser();
+		try {
+			// obtains JSON to be parsed
+			Object obj = parser.parse(jsonResponse);
+			org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) obj;
+			// extracts results set from query JSON
+			org.json.simple.JSONArray results = (org.json.simple.JSONArray) jsonObject.get("items");
+			// search query returned no results
+			if (results == null) {
+				thumbnailLinks.add("Search returned no results");
+				return thumbnailLinks;
+			}
+			// adds thumbnail links to thumbnailLinks array
+			Iterator<Object> iterator =  results.iterator();
+			// TODO: CHANGE TO AMOUNT OF PICTURES NEEDED IN COLLAGE
+			for(int i=0; i<10; i++) {
+				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
+				String thumbnailLink = (String) resultItem.get("link");
+				thumbnailLinks.add("\"" + thumbnailLink + "\"");
+				System.out.println(i+1 + ") " + thumbnailLink);
+			}
+		} catch (org.json.simple.parser.ParseException e) {
+			e.printStackTrace();
+		}
+		return thumbnailLinks;
+	}
 
 	public String packageResponseString(ArrayList<Result> restaurants, ArrayList<Result> recipes, String collagePath) {
 		return "placeholder";
