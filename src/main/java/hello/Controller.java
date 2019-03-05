@@ -193,7 +193,7 @@ public class Controller {
 				root = mapper.readTree(allDataString);
 
 				recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));
-
+				recipe.setSourceURL(root.get("sourceUrl").toString().replaceAll("\"", ""));
 				recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));
 
 				// if these fields exist, adjust them.
@@ -209,7 +209,7 @@ public class Controller {
 
 				JsonNode ingredientsNode = root.path("extendedIngredients");
 				for (JsonNode ingredient : ingredientsNode) {
-					ingredients.add(ingredient.get("originalString").toString());
+					ingredients.add(ingredient.get("originalString").toString().replaceAll("\"", ""));
 
 				}
 				recipe.setIngredients(ingredients);
@@ -220,17 +220,20 @@ public class Controller {
 					JsonNode stepsNode = analyzedInstructionsNode.path(0).path("steps");
 
 					for (JsonNode step : stepsNode) {
-						instructions.add(step.get("step").toString());
+						instructions.add(step.get("step").toString().replaceAll("\"", ""));
 					}
 					recipe.setInstructions(instructions);
 				}
 				else {
-					instructions.add(root.get("instructions").toString());
+					instructions.add(root.get("instructions").toString().replaceAll("\"", ""));
 				}
 
     		}
 
-    		return root.toString() + mapper.writeValueAsString(recipes);
+    		return mapper.writeValueAsString(recipes);
+
+
+    		// Now that I have all the recipes, I should return them as some sort of JSON object...
 
 
 		} catch (UnirestException e) {
