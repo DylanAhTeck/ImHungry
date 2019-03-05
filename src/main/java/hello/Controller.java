@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,6 +41,12 @@ public class Controller {
 		return "Look's like you're up and running!";
 	}
 	
+	@RequestMapping("/testCollage")
+    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+        ArrayList<String> imageURLs = createCollage(searchQuery);
+        return imageURLs.toString();
+    }
+
 	@RequestMapping("/testRestaurant")
 	public void handleTestRecipeRestaurant() {
 		try {
@@ -283,14 +288,19 @@ public class Controller {
 		try {
 			// obtains JSON to be parsed
 			Object obj = parser.parse(jsonResponse);
-			JSONObject jsonObject = (JSONObject) obj;
+			org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) obj;
 			// extracts results set from query JSON
-			JSONArray results = (JSONArray) jsonObject.get("items");
+			org.json.simple.JSONArray results = (org.json.simple.JSONArray) jsonObject.get("items");
+			// search query returned no results
+			if (results == null) {
+				thumbnailLinks.add("Search returned no results");
+				return thumbnailLinks;
+			}
 			// adds thumbnail links to thumbnailLinks array
 			Iterator<Object> iterator =  results.iterator();
 			// TODO: CHANGE TO AMOUNT OF PICTURES NEEDED IN COLLAGE
 			for(int i=0; i<10; i++) {
-				JSONObject resultItem = (JSONObject) iterator.next();
+				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
 				System.out.println(i+1 + ") " + thumbnailLink);
 				thumbnailLinks.add(thumbnailLink);

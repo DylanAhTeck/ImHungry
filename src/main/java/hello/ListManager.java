@@ -11,7 +11,7 @@ public class ListManager {
 	public ListManager() {
 
 	}
-
+	
 	public ArrayList<Result> getToExplore() {
 		return toExplore;
 	}
