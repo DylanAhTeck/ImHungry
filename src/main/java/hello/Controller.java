@@ -302,8 +302,8 @@ public class Controller {
 			for(int i=0; i<10; i++) {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
+				thumbnailLinks.add("\"" + thumbnailLink + "\"");
 				System.out.println(i+1 + ") " + thumbnailLink);
-				thumbnailLinks.add(thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
