@@ -102,13 +102,16 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
+		
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
+		ArrayList<String> collageURLs = createCollage(searchQuery);
+
 
 		try {
 			// using readtree to set these as json nodes
 			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
 			((ObjectNode) rootNode).set("restaurants", mapper.readTree(mapper.writeValueAsString(restaurants)));
-			((ObjectNode) rootNode).set("imageUrls", imagesNode);
+			((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
 
 			return mapper.writeValueAsString(rootNode);
 			
@@ -531,7 +534,7 @@ public class Controller {
 			for(int i=0; i<10; i++) {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
-				thumbnailLinks.add("\"" + thumbnailLink + "\"");
+				thumbnailLinks.add(thumbnailLink);
 				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
