@@ -80,12 +80,27 @@ public class Controller {
 		m.addToList(new Result(uniqueId), targetList);
 		ArrayList<Result> favorites = m.getFavorites();
 		if (favorites.get(0).uniqueId.equals(uniqueId)) {
-			System.out.println("It worked! Added <" + uniqueId + "> to <" + targetList + ">");
+			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
 		} else {
-			System.out.println("It didn't work :(");
+			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
 		}
 		// move Result from one list to another
-		
+		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
+		if (favorites.size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from favorites");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
+		}
+		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
+		}
+		// remove Result from toExplore
+		m.removeFromList(uniqueId, "toExplore");
+		if (m.getToExplore().size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from toExplore");
+		}
 		
 	}
 	
