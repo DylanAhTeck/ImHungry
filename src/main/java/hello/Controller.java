@@ -72,12 +72,12 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@RequestMapping("/testAddToList")
 	@CrossOrigin
 	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
 		ListManager m = new ListManager();
-		
+
 		// quick test of add to list
 		m.addToList(new Result(uniqueId), targetList);
 		ArrayList<Result> favorites = m.getFavorites();
@@ -103,10 +103,10 @@ public class Controller {
 		if (m.getToExplore().size() == 0) {
 			System.out.println("<" + uniqueId + "> was removed from toExplore");
 		}
-		
+
 	}
-	
-	
+
+
 
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
@@ -124,7 +124,6 @@ public class Controller {
 		return "failure";
 	}
 
-	@CrossOrigin
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
@@ -169,7 +168,7 @@ public class Controller {
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
-	@RequestMapping("/addItemToFavorites") 
+	@RequestMapping("/addItemToFavorites")
 	@CrossOrigin
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
@@ -377,8 +376,8 @@ public class Controller {
 	    }
 		return res;
 	}
-	
-	// TODO: Need to write this. 
+
+	// TODO: Need to write this.
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
@@ -494,9 +493,9 @@ public class Controller {
 
 	}
 
-	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
+	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage.
 	public ArrayList<String> createCollage(String searchQuery) {
-    
+
 		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 		final String cx = "001349756157526882706%3An5pmkqrjpfc";
 		final String searchType = "image";

@@ -136,7 +136,7 @@
         let restaurantDistance = document.createElement('h6');
         restaurantName.className = "card-title";
         restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
-        restaurantDistance.innerHTML = JSONObj.restaurants[idx]['drivingTime'] + " mins";
+        restaurantDistance.innerHTML = JSONObj.restaurants[idx]['drivingTime'];
         newNameCol.appendChild(restaurantName);
         newNameCol.appendChild(restaurantDistance);
 
