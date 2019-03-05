@@ -10,8 +10,10 @@ body {
   margin-bottom: 20px;
 }
 
-.collage {
+#collage {
   display: inline-block;
+  overflow-x: hidden;
+  overflow-y: hidden;
   margin-left: auto;
   margin-right: auto;
   min-width: 40%;
@@ -33,7 +35,6 @@ body {
   width: 100%;
 }
 
-img {
+a button {
   width: 100%;
-  height: auto;
 }

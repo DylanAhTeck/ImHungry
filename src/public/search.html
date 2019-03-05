@@ -18,11 +18,21 @@
         <div class="content-wrapper">
           <h1 class="text-center">I'm Hungry</h1>
           <div class="input-group">
-            <input type="text" class="form-control" placeholder="Enter Food" />
-            <input type="number" class="form-control" value="5" />
+            <input
+              id="query"
+              type="text"
+              class="form-control"
+              placeholder="Enter Food"
+            />
+            <input
+              id="num-results"
+              type="number"
+              class="form-control"
+              value="5"
+            />
           </div>
 
-          <div class="button">
+          <div id="feedMeButton" class="button">
             <div class="icons">
               <i class="fas fa-frown fa-5x icon-default"></i>
               <i class="fas fa-smile fa-5x icon-hover"></i>
@@ -33,5 +43,15 @@
       </div>
     </section>
   </body>
+  <script type="text/javascript">
+    document.getElementById("feedMeButton").onclick = function() {
+      let query = document.getElementById("query").value;
+      let numResults = document.getElementById("num-results").value;
+      sessionStorage.setItem("query", query);
+      sessionStorage.setItem("numResults", numResults);
+      console.log("Feed Me", query, numResults);
+      location.href = "results.html";
+    };
+  </script>
   <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
 </html>
