@@ -88,7 +88,12 @@ public class Controller {
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
 		
-		ArrayList<Result> restaurants = retrieveRestaurants(searchQuery, numResults);
+		ArrayList<Result> restaurants = new ArrayList<Result>();
+		try {
+			restaurants = retrieveRestaurants(searchQuery, numResults);
+		} catch (IOException e) {
+			System.out.println("ioexception retrieving restaurants");
+		}
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 
 		try {
