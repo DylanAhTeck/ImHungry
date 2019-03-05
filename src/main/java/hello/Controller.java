@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mashape.unirest.http.HttpResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -43,7 +45,13 @@ public class Controller {
 
 	@RequestMapping("/testSearchRecipe")
 	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
-		return retrieveRecipes(searchQuery, numResults);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(retrieveRecipes(searchQuery, numResults));
+		} catch (JsonProcessingException e){
+			System.out.println("json processing exception when returning test recipe retrievals");
+		}
+		return "failure";
 	}
 
 
@@ -57,15 +65,26 @@ public class Controller {
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
+		JsonNode imagesNode = mapper.createObjectNode();
 		
 		ArrayList<Result> restaurants = retrieveRestaurants(searchQuery, numResults);
-		ArrayList<Result> recipes = retrieveRecipes(searachQuery, numResults);
+		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 
-		rootNode.put("recipes", mapper.writeValueAsString(recipes));
-		rootNode.put("restaurants", mapper.writeValueAsString(restaurants));
-		rootNode.put("imageUrls", "[]");
-		
-		return mapper.writeValueAsString(rootNode);
+		try {
+			// using readtree to set these as json nodes
+			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
+			((ObjectNode) rootNode).set("restaurants", mapper.readTree(mapper.writeValueAsString(restaurants)));
+			((ObjectNode) rootNode).set("imageUrls", imagesNode);
+
+			return mapper.writeValueAsString(rootNode);
+			
+		} catch (JsonProcessingException e) {
+			System.out.println("json processing exception on creating search response");
+		} catch (IOException e) {
+			System.out.println("ioexception in reading tree");
+		}
+
+		return "failure";
 
 	}
 
@@ -148,7 +167,7 @@ public class Controller {
 	}
 
 	// Retrieve recipes from Spoonacular API, parse relevant JSON, and return list of recipe results
-	public ArrayList<Result> retrieveRecipes(String searchQuery, Integer numResults) {
+	public ArrayList<Recipe> retrieveRecipes(String searchQuery, Integer numResults) {
 
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
@@ -157,7 +176,7 @@ public class Controller {
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
 					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
 					.queryString("query", searchQuery)
-					.queryString("maxResults", numResults)
+					.queryString("number", numResults)
 					.asJson();
 
 			
@@ -237,7 +256,7 @@ public class Controller {
 			System.out.println(e);
 		}
 
-		return "failure";
+		return null;
 
 	}
 
