@@ -52,6 +52,12 @@ public class Controller {
 		}
 	}
 
+	@RequestMapping("/testCollage")
+	public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+		ArrayList<String> imageURLs = createCollage(searchQuery);
+		return imageURLs.toString();
+	}
+
 	@RequestMapping("/search")
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
