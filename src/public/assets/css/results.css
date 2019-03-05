@@ -38,3 +38,7 @@ body {
 a button {
   width: 100%;
 }
+
+.card {
+  cursor: pointer;
+}

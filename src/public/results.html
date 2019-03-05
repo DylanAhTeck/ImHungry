@@ -40,71 +40,8 @@
           <div class="reults-wrapper text-center">
             <h1>Results For: <span id="query"></spam> </h1>
             <div class="row">
-              <div class="col">
+              <div id="restaurants" class="col">
                 <h3>Restaurants</h3>
-                <div class="card text-white bg-secondary mb-3">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-5">
-                        <h5 class="card-title">Restaurant Name</h5>
-                        <h6>X mins</h6>
-                      </div>
-                      <div class="col-5">
-                        <div class="stars card-title">
-                          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <h6>Restaurant Address</h6>
-                      </div>
-                      <div class="col-2">
-                        <h6 class="card-title">
-                          <i class="fas fa-dollar-sign"></i> 30.00
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card text-white bg-dark mb-3">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-5">
-                        <h5 class="card-title">Restaurant Name</h5>
-                        <h6>X mins</h6>
-                      </div>
-                      <div class="col-5">
-                        <div class="stars card-title">
-                          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <h6>Restaurant Address</h6>
-                      </div>
-                      <div class="col-2">
-                        <h6 class="card-title">
-                          <i class="fas fa-dollar-sign"></i> 30.00
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="card text-white bg-secondary mb-3">
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-5">
-                        <h5 class="card-title">Restaurant Name</h5>
-                        <h6>X mins</h6>
-                      </div>
-                      <div class="col-5">
-                        <div class="stars card-title">
-                          <i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <h6>Restaurant Address</h6>
-                      </div>
-                      <div class="col-2">
-                        <h6 class="card-title">
-                          <i class="fas fa-dollar-sign"></i> 30.00
-                        </h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div id="recipes" class="col">
@@ -117,156 +54,15 @@
     </section>
   </body>
   <script type="text/javascript">
-    const testJSON = JSON.parse(`{
-      "recipes": [
-        {
-          "uniqueId": "1072972",
-          "name": "Egg Sandwich",
-          "rating": 26,
-          "prepTime": 2,
-          "cookTime": 5,
-          "ingredients": [
-            "White bread",
-            "White American cheese slices",
-            "Yellow American cheese slices",
-            "Sweet Ham deli sliced",
-            "Eggs",
-            "Butter"
-          ],
-          "instructions": [
-            "Place one slice of white American on one side of the bread and place one slice of yellow American on opposite slice. Top each side with a thin piece of honey ham. Have all your bread assembled so as you remove the eggs from the pan you are ready to go.",
-            "Cook one egg over easy per sandwich,",
-            "Remove from the pan without over cooking and gently bring the sides of the sandwich together. DO NOT PRESS DOWN OR YOU WILL BREAK THE YOLK.",
-            "Heat skillet over medium low heat. Top each sandwich with butter pats.",
-            "Place butter side down in skillet. Cover loosely with aluminum foil Cook until bread is browned.",
-            "Add pats of butter to uncooked side. Flip and cook until sandwich is browned and cheese is gooey and melted."
-          ],
-          "sourceURL": "https://www.smalltownwoman.com/easy-breakfast-grilled-cheese/",
-          "imageURL": "https://spoonacular.com/recipeImages/egg-sandwich-1072972.jpg"
-        },
-        {
-          "uniqueId": "1075976",
-          "name": "Muffaletta Sandwich",
-          "rating": 27,
-          "prepTime": 10,
-          "cookTime": 0,
-          "ingredients": [
-            "1 (10-inch) loaf round Italian bread",
-            "1 cup olive salad",
-            "1/4 pound provolone cheese",
-            "1/4 pound ham",
-            "1/4 pound capicola",
-            "1/4 pound Genoa salami",
-            "1/4 pound mortadella"
-          ],
-          "instructions": [
-            "Cut the top of the bread off so that the bottom half is a little thicker than the top.",
-            "Remove a little of the bread from the center to hollow the bottom piece out some and make plenty of room.",
-            "Spread about 1/3 cup of olive salad on the bottom piece.",
-            "Layer the cheese and meats on top.",
-            "Spread the remaining olive salad on top.",
-            "Drizzle any oil from the olive salad on the underside of the top piece of bread.",
-            "Place the top piece of bread on top and press down gently. Wrap in plastic wrap and refrigerate for at least 2 to 4 hours before serving."
-          ],
-          "sourceURL": "https://spicysouthernkitchen.com/muffaletta-sandwich/",
-          "imageURL": "https://spoonacular.com/recipeImages/muffaletta-sandwich-1075976.jpg"
-        },
-        {
-          "uniqueId": "1076098",
-          "name": "Croissant Sandwich",
-          "rating": 47,
-          "prepTime": 15,
-          "cookTime": 15,
-          "ingredients": [
-            "2 croissants, from bakery",
-            "1/2 avocado, sliced",
-            "1/2 tomato, sliced",
-            "Red onion, sliced",
-            "Bean sprouts",
-            "4 eggs, fried",
-            "Cheddar cheese, grated",
-            "Butter",
-            "Salt and pepper"
-          ],
-          "instructions": [
-            "Preheat oven to 400 degrees Fahrenheit.",
-            "Slice croissants in half carefully and lay them on a baking sheet, cut side down. Toast in the oven for 5 minutes at 400 degrees.",
-            "Remove croissants from oven. Top with sliced avocado, red onion, and tomato on bottom half of croissant. Sprinkle grated cheese on top half of croissant.",
-            "Return to oven for 3-4 minutes.",
-            "Add a small dab of butter to a nonstick skillet over medium-high heat. Once melted and bubbling, crack in four eggs. Cook for about 90 seconds on the first side until most of the white is cooked. Carefully flip eggs. Try not to break the yolks. Turn off the heat and let the eggs continue to gently cook.",
-            "Remove croissants from oven.",
-            "Add two fried eggs to each croissant bottom. Top with sprouts and a pinch of salt and pepper.",
-            "Add cheesy top of croissant and serve immediately!"
-          ],
-          "sourceURL": "https://www.macheesmo.com/croissant-sandwich/",
-          "imageURL": "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg"
-        },
-        {
-          "uniqueId": "1077657",
-          "name": "Reuben Sandwich",
-          "rating": 74,
-          "prepTime": 5,
-          "cookTime": 10,
-          "ingredients": [
-            "1 tbsp butter",
-            "2 slices of deli rye swirl bread",
-            "3 tbsp Thousand Island dressing",
-            "6 oz corned beef sliced thinly",
-            "2 slices Swiss cheese",
-            "1/4 cup sauerkraut liquid squeezed out"
-          ],
-          "instructions": [
-            "Preheat a medium cooking pan over medium-low heat. Melt butter in the pan and spread it around evenly.",
-            "Place slices of bread in the pan and spread Thousand island dressing on both slices.",
-            "Squeeze liquid from sauerkraut and spread it on one slice of bread.",
-            "Place two slices of Swiss cheese on the other slice of bread.",
-            "Layer corned beef over cheese evenly.",
-            "Let the bread crisp and ingredients heat up. Once cheese is melted, use a spatula to carefully place one slice over the other to close the sandwich.",
-            "Cook for a couple more minutes on both sides, until bread is golden. Press gently.",
-            "Take the sandwich out of the pan, cut in half, and serve right away."
-          ],
-          "sourceURL": "https://www.willcookforsmiles.com/reuben-sandwich/",
-          "imageURL": "https://spoonacular.com/recipeImages/reuben-sandwich-1077657.jpg"
-        },
-        {
-          "uniqueId": "1068773",
-          "name": "Tuna Salad Sandwich",
-          "rating": 51,
-          "prepTime": 5,
-          "cookTime": 5,
-          "ingredients": [
-            "4 (5 ounce) cans tuna, drained",
-            "1 cup (239 g) mayonnaise",
-            "2 teaspoons celery salt",
-            "1 shallot, finely diced",
-            "2 tablespoons dill pickle, finely diced",
-            "1 tablespoon lemon juice",
-            "1 clove garlic, minced",
-            "1 teaspoon salt",
-            "1 teaspoon black pepper",
-            "1 head romaine lettuce",
-            "1 medium tomato, sliced",
-            "12 croissants"
-          ],
-          "instructions": [
-            "In a medium bowl, combine tuna, mayonnaise, celery, salt, shallot, pickle, lemon juice, garlic, salt, and pepper.",
-            "Lay a piece of bread on your plate (or slice a croissant) and top with lettuce, tuna mixture, and then a slice of tomato.",
-            "Serve Immediately."
-          ],
-          "sourceURL": "https://iambaker.net/tuna-salad/",
-          "imageURL": "https://spoonacular.com/recipeImages/tuna-salad-sandwich-1068773.jpg"
-        }
-      ],
-      "restaurants": [],
-      "imageUrls": {}
-    }`);
+
+    let JSONObj = {
+      "recipes": []
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
       let query = sessionStorage.getItem('query');
       document.getElementById('query').innerHTML = capitalizeFirstLetter(query);
       processSearch();
-      loadCollage();
-      loadRecipes();
     });
 
     document.getElementById('manage-list').onclick = function() {
@@ -281,14 +77,17 @@
     function processSearch() {
       let query = sessionStorage.getItem('query');
       let numResults = sessionStorage.getItem('numResults');
+      let parameters = "searchQuery=" + query + "&numResults=" + numResults;
       let xhttp = new XMLHttpRequest();
-      xhttp.open('GET', "http://localhost:8080/search", true);
+      xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
       xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
       xhttp.onreadystatechange = function() {
-        console.log(this.responseText);
+        JSONObj = JSON.parse(this.responseText);
+        loadCollage();
+        loadRestaurants();
+        loadRecipes();
       }
-      xhttp.send("searchQuery=" + query + "&numResults=" + numResults);
-
+      xhttp.send();
     }
 
     function loadCollage() {
@@ -313,9 +112,69 @@
       }
     }
 
+    function loadRestaurants() {
+      let restaurantsDiv = document.getElementById('restaurants');
+      for (let idx in JSONObj.restaurants) {
+        let newCard = document.createElement('div');
+        if(idx%2 === 0) {
+          newCard.className = "card text-white bg-secondary mb-3";
+        } else {
+          newCard.className = "card text-white bg-dark mb-3"
+        }
+        let newCardBody = document.createElement('div');
+        newCardBody.className = "card-body";
+        let newRow = document.createElement('div');
+        newRow.className = "row";
+        let newNameCol = document.createElement('div');
+        newNameCol.className = "col-5";
+        let newRatingCol = document.createElement('div');
+        newRatingCol.className = "col-5";
+        let newPriceCol = document.createElement('div');
+        newPriceCol.className = "col-2";
+
+        let restaurantName = document.createElement('h5');
+        let restaurantDistance = document.createElement('h6');
+        restaurantName.className = "card-title";
+        restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
+        restaurantDistance.innerHTML = JSONObj.restaurants[idx]['drivingTime'] + " mins";
+        newNameCol.appendChild(restaurantName);
+        newNameCol.appendChild(restaurantDistance);
+
+        let restaurantRating = document.createElement('h5');
+        let restaurantAddress = document.createElement('h6');
+        restaurantRating.clasName = "card-title";
+        let restaurantRatingValue = JSONObj.restaurants[idx]['rating'];
+        restaurantRating.innerHTML = restaurantRatingValue + `<i class="fas fa-star"></i>`;
+        restaurantAddress.innerHTML = JSONObj.restaurants[idx]['address'];
+        newRatingCol.appendChild(restaurantRating);
+        newRatingCol.appendChild(restaurantAddress);
+
+        let restaurantPrice = document.createElement('h6');
+        restaurantPrice.className = "card-title";
+        let restaurantPriceLevel = JSONObj.restaurants[idx]['priceLevel'];
+        restaurantPrice.innerHTML = restaurantPriceLevel + `<i class="fas fa-dollar-sign"></i>`;
+        newPriceCol.appendChild(restaurantPrice);
+
+        newRow.appendChild(newNameCol);
+        newRow.appendChild(newRatingCol);
+        newRow.appendChild(newPriceCol);
+
+        newCardBody.appendChild(newRow);
+        newCard.appendChild(newCardBody);
+        newCard.onclick = function() {
+          let currentItem = JSONObj.restaurants[idx];
+          console.log(currentItem);
+          sessionStorage.setItem('currentItem', currentItem);
+          location.href = "restaurant.html";
+        }
+
+        restaurantsDiv.appendChild(newCard);
+      }
+    }
+
     function loadRecipes() {
       let recipesDiv = document.getElementById('recipes');
-      for (let idx in testJSON.recipes) {
+      for (let idx in JSONObj.recipes) {
         let newCard = document.createElement('div');
         if(idx%2 === 0) {
           newCard.className = "card text-white bg-secondary mb-3";
@@ -334,17 +193,17 @@
         let recipeName = document.createElement('h5');
         let recipePrepTime = document.createElement('h6');
         recipeName.className = "card-title";
-        recipeName.innerHTML = testJSON.recipes[idx]['name'];
-        recipePrepTime.innerHTML = testJSON.recipes[idx]['prepTime'] + " mins";
+        recipeName.innerHTML = JSONObj.recipes[idx]['name'];
+        recipePrepTime.innerHTML = JSONObj.recipes[idx]['prepTime'] + " mins";
         newNameCol.appendChild(recipeName);
         newNameCol.appendChild(recipePrepTime);
 
         let recipeRating = document.createElement('h5');
         let recipeCookTime = document.createElement('h6');
         recipeRating.clasName = "card-title";
-        let recipeRatingValue = (testJSON.recipes[idx]['rating']/100)*5;
+        let recipeRatingValue = (JSONObj.recipes[idx]['rating']/100)*5;
         recipeRating.innerHTML = recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
-        recipeCookTime.innerHTML = testJSON.recipes[idx]['cookTime'] + " mins";
+        recipeCookTime.innerHTML = JSONObj.recipes[idx]['cookTime'] + " mins";
         newRatingCol.appendChild(recipeRating);
         newRatingCol.appendChild(recipeCookTime);
 
@@ -353,6 +212,12 @@
 
         newCardBody.appendChild(newRow);
         newCard.appendChild(newCardBody);
+        newCard.onclick = function() {
+          let currentItem = JSONObj.recipes[idx];
+          console.log(currentItem);
+          sessionStorage.setItem('currentItem', currentItem);
+          location.href = "recipe.html";
+        }
 
         recipesDiv.appendChild(newCard);
       }
