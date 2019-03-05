@@ -50,17 +50,20 @@ public class Controller {
 
 
 	@RequestMapping("/test")
+	@CrossOrigin
 	public String handleTestRequest() {
 		return "Look's like you're up and running!";
 	}
 
 	@RequestMapping("/testCollage")
+	@CrossOrigin
     public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
         ArrayList<String> imageURLs = createCollage(searchQuery);
         return imageURLs.toString();
     }
 
 	@RequestMapping("/testRestaurant")
+	@CrossOrigin
 	public void handleTestRecipeRestaurant() {
 		try {
 			retrieveRestaurants("test", 25);
@@ -69,6 +72,41 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping("/testAddToList")
+	@CrossOrigin
+	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
+		ListManager m = new ListManager();
+		
+		// quick test of add to list
+		m.addToList(new Result(uniqueId), targetList);
+		ArrayList<Result> favorites = m.getFavorites();
+		if (favorites.get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
+		} else {
+			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
+		}
+		// move Result from one list to another
+		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
+		if (favorites.size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from favorites");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
+		}
+		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
+		}
+		// remove Result from toExplore
+		m.removeFromList(uniqueId, "toExplore");
+		if (m.getToExplore().size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from toExplore");
+		}
+		
+	}
+	
+	
 
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
@@ -88,6 +126,7 @@ public class Controller {
 
 	@CrossOrigin
 	@RequestMapping("/search")
+	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
@@ -130,7 +169,8 @@ public class Controller {
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
-	@RequestMapping("/addItemToFavorites")
+	@RequestMapping("/addItemToFavorites") 
+	@CrossOrigin
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
 		listManager.addToList(tempResult, "favorites");
@@ -141,6 +181,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/addToList")
+	@CrossOrigin
 	public String handleAddToList(@RequestParam String itemToAdd, @RequestParam String targetListName) {
 		Result temp = new Result("1");
 		listManager.addToList(temp, targetListName);
@@ -149,6 +190,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/removeFromList")
+	@CrossOrigin
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
 		listManager.removeFromList(itemToRemoveId, originListName);
 		return "Removed item:" + itemToRemoveId + " from list: " + originListName;
@@ -156,6 +198,7 @@ public class Controller {
 
 	// TODO: Need to write this.
 	@RequestMapping("/moveBetweenLists")
+	@CrossOrigin
 	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
 		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
 		return "Moved item:" + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
@@ -334,12 +377,10 @@ public class Controller {
 	    }
 		return res;
 	}
-
-
-	// TOOD: Need to write this.
+	
+	// TODO: Need to write this. 
 	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		searchQuery = "asian"; // hard coded for now; TODO: remove this line
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 
 		String res = callAPI(placesRequestURL);
@@ -453,23 +494,20 @@ public class Controller {
 
 	}
 
-
-	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage.
-	// NOTE: instead of creating collage on backend, ArrayList containing thumbnail links
-	// will be passed to the frontend
+	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
 	public ArrayList<String> createCollage(String searchQuery) {
-		// TODO: Pull restaurants from external API and grab relevant information.
-
-		// TODO: HOW MANY PICTURES DO WE WANT IN THE COLLAGE?
-
-		// TODO: Do we want a data structure to hold the data for queries?
+    
 		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 		final String cx = "001349756157526882706%3An5pmkqrjpfc";
 		final String searchType = "image";
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
+		// constructs requestUrl with function call
+
 		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
+		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
+		// extracts thumbnail links from JSON, puts in ArrayList
 		ArrayList<String> thumbnailLinks = getThumbnailLinks(jsonResponse);
 
 		return thumbnailLinks;
@@ -495,12 +533,10 @@ public class Controller {
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
 				StringBuffer response = new StringBuffer();
-
 				while ((inputLine = in.readLine()) != null) {
 					response.append(inputLine);
 				}
 				in.close();
-
 				// print result
 				System.out.println(response.toString());
 				// returns the formatted json
@@ -513,10 +549,12 @@ public class Controller {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		// request did not work because an exception was thrown
 		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
+	@SuppressWarnings("unchecked")
 	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
 		ArrayList<String> thumbnailLinks = new ArrayList<String>();
 		JSONParser parser = new JSONParser();
@@ -533,7 +571,6 @@ public class Controller {
 			}
 			// adds thumbnail links to thumbnailLinks array
 			Iterator<Object> iterator =  results.iterator();
-			// TODO: CHANGE TO AMOUNT OF PICTURES NEEDED IN COLLAGE
 			for(int i=0; i<10; i++) {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
