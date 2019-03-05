@@ -151,12 +151,9 @@ public class Controller {
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
-<<<<<<< HEAD
+
 	@RequestMapping("/addItemToFavorites") 
 	@CrossOrigin
-=======
-	@RequestMapping("/addItemToFavorites")
->>>>>>> f8ad1a509574b5fe5685750b37ce8adeb9642dc0
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
 		listManager.addToList(tempResult, "favorites");
