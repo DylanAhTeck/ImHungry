@@ -6,11 +6,9 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
-// import com.mashape.unirest.http.JsonNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -116,7 +114,7 @@ public class Controller {
 		r.setSourceURL("http://localhost:1000");
 		r.setPrepTime(40);
 		r.setInstructions(instructions);
-		r.setNumStars(2);
+		r.setRating(2);
 
 		r.setCookTime(20);
 
@@ -174,8 +172,6 @@ public class Controller {
     		JsonNode resultsNode = root.path("results");
 
 
-
-
     		for (JsonNode result : resultsNode) {
     			// identify the sourceURL, use it to construct the recipes and set the unique id the uniqueID
 				Recipe r = new Recipe(result.get("id").toString());
@@ -186,12 +182,54 @@ public class Controller {
 
     		// now that we have all the recipes and their IDs, we need to go get the individual info for them....
 
+    		for (Recipe recipe : recipes) {
+    			System.out.println("retrieving information for recipe id: " + recipe.getUniqueId());
+    			response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeID}/information")
+					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
+					.routeParam("recipeID", recipe.getUniqueId())
+					.asJson();
 
 
+				allDataString = response.getBody().toString();
+				root = mapper.readTree(allDataString);
+
+				recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));
+
+				recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));
+
+				// if these fields exist, adjust them.
+				if (root.get("preparationMinutes") != null) {
+					recipe.setPrepTime(Integer.parseInt(root.get("preparationMinutes").toString()));
+					recipe.setCookTime(Integer.parseInt(root.get("cookingMinutes").toString()));
+				}
 
 
+				// let's grab the ingredients first...
+				ArrayList<String> ingredients = new ArrayList<String>();
+				ArrayList<String> instructions = new ArrayList<String>();
 
+				JsonNode ingredientsNode = root.path("extendedIngredients");
+				for (JsonNode ingredient : ingredientsNode) {
+					ingredients.add(ingredient.get("originalString").toString());
 
+				}
+				recipe.setIngredients(ingredients);
+
+				// if there's an "analyzedInstructions" section, use it...
+				JsonNode analyzedInstructionsNode = root.path("analyzedInstructions");
+				if (analyzedInstructionsNode != null) {
+					JsonNode stepsNode = analyzedInstructionsNode.path(0).path("steps");
+
+					for (JsonNode step : stepsNode) {
+						instructions.add(step.get("step").toString());
+					}
+					recipe.setInstructions(instructions);
+				}
+				else {
+					instructions.add(root.get("instructions").toString());
+				}
+
+    		}
 
     		return root.toString() + mapper.writeValueAsString(recipes);
 

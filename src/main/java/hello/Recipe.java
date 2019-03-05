@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Recipe extends Result {
 	private String name;
-	private double numStars; // number of stars out of 5
+	private double rating; // number of stars out of 5
 	private double prepTime; // in mins
 	private double cookTime;
 	private ArrayList<String> ingredients; // by line, including quantity and item name
@@ -43,12 +43,12 @@ public class Recipe extends Result {
 		this.name = name;
 	}
 
-	public double getNumStars() {
-		return numStars;
+	public double getRating() {
+		return rating;
 	}
 
-	public void setNumStars(double numStars) {
-		this.numStars = numStars;
+	public void setRating(double rating) {
+		this.rating = rating;
 	}
 
 	public double getPrepTime() {
