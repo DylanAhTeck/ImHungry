@@ -51,7 +51,21 @@ public class Controller {
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
-		return "Thanks for searching!";
+		if (searchQuery.equals("null")) {
+			return "Thanks for searching!";
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.createObjectNode();
+		
+		ArrayList<Result> restaurants = retrieveRestaurants(searchQuery, numResults);
+		ArrayList<Result> recipes = retrieveRecipes(searachQuery, numResults);
+
+		rootNode.put("recipes", mapper.writeValueAsString(recipes));
+		rootNode.put("restaurants", mapper.writeValueAsString(restaurants));
+		rootNode.put("imageUrls", "[]");
+		
+		return mapper.writeValueAsString(rootNode);
 
 	}
 
@@ -133,27 +147,11 @@ public class Controller {
 		return new ArrayList<Result>();
 	}
 
-	// TODO: Need to write this.
-	// TODO: this will need to return an ArrayList<Result> when it's done
-	public String retrieveRecipes(String searchQuery, Integer numResults) {
-		// TODO: Pull recipes from external API and grab relevant information.
-
-
-		/* need these pieces of information
-
-			name
-			rating
-			image
-			prepTime
-			cookTime
-			ingredients
-			instructions
-
-		*/
+	// Retrieve recipes from Spoonacular API, parse relevant JSON, and return list of recipe results
+	public ArrayList<Result> retrieveRecipes(String searchQuery, Integer numResults) {
 
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-
 
 		try {
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
@@ -230,10 +228,7 @@ public class Controller {
 
     		}
 
-    		return mapper.writeValueAsString(recipes);
-
-
-    		// Now that I have all the recipes, I should return them as some sort of JSON object...
+    		return recipes;
 
 
 		} catch (UnirestException e) {
@@ -243,7 +238,6 @@ public class Controller {
 		}
 
 		return "failure";
-
 
 	}
 
