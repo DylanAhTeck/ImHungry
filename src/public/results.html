@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./assets/css/results.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <title>I'm Hungry</title>
+  </head>
+  <body>
+    <section>
+      <div class="container">
+        <div class="content-wrapper">
+          <div class="header-wrapper">
+            <div id="collage"></div>
+            <div class="controls">
+              <div class="input-group">
+                <select class="custom-select" id="list-select">
+                  <option selected>Choose List...</option>
+                  <option value="toExplore">To Explore</option>
+                  <option value="favorites">Favorites</option>
+                  <option value="doNotShow">Do Not Show</option>
+                </select>
+                <button id="manage-list" type="button" class="btn btn-secondary">
+                  Manage List
+                </button>
+                <a href="search.html">
+                  <button type="button" class="btn btn-secondary">
+                    Back to Search
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="reults-wrapper text-center">
+            <h1>Results For: <span id="query"></spam> </h1>
+            <div class="row">
+              <div id="restaurants" class="col">
+                <h3>Restaurants</h3>
+              </div>
+
+              <div id="recipes" class="col">
+                <h3>Recipes</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+  <script type="text/javascript">
+
+    let JSONObj = {
+      "recipes": []
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      let query = sessionStorage.getItem('query');
+      document.getElementById('query').innerHTML = capitalizeFirstLetter(query);
+      processSearch();
+    });
+
+    document.getElementById('manage-list').onclick = function() {
+      let listName = document.getElementById('list-select').value;
+      console.log("Manage List: ", listName)
+    }
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function processSearch() {
+      let query = sessionStorage.getItem('query');
+      let numResults = sessionStorage.getItem('numResults');
+      let parameters = "searchQuery=" + query + "&numResults=" + numResults;
+      let xhttp = new XMLHttpRequest();
+      xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
+      xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
+      xhttp.onreadystatechange = function() {
+        JSONObj = JSON.parse(this.responseText);
+        loadCollage();
+        loadRestaurants();
+        loadRecipes();
+      }
+      xhttp.send();
+    }
+
+    function loadCollage() {
+      let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      let viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+      for(let i=0; i<10; i++) {
+        let img = new Image();
+        let div = document.getElementById('collage');
+        let rotation = 90*Math.random()-45;
+
+        img.style.maxWidth = 0.1*0.6*viewportWidth+'px';
+        img.style.minWidth = 0.1*0.4*viewportWidth+'px';
+        img.style.height = 'auto';
+        img.style.transform = 'rotate(' + rotation + 'deg)';
+
+        img.src = 'https://pbs.twimg.com/profile_images/1100502735533850624/2S9-lzTL_400x400.png';
+
+        img.onload = function() {
+          div.appendChild(img);
+        };
+      }
+    }
+
+    function loadRestaurants() {
+      let restaurantsDiv = document.getElementById('restaurants');
+      for (let idx in JSONObj.restaurants) {
+        let newCard = document.createElement('div');
+        if(idx%2 === 0) {
+          newCard.className = "card text-white bg-secondary mb-3";
+        } else {
+          newCard.className = "card text-white bg-dark mb-3"
+        }
+        let newCardBody = document.createElement('div');
+        newCardBody.className = "card-body";
+        let newRow = document.createElement('div');
+        newRow.className = "row";
+        let newNameCol = document.createElement('div');
+        newNameCol.className = "col-5";
+        let newRatingCol = document.createElement('div');
+        newRatingCol.className = "col-5";
+        let newPriceCol = document.createElement('div');
+        newPriceCol.className = "col-2";
+
+        let restaurantName = document.createElement('h5');
+        let restaurantDistance = document.createElement('h6');
+        restaurantName.className = "card-title";
+        restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
+        restaurantDistance.innerHTML = JSONObj.restaurants[idx]['drivingTime'] + " mins";
+        newNameCol.appendChild(restaurantName);
+        newNameCol.appendChild(restaurantDistance);
+
+        let restaurantRating = document.createElement('h5');
+        let restaurantAddress = document.createElement('h6');
+        restaurantRating.clasName = "card-title";
+        let restaurantRatingValue = JSONObj.restaurants[idx]['rating'];
+        restaurantRating.innerHTML = restaurantRatingValue + `<i class="fas fa-star"></i>`;
+        restaurantAddress.innerHTML = JSONObj.restaurants[idx]['address'];
+        newRatingCol.appendChild(restaurantRating);
+        newRatingCol.appendChild(restaurantAddress);
+
+        let restaurantPrice = document.createElement('h6');
+        restaurantPrice.className = "card-title";
+        let restaurantPriceLevel = JSONObj.restaurants[idx]['priceLevel'];
+        restaurantPrice.innerHTML = restaurantPriceLevel + `<i class="fas fa-dollar-sign"></i>`;
+        newPriceCol.appendChild(restaurantPrice);
+
+        newRow.appendChild(newNameCol);
+        newRow.appendChild(newRatingCol);
+        newRow.appendChild(newPriceCol);
+
+        newCardBody.appendChild(newRow);
+        newCard.appendChild(newCardBody);
+        newCard.onclick = function() {
+          let currentItem = JSONObj.restaurants[idx];
+          console.log(currentItem);
+          sessionStorage.setItem('currentItem', currentItem);
+          location.href = "restaurant.html";
+        }
+
+        restaurantsDiv.appendChild(newCard);
+      }
+    }
+
+    function loadRecipes() {
+      let recipesDiv = document.getElementById('recipes');
+      for (let idx in JSONObj.recipes) {
+        let newCard = document.createElement('div');
+        if(idx%2 === 0) {
+          newCard.className = "card text-white bg-secondary mb-3";
+        } else {
+          newCard.className = "card text-white bg-dark mb-3"
+        }
+        let newCardBody = document.createElement('div');
+        newCardBody.className = "card-body";
+        let newRow = document.createElement('div');
+        newRow.className = "row";
+        let newNameCol = document.createElement('div');
+        newNameCol.className = "col";
+        let newRatingCol = document.createElement('div');
+        newRatingCol.className = "col";
+
+        let recipeName = document.createElement('h5');
+        let recipePrepTime = document.createElement('h6');
+        recipeName.className = "card-title";
+        recipeName.innerHTML = JSONObj.recipes[idx]['name'];
+        recipePrepTime.innerHTML = JSONObj.recipes[idx]['prepTime'] + " mins";
+        newNameCol.appendChild(recipeName);
+        newNameCol.appendChild(recipePrepTime);
+
+        let recipeRating = document.createElement('h5');
+        let recipeCookTime = document.createElement('h6');
+        recipeRating.clasName = "card-title";
+        let recipeRatingValue = (JSONObj.recipes[idx]['rating']/100)*5;
+        recipeRating.innerHTML = recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
+        recipeCookTime.innerHTML = JSONObj.recipes[idx]['cookTime'] + " mins";
+        newRatingCol.appendChild(recipeRating);
+        newRatingCol.appendChild(recipeCookTime);
+
+        newRow.appendChild(newNameCol);
+        newRow.appendChild(newRatingCol);
+
+        newCardBody.appendChild(newRow);
+        newCard.appendChild(newCardBody);
+        newCard.onclick = function() {
+          let currentItem = JSONObj.recipes[idx];
+          console.log(currentItem);
+          sessionStorage.setItem('currentItem', currentItem);
+          location.href = "recipe.html";
+        }
+
+        recipesDiv.appendChild(newCard);
+      }
+    }
+  </script>
+  <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
+</html>
