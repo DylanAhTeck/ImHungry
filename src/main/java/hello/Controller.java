@@ -11,6 +11,17 @@ import com.mashape.unirest.http.HttpResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +47,16 @@ public class Controller {
 	@RequestMapping("/test")
 	public String handleTestRequest() {
 		return "Look's like you're up and running!";
+	}
+	
+	@RequestMapping("/testRestaurant")
+	public void handleTestRecipeRestaurant() {
+		try {
+			retrieveRestaurants("test", 5);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@RequestMapping("/testRecipe")
@@ -159,11 +180,105 @@ public class Controller {
 		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
 		return new Result("placholder");
 	}
+  
+	//API call / get request
+	private String callAPI(String url) throws MalformedURLException, IOException {
 
-	// TODO: Need to write this.
-	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) {
+	      URL uurl = new URL(url);
+	      HttpURLConnection conn = (HttpURLConnection) uurl.openConnection();
+	      conn.setRequestMethod("GET");
+	      BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	      String line;
+	      StringBuilder result = new StringBuilder();
+	      
+	      while ((line = rd.readLine()) != null) {
+	         result.append(line);
+	      }
+	      rd.close();
+	      return result.toString();
+	}
+	
+	//Google distance matrix API
+	private String getDuration(String place_id) throws MalformedURLException, IOException {
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyB9ygmPGReQW95GCkHazFsVPZBDI3MJoc0";
+		String res = callAPI(distanceRequestURL);
+		JSONObject json = new JSONObject(res);
+		JSONArray rows = json.getJSONArray("rows");
+		JSONObject temp = (JSONObject) rows.get(0);
+		JSONArray element = temp.getJSONArray("elements");
+		
+		JSONObject elements = (JSONObject) element.get(0);
+
+		JSONObject duration = elements.getJSONObject("duration");
+
+		return duration.getString("text");
+	}
+	  
+	
+	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		String res = callAPI(placesDetailURL);
+		JSONObject json = new JSONObject(res);
+		JSONObject result = json.getJSONObject("result");
+		String address = result.getString("formatted_address");
+		String phone = result.getString("formatted_phone_number");
+		String website = result.getString("website");
+		return new String[]{address, phone, website};
+	}
+	
+	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
+		ArrayList<Result> res = new ArrayList<Result>();
+		
+		JSONArray results = json.getJSONArray("results");
+	    
+	    //to avoid out of bound error
+	    int size = Math.min(numResults, results.length());
+	    
+	    for(int i = 0 ; i < size && i < results.length(); i++) {
+	    	JSONObject dataObj = (JSONObject) results.get(i);
+	    	String place_id = dataObj.getString("place_id");
+	    	String name = dataObj.getString("name");
+	    	double rating = dataObj.getDouble("rating");
+	    	int priceLevel = 0;
+	    	//API does not always provide price level info
+	    	if(dataObj.has("price_level")){
+	    		priceLevel = dataObj.getInt("price_level");
+	    		String drivingTime = getDuration(place_id);
+	    		String address = placesDetail(place_id)[0];
+	    		String phone = placesDetail(place_id)[1];
+	    		String website = placesDetail(place_id)[2];
+	    		
+		    	Restaurant restaurant = new Restaurant(place_id);
+		    	restaurant.setName(name);
+		    	restaurant.setAddress(address);
+		    	restaurant.setDrivingTime(drivingTime);
+		    	restaurant.setPhoneNumber(phone);
+		    	restaurant.setPlaceId(place_id);
+		    	restaurant.setPriceLevel(priceLevel);
+		    	restaurant.setRating(rating);
+		    	restaurant.setWebsite(website);
+		    	restaurant.writeToJSON();
+		    	res.add(restaurant); 	
+		    	System.out.println(restaurant);
+	    	} else {
+	    	    size++;
+	    	}	    	
+	    }		
+		return res;
+	}
+	
+	
+	// TOOD: Need to write this. 
+	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		return new ArrayList<Result>();
+		searchQuery = "burger"; // hard coded for now; TODO: remove this line
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		
+		String res = callAPI(placesRequestURL);
+		
+		JSONObject json = new JSONObject(res);
+	    
+		return parseJSON(json, numResults);
 	}
 
 	// Retrieve recipes from Spoonacular API, parse relevant JSON, and return list of recipe results

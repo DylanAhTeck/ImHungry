@@ -33,8 +33,6 @@
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>
         </dependency>
-
-
         <dependency>
           <groupId>org.apache.httpcomponents</groupId>
           <artifactId>httpclient</artifactId>
@@ -69,15 +67,19 @@
                 <scope>test</scope>
         </dependency>
         <dependency>
-<<<<<<< HEAD
-=======
-=======
->>>>>>> c7a0446f492e67550c1dc8d7e85a18ec32e8a266
->>>>>>> 1db71256b04fcda063ec64c53458f37d2663ccba
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.9.4</version>
         </dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20180813</version>
+		</dependency>
+         <dependency>
+    		<groupId>com.googlecode.json-simple</groupId>
+    		<artifactId>json-simple</artifactId>
+    		<version>1.1.1</version>
+	</dependency>
     </dependencies>
 
     <properties>
