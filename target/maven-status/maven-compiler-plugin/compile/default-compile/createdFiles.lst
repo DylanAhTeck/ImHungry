@@ -1,15 +1,8 @@
-<<<<<<< HEAD
 hello/ListManager.class
-<<<<<<< HEAD
-<<<<<<< HEAD
 hello/Controller.class
 hello/Application.class
-=======
->>>>>>> updated pom.xml
-=======
 hello/Controller.class
 hello/Application.class
->>>>>>> json stringification of recipes working
 hello/Result.class
-=======
->>>>>>> working on recipe processing
+hello/ListManager.class
+hello/Result.class
