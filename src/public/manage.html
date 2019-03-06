@@ -50,73 +50,12 @@
     </section>
   </body>
   <script type="text/javascript">
-    let JSONObj = {
-      results: [
-        {
-          uniqueId: "938450",
-          name: "Churro Ice Cream Bowls",
-          rating: 35,
-          prepTime: 45,
-          cookTime: 0,
-          ingredients: [
-            "2 Tbsp. brown sugar",
-            "¼ cup butter, cubed",
-            "caramel topping",
-            "Cinnamon sugar",
-            "4 eggs",
-            "1 cup flour",
-            "Hot fudge",
-            "Ice cream",
-            "Oil for frying",
-            "½ tsp salt",
-            "1 tsp vanilla",
-            "1 cup water"
-          ],
-          instructions: [
-            "In a medium saucepan over medium-high heat, add butter, brown sugar, salt, and water, and bring to a boil. As soon as the butter has fully melted and the mixture begins to boil, reduce the heat to medium-low and add in flour. Using a wooden spoon, stir until the dough comes together to form a ball (about 1 minute).",
-            "Remove from heat and let cool for 5 minutes before proceeding to the next step (to prevent accidentally cooking the eggs).",
-            "Mix in the vanilla extract and add in the eggs, one at a time, being sure to fully incorporate each egg before adding the next. Once all the eggs are incorporated, transfer it to a piping bag with a small star tip.Invert a muffin tin and spray thoroughly with nonstick cooking spray. Pipe the dough around the inverted cups in spirals to form the bowls. Immediately transfer the tray to the freezer and freeze until solid (about 3 hours or overnight).",
-            "Heat oil in a deep pot to 350F (175C).",
-            "Remove the muffin tin from the freezer and flex it to release the churro bowls (you may need to also use a small knife under the bottom edge to initially release them). Return any extras to the freezer while you wait to fry.Fry them in batches, until nicely browned, no more than 3 at a time. Be sure to carefully tip them into the oil so they sink to the bottom. Once desired color is reached, remove them from the oil to a paper towellined plate. Dab off any excess oil then roll them in cinnamon sugar. Fill with your favorite ice cream and toppings. Enjoy!"
-          ],
-          sourceURL:
-            "https://www.buzzfeed.com/scottloitsch/churro-me-everywhere",
-          imageURL:
-            "https://spoonacular.com/recipeImages/churro-ice-cream-bowls-938450.jpg",
-          type: "recipe"
-        },
-        {
-          uniqueId: "ChIJG246_QnIwoARCsqWTxcbTaI",
-          name: "Cold Stone Creamery",
-          rating: 4.1,
-          drivingTime: "12 mins",
-          phoneNumber: "(213) 747-2744",
-          address: "3730 S Figueroa St, Los Angeles, CA 90007, USA",
-          website: "http://www.coldstonecreamery.com/stores/21589",
-          priceLevel: 2,
-          placeId: "ChIJG246_QnIwoARCsqWTxcbTaI",
-          type: "restaurant"
-        },
-        {
-          uniqueId: "ChIJRaFUkUrGwoAR01cDqj7McuQ",
-          name: "Gelateria Uli",
-          rating: 4.7,
-          drivingTime: "19 mins",
-          phoneNumber: "(213) 537-0931",
-          address: "541 S Spring St #104, Los Angeles, CA 90013, USA",
-          website: "http://www.gelateriauli.com/",
-          priceLevel: 1,
-          placeId: "ChIJRaFUkUrGwoAR01cDqj7McuQ",
-          type: "restaurant"
-        }
-      ]
-    };
+    let JSONObj = {};
 
     document.addEventListener("DOMContentLoaded", function() {
       let listName = sessionStorage.getItem("listName");
       document.getElementById("list-name-title").innerHTML = listName;
-      // retrieveList();
-      populateList();
+      retrieveList();
     });
 
     function retrieveList() {
@@ -128,8 +67,12 @@
       xhttp.open("GET", "http://localhost:8080/getList?" + parameters, true);
       xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhttp.onreadystatechange = function() {
-        JSONObj = JSON.parse(this.responseText);
-        populateList();
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          if (xhttp.responseText) {
+            JSONObj = JSON.parse(this.responseText);
+            populateList();
+          }
+        }
       };
       xhttp.send();
     }
@@ -148,8 +91,11 @@
 
     function populateList() {
       // Populate list using returned results
-      for (let idx in JSONObj.results) {
-        if (JSONObj.results[idx]["type"] === "restaurant") {
+      let listNameParameter = getListNameParameter(
+        sessionStorage.getItem("listName")
+      );
+      for (let idx in JSONObj[listNameParameter]) {
+        if (JSONObj[listNameParameter][idx]["type"] === "restaurant") {
           addRestaurantCard(idx);
         } else {
           addRecipeCard(idx);
@@ -158,6 +104,9 @@
     }
 
     function addRestaurantCard(idx) {
+      let listNameParameter = getListNameParameter(
+        sessionStorage.getItem("listName")
+      );
       let resultsList = document.getElementById("results-list");
       let newRow = document.createElement("div");
       newRow.className = "row";
@@ -186,9 +135,10 @@
       restaurantNameCol.className = "col-5";
       let restaurantName = document.createElement("h5");
       restaurantName.className = "card-title";
-      restaurantName.innerHTML = JSONObj.results[idx].name;
+      restaurantName.innerHTML = JSONObj[listNameParameter][idx].name;
       let restaurantDrivingTime = document.createElement("h6");
-      restaurantDrivingTime.innerHTML = JSONObj.results[idx].drivingTime;
+      restaurantDrivingTime.innerHTML =
+        JSONObj[listNameParameter][idx].drivingTime;
       restaurantNameCol.appendChild(restaurantName);
       restaurantNameCol.appendChild(restaurantDrivingTime);
 
@@ -196,11 +146,11 @@
       restaurantRatingCol.className = "col-5";
       let restaurantRating = document.createElement("div");
       restaurantRating.className = "stars card-title";
-      restaurantRatingValue = JSONObj.results[idx].rating;
+      restaurantRatingValue = JSONObj[listNameParameter][idx].rating;
       restaurantRating.innerHTML =
         restaurantRatingValue + `<i class="fas fa-star" />`;
       let restaurantAddress = document.createElement("h6");
-      restaurantAddress.innerHTML = JSONObj.results[idx].address;
+      restaurantAddress.innerHTML = JSONObj[listNameParameter][idx].address;
       restaurantRatingCol.appendChild(restaurantRating);
       restaurantRatingCol.append(restaurantAddress);
 
@@ -208,7 +158,8 @@
       restaurantPriceCol.className = "col-2";
       let restaurantPriceLevel = document.createElement("h6");
       restaurantPriceLevel.className = "card-title";
-      let restaurantPriceLevelValue = JSONObj.results[idx].priceLevel;
+      let restaurantPriceLevelValue =
+        JSONObj[listNameParameter][idx].priceLevel;
       let priceString = "";
       for (let i = 0; i < restaurantPriceLevelValue; i++) {
         priceString += `<i class="fas fa-dollar-sign"></i>`;
@@ -231,6 +182,9 @@
     }
 
     function addRecipeCard(idx) {
+      let listNameParameter = getListNameParameter(
+        sessionStorage.getItem("listName")
+      );
       let resultsList = document.getElementById("results-list");
       let newRow = document.createElement("div");
       newRow.className = "row";
@@ -259,9 +213,10 @@
       recipeNameCol.className = "col";
       let recipeName = document.createElement("h5");
       recipeName.className = "card-title";
-      recipeName.innerHTML = JSONObj.results[idx].name;
+      recipeName.innerHTML = JSONObj[listNameParameter][idx].name;
       let recipePrepTime = document.createElement("h6");
-      recipePrepTime.innerHTML = JSONObj.results[idx].prepTime + " mins";
+      recipePrepTime.innerHTML =
+        JSONObj[listNameParameter][idx].prepTime + " mins";
       recipeNameCol.appendChild(recipeName);
       recipeNameCol.appendChild(recipePrepTime);
 
@@ -269,11 +224,12 @@
       recipeRatingCol.className = "col";
       let recipeRating = document.createElement("div");
       recipeRating.className = "stars card-title";
-      recipeRatingValue = (JSONObj.results[idx].rating / 100) * 5;
+      recipeRatingValue = (JSONObj[listNameParameter][idx].rating / 100) * 5;
       recipeRating.innerHTML =
         recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
       let recipeCookTime = document.createElement("h6");
-      recipeCookTime.innerHTML = JSONObj.results[idx].cookTime + " mins";
+      recipeCookTime.innerHTML =
+        JSONObj[listNameParameter][idx].cookTime + " mins";
       recipeRatingCol.appendChild(recipeRating);
       recipeRatingCol.append(recipeCookTime);
 
