@@ -210,14 +210,58 @@ public class Controller {
 		return "favorites: " + favoritesString;
 	}
 
-
 	// TODO: Need to write this.
 	@RequestMapping("/addToList")
 	@CrossOrigin
-	public String handleAddToList(@RequestParam String itemToAdd, @RequestParam String targetListName) {
-		Result temp = new Result("1");
-		listManager.addToList(temp, targetListName);
-		return "Added item:" + temp.getUniqueId() + " to list: " + targetListName;
+	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String originListName) {
+		// check for missing parameters
+		if (itemToAddId == null) {
+			return "uniqueId == null";
+		} else if (itemToAddId.equals("")) {
+			return "No uniqueId provided";
+		}
+		if (originListName == null) {
+			return "targetListName == null";
+		}
+		else if (originListName.equals("")) {
+			return "No targetListName provided";
+		}
+		
+		Result toAdd = null;
+		// allows to skip searching second list if result is found in first list
+		boolean foundItem = false;
+		// search mostRecentRecipes for uniqueId
+		for (int i=0; i<mostRecentRecipes.size(); i++) {
+			// current element uniqueId matches uniqueId searching for
+			if (mostRecentRecipes.get(i).getUniqueId().equals(itemToAddId)) {
+				// change value of toAdd to corresponding result
+				toAdd = mostRecentRecipes.get(i);
+				foundItem = true;
+				break;
+			}
+		}
+		// couldn't find result in Recipes List
+		if (!foundItem) {
+			// search mostRecentRestaurants for uniqueId
+			for (int i=0; i<mostRecentRestaurants.size(); i++) {
+				// current element uniqueId matches uniqueId searching for
+				if (mostRecentRestaurants.get(i).getUniqueId().equals(itemToAddId)) {
+					toAdd = mostRecentRestaurants.get(i);
+					foundItem = true;
+				}
+			}
+		}
+		// couldn't find result in Restaurants or Recipes
+		if (!foundItem) {
+			return "Couldn't find uniqueId";
+		}
+		
+		boolean addSuccessful = listManager.addToList(toAdd, originListName);
+		if (addSuccessful) {
+			return "Added item: " + toAdd.getUniqueId() + " to list: " + originListName;
+		} else {
+			return "Failure adding: " + toAdd.getUniqueId() + " to list: " + originListName + " (likely invalid targetListName)";
+		}
 	}
 
 	// TODO: Need to write this.
@@ -225,7 +269,7 @@ public class Controller {
 	@CrossOrigin
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
 		listManager.removeFromList(itemToRemoveId, originListName);
-		return "Removed item:" + itemToRemoveId + " from list: " + originListName;
+		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
 	// TODO: Need to write this.
