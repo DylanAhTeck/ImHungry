@@ -3,6 +3,7 @@ package hello;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -504,8 +505,17 @@ public class Controller {
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
 		// constructs requestUrl with function call
-
-		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
+		
+		String encodeQuery = "";
+		
+		try {
+			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String requestUrl = constructRequest(GET_URL, encodeQuery, cx, searchType, key);
 		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
 		// extracts thumbnail links from JSON, puts in ArrayList
