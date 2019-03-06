@@ -315,7 +315,7 @@ public class Controller {
 
 	public Result getResult(String uniqueId) {
 		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
-		return new Result("placholder");
+		for (int i = 0; i < )
 	}
 
 	//API call / get request
