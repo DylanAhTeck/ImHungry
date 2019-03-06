@@ -452,7 +452,7 @@ public class Controller {
 	}
 	
 	
-	// TODO: Need to write this. 
+	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
 	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		
@@ -468,7 +468,7 @@ public class Controller {
 		return parseJSON(json, numResults);
 	}
 
-	// Retrieve recipes from Spoonacular API, parse relevant JSON, and return list of recipe results
+	// Retrieves the first "numResult" number of REcipes from the Spoonacular API and returns them as an ArrayList
 	public ArrayList<Recipe> retrieveRecipes(String searchQuery, Integer numResults) {
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -572,7 +572,7 @@ public class Controller {
 
 	}
 
-	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage.
+	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
 
 		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
@@ -667,7 +667,4 @@ public class Controller {
 		return thumbnailLinks;
 	}
 
-	public String packageResponseString(ArrayList<Result> restaurants, ArrayList<Result> recipes, String collagePath) {
-		return "placeholder";
-	}
 }
