@@ -1,16 +1,5 @@
 package hello;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mashape.unirest.http.HttpResponse;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,6 +17,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 @RestController
 public class Controller {
@@ -46,12 +46,14 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
+
+
 	@RequestMapping("/test")
 	@CrossOrigin
 	public String handleTestRequest() {
 		return "Look's like you're up and running!";
 	}
-	
+
 	@RequestMapping("/testCollage")
 	@CrossOrigin
     public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
@@ -69,12 +71,12 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@RequestMapping("/testAddToList")
 	@CrossOrigin
 	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
 		ListManager m = new ListManager();
-		
+
 		// quick test of add to list
 		m.addToList(new Result(uniqueId), targetList);
 		ArrayList<Result> favorites = m.getFavorites();
@@ -100,10 +102,10 @@ public class Controller {
 		if (m.getToExplore().size() == 0) {
 			System.out.println("<" + uniqueId + "> was removed from toExplore");
 		}
-		
+
 	}
-	
-	
+
+
 
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
@@ -120,7 +122,6 @@ public class Controller {
 		}
 		return "failure";
 	}
-
 
 	@RequestMapping("/search")
 	@CrossOrigin
@@ -143,7 +144,7 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
-		
+
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache" 
 		mostRecentRecipes = recipes;
@@ -157,7 +158,7 @@ public class Controller {
 			((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
 
 			return mapper.writeValueAsString(rootNode);
-			
+
 		} catch (JsonProcessingException e) {
 			System.out.println("json processing exception on creating search response");
 		} catch (IOException e) {
@@ -170,7 +171,7 @@ public class Controller {
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
-	@RequestMapping("/addItemToFavorites") 
+	@RequestMapping("/addItemToFavorites")
 	@CrossOrigin
 	public String addItemToFavorites() {
 		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
@@ -243,7 +244,7 @@ public class Controller {
 		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
 		return new Result("placholder");
 	}
-  
+
 	//API call / get request
 	private String callAPI(String url) throws MalformedURLException, IOException {
 
@@ -253,14 +254,14 @@ public class Controller {
 	      BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 	      String line;
 	      StringBuilder result = new StringBuilder();
-	      
+
 	      while ((line = rd.readLine()) != null) {
 	         result.append(line);
 	      }
 	      rd.close();
 	      return result.toString();
 	}
-	
+
 	//Google distance matrix API
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
 		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyB9ygmPGReQW95GCkHazFsVPZBDI3MJoc0";
@@ -269,15 +270,15 @@ public class Controller {
 		JSONArray rows = json.getJSONArray("rows");
 		JSONObject temp = (JSONObject) rows.get(0);
 		JSONArray element = temp.getJSONArray("elements");
-		
+
 		JSONObject elements = (JSONObject) element.get(0);
 
 		JSONObject duration = elements.getJSONObject("duration");
 
 		return duration.getString("text");
 	}
-	  
-	
+
+
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
 		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		String res = callAPI(placesDetailURL);
@@ -287,12 +288,12 @@ public class Controller {
 		if(result.has("formatted_address")) {
 			address = result.getString("formatted_address");
 		}
-		
+
 		String phone = "unknown";
 		if(result.has("formatted_phone_number")) {
 			phone = result.getString("formatted_phone_number");
 		}
-				
+
 		String website = "unknown";
 		if(result.has("website")) {
 			website = result.getString("website");
@@ -302,9 +303,8 @@ public class Controller {
 	
 	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
-		
 		JSONArray results = json.getJSONArray("results");
-		
+
 		//it takes too long for the API to response
 //	    System.out.println(results.length());
 //		if(json.has("next_page_token") && numResults > 20) {
@@ -322,27 +322,27 @@ public class Controller {
 //		System.out.println(results.length());
 	    //to avoid out of bound error
 	    int size = Math.min(numResults, results.length());
-	    
+
 	    String doNotShow = "", fav = "";
-	    
+
 	    for(Result result: listManager.getdoNotShow()) {
 	    	doNotShow += result.getUniqueId();
 	    }
-	    
+
 	    for(Result result: listManager.getFavorites()) {
 	    	fav += result.getUniqueId();
 	    }
-	    
+
 	    for(int i = 0 ; i < size && i < results.length(); i++) {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
 	    	String place_id = dataObj.getString("place_id");
-	    	
+
 	    	//check for do not show
 	    	if(doNotShow.contains(place_id)) {
 	    		size++;
 	    		continue;
 	    	}
-	    	
+
 	    	String name = dataObj.getString("name");
 	    	double rating = dataObj.getDouble("rating");
 	    	int priceLevel = 0;
@@ -353,7 +353,7 @@ public class Controller {
 	    		String address = placesDetail(place_id)[0];
 	    		String phone = placesDetail(place_id)[1];
 	    		String website = placesDetail(place_id)[2];
-	    		
+
 		    	Restaurant restaurant = new Restaurant(place_id);
 		    	restaurant.setName(name);
 		    	restaurant.setAddress(address);
@@ -370,7 +370,6 @@ public class Controller {
 		    	} else {
 		    		restaurants.add(restaurant); 
 		    	}
-		    		
 		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
@@ -383,13 +382,12 @@ public class Controller {
 	// TODO: Need to write this. 
 	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		searchQuery = "asian"; // hard coded for now; TODO: remove this line
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + searchQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
-		
+
 		String res = callAPI(placesRequestURL);
-		
+
 		JSONObject json = new JSONObject(res);
-	    
+
 		return parseJSON(json, numResults);
 	}
 
@@ -406,12 +404,12 @@ public class Controller {
 					.queryString("number", numResults)
 					.asJson();
 
-			
+
 			String allDataString = response.getBody().toString();
 
 			// convert to a usable jackson JSONNode
     		JsonNode root = mapper.readTree(allDataString);
-    		
+
     		JsonNode resultsNode = root.path("results");
 
 
@@ -439,15 +437,15 @@ public class Controller {
 				root = mapper.readTree(allDataString);
 
 				if (root.get("spoonacularScore") != null) {
-					recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));	
+					recipe.setRating(Integer.parseInt(root.get("spoonacularScore").toString()));
 				}
 
 				if (root.get("sourceUrl") != null) {
-					recipe.setSourceURL(root.get("sourceUrl").toString().replaceAll("\"", ""));	
+					recipe.setSourceURL(root.get("sourceUrl").toString().replaceAll("\"", ""));
 				}
-				
+
 				if (root.get("readyInMinutes") != null) {
-					recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));	
+					recipe.setPrepTime(Integer.parseInt(root.get("readyInMinutes").toString()));
 				}
 
 				// if these fields exist, adjust them.
@@ -497,39 +495,42 @@ public class Controller {
 
 	}
 
-
-	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage. 
+	// should take the searchQuery as a parameter and ArrayList of thumnail links for the collage.
 	public ArrayList<String> createCollage(String searchQuery) {
+
 		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 		final String cx = "001349756157526882706%3An5pmkqrjpfc";
 		final String searchType = "image";
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
+
 		// constructs requestUrl with function call
+
 		String requestUrl = constructRequest(GET_URL, searchQuery, cx, searchType, key);
 		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
 		// extracts thumbnail links from JSON, puts in ArrayList
 		ArrayList<String> thumbnailLinks = getThumbnailLinks(jsonResponse);
-		
+
 		return thumbnailLinks;
 	}
-	
+
 	// creates the GET request for the Google Image Custom Search
 	public String constructRequest(String GET_URL, String searchQuery, String cx, String searchType, String key) {
 		return GET_URL + "q=" + searchQuery + "&cx=" + cx + "&searchType=" + searchType + "&key=" + key;
 	}
-	
+
 	// uses GET request to produce a JSON response for given searchQuery
 	public String getImagesJson(String requestUrl) {
 		try {
-			// creates URL object with previously constructed requestURL (see above) 
+			// creates URL object with previously constructed requestURL (see above)
 			URL obj = new URL(requestUrl);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
-			// response code == 200 means success 
+			// response code == 200 means success
 			int responseCode = con.getResponseCode();
+
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
-				// reads data from response 
+				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String inputLine;
 				StringBuffer response = new StringBuffer();
@@ -539,7 +540,7 @@ public class Controller {
 				in.close();
 				// print result
 				System.out.println(response.toString());
-				// returns the formatted json 
+				// returns the formatted json
 				return response.toString();
 			} else {
 				return "GET request not worked";
@@ -552,7 +553,7 @@ public class Controller {
 		// request did not work because an exception was thrown
 		return "GET request not worked";
 	}
-	
+
 	// extracts thumbnail links from JSON and returns them in ArrayList
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
