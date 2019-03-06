@@ -315,7 +315,19 @@ public class Controller {
 
 	public Result getResult(String uniqueId) {
 		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
-		for (int i = 0; i < )
+		for (Recipe recipe : mostRecentRecipes) {
+			if (recipe.getUniqueId().equals(uniqueId)) {
+				return recipe;
+			}
+		}
+
+		for (Restaurant restaurant : mostRecentRestaurants) {
+			if (restaurant.getUniqueId().equals(uniqueId)) {
+				return restaurant;
+			}
+		}
+
+		else return null;
 	}
 
 	//API call / get request
