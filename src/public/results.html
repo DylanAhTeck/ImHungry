@@ -22,9 +22,9 @@
               <div class="input-group">
                 <select class="custom-select" id="list-select">
                   <option selected>Choose List...</option>
-                  <option value="toExplore">To Explore</option>
-                  <option value="favorites">Favorites</option>
-                  <option value="doNotShow">Do Not Show</option>
+                  <option value="To Explore">To Explore</option>
+                  <option value="Favorites">Favorites</option>
+                  <option value="Do Not Show">Do Not Show</option>
                 </select>
                 <button id="manage-list" type="button" class="btn btn-secondary">
                   Manage List
@@ -67,7 +67,12 @@
 
     document.getElementById('manage-list').onclick = function() {
       let listName = document.getElementById('list-select').value;
-      console.log("Manage List: ", listName)
+      if(listName !== "Choose List..." && listName !== "") {
+        sessionStorage.setItem("listName", listName);
+        location.href = "manage.html";
+      } else {
+        console.log("List not selected.");
+      }
     }
 
     function capitalizeFirstLetter(string) {
@@ -83,6 +88,7 @@
       xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
       xhttp.onreadystatechange = function() {
         JSONObj = JSON.parse(this.responseText);
+        sortJSON(JSONObj);
         loadCollage();
         loadRestaurants();
         loadRecipes();
@@ -90,25 +96,47 @@
       xhttp.send();
     }
 
+    function sortJSON(jsonObj) {
+      // Sort restaurants
+      jsonObj.restaurants.sort(function(a, b){
+        let drivingTimeA = Number(a.drivingTime.slice(0, -5));
+        let drivingTimeB = Number(b.drivingTime.slice(0, -5));
+        if(drivingTimeA < drivingTimeB) return -1;
+        if(drivingTimeA > drivingTimeB) return 1;
+        return 0;
+      });
+
+      // Sort recipes
+      jsonObj.recipes.sort(function(a,b) {
+        let prepTimeA = Number(a.prepTime);
+        let prepTimeB = Number(b.prepTime);
+        if(prepTimeA < prepTimeB) return -1;
+        if(prepTimeA > prepTimeB) return 1;
+        return 0;
+      });
+    }
+
     function loadCollage() {
       let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       let viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-      for(let i=0; i<10; i++) {
+      // Generate collage
+      let imageUrls = JSONObj.imageUrls;
+      for(let imageURL of imageUrls) {
         let img = new Image();
-        let div = document.getElementById('collage');
-        let rotation = 90*Math.random()-45;
+        let div = document.getElementById("collage");
+        let rotation = 90*Math.random() - 45;
 
         img.style.maxWidth = 0.1*0.6*viewportWidth+'px';
         img.style.minWidth = 0.1*0.4*viewportWidth+'px';
         img.style.height = 'auto';
         img.style.transform = 'rotate(' + rotation + 'deg)';
 
-        img.src = 'https://pbs.twimg.com/profile_images/1100502735533850624/2S9-lzTL_400x400.png';
+        img.src = imageURL;
 
         img.onload = function() {
           div.appendChild(img);
-        };
+        }
       }
     }
 
