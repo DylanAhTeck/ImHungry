@@ -210,20 +210,19 @@ public class Controller {
 		return "favorites: " + favoritesString;
 	}
 
-	// TODO: Need to write this.
 	@RequestMapping("/addToList")
 	@CrossOrigin
-	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String originListName) {
+	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String targetListName) {
 		// check for missing parameters
 		if (itemToAddId == null) {
 			return "uniqueId == null";
 		} else if (itemToAddId.equals("")) {
 			return "No uniqueId provided";
 		}
-		if (originListName == null) {
+		if (targetListName == null) {
 			return "targetListName == null";
 		}
-		else if (originListName.equals("")) {
+		else if (targetListName.equals("")) {
 			return "No targetListName provided";
 		}
 		
@@ -256,11 +255,11 @@ public class Controller {
 			return "Couldn't find uniqueId";
 		}
 		
-		boolean addSuccessful = listManager.addToList(toAdd, originListName);
+		boolean addSuccessful = listManager.addToList(toAdd, targetListName);
 		if (addSuccessful) {
-			return "Added item: " + toAdd.getUniqueId() + " to list: " + originListName;
+			return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 		} else {
-			return "Failure adding: " + toAdd.getUniqueId() + " to list: " + originListName + " (likely invalid targetListName)";
+			return "Failure adding: " + toAdd.getUniqueId() + " to list: " + targetListName + " (likely invalid targetListName)";
 		}
 	}
 
