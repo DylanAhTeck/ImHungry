@@ -110,11 +110,30 @@ public class Controller {
 		return getTestRecipeString();
 	}
 
+
+	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
+	// a query which has "uniqueId" set to "test" should retrieve this result.
+	@RequestMapping("/testGetResult")
+	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mostRecentRecipes.add(new Recipe("test"));
+
+		String resultString = "";
+		try {
+			resultString = mapper.writeValueAsString(getResult(uniqueId));
+		} catch (JsonProcessingException e) {
+			System.out.println(e);
+		}
+
+		return resultString;
+	}
+
+	// returns the JSON of the result object if it exists, null otherwise
 	@RequestMapping("/getResult")
 	public String handleGetResult(@RequestParam(defaultValue="null") String uniqueId) {
 
 		ObjectMapper mapper = new ObjectMapper();
-		mostRecentRecipes.add(new Recipe("test"));
 
 		String resultString = "";
 		try {
