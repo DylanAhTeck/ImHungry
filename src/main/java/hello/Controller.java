@@ -506,17 +506,14 @@ public class Controller {
 		final String searchType = "image";
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
-		// constructs requestUrl with function call
-		
 		String encodeQuery = "";
 		
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		// constructs requestUrl with function call
 		String requestUrl = constructRequest(GET_URL, encodeQuery, cx, searchType, key);
 		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
