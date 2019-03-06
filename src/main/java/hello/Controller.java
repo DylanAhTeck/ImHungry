@@ -105,19 +105,25 @@ public class Controller {
 	}
 
 
-
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
 		return getTestRecipeString();
 	}
 
-	@RequestMapping("/testGetResult")
-	public String handleTestRecipeRequest() {
+	@RequestMapping("/getResult")
+	public String handleGetResult(@RequestParam(defaultValue="null") String uniqueId) {
 
 		ObjectMapper mapper = new ObjectMapper();
 		mostRecentRecipes.add(new Recipe("test"));
 
-		return mapper.writeValueAsString(getResult(uniqueId));
+		String resultString = "";
+		try {
+			resultString = mapper.writeValueAsString(getResult(uniqueId));
+		} catch (JsonProcessingException e) {
+			System.out.println(e);
+		}
+
+		return resultString;
 	}
 
 	@RequestMapping("/testSearchRecipe")
@@ -324,7 +330,6 @@ public class Controller {
 
 	// 
 	public Result getResult(String uniqueId) {
-		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
 		for (Recipe recipe : mostRecentRecipes) {
 			if (recipe.getUniqueId().equals(uniqueId)) {
 				return recipe;
@@ -337,7 +342,7 @@ public class Controller {
 			}
 		}
 
-		else return null;
+		return null;
 	}
 
 	//API call / get request
