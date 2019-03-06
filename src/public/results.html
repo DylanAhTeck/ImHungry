@@ -93,12 +93,16 @@
       xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
       xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhttp.onreadystatechange = function() {
-        JSONObj = JSON.parse(this.responseText);
-        sortJSON(JSONObj);
-        hideSpinner();
-        loadCollage();
-        loadRestaurants();
-        loadRecipes();
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          if (xhttp.responseText) {
+            JSONObj = JSON.parse(this.responseText);
+            sortJSON(JSONObj);
+            hideSpinner();
+            loadCollage();
+            loadRestaurants();
+            loadRecipes();
+          }
+        }
       }
       xhttp.send();
     }
