@@ -167,6 +167,37 @@ public class Controller {
 		return "failure";
 
 	}
+	
+	@RequestMapping("/getList")
+	@CrossOrigin
+	public String getList(@RequestParam(defaultValue="null") String listName) {
+		if (listName == null) { 
+			return "Invalid list name";
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode rootNode = mapper.createObjectNode();
+		try {
+			if (listName.equals("favorites")) {
+				((ObjectNode) rootNode).set("favorites", mapper.readTree(mapper.writeValueAsString(listManager.getFavorites())));
+			} else if (listName.equals("toExplore")) {
+				((ObjectNode) rootNode).set("toExplore", mapper.readTree(mapper.writeValueAsString(listManager.getToExplore())));
+			} else if (listName.equals("doNotShow")) {
+				((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getFavorites())));
+			} else {
+				return "Invalid list name";
+			}
+			
+			return mapper.writeValueAsString(rootNode);
+			
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return "JsonProcessing Exception";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "IOException";
+		}
+	}
 
 	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
 	// to the end of the favorites list.
