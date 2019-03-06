@@ -111,6 +111,15 @@ public class Controller {
 		return getTestRecipeString();
 	}
 
+	@RequestMapping("/testGetResult")
+	public String handleTestRecipeRequest() {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mostRecentRecipes.add(new Recipe("test"));
+
+		return mapper.writeValueAsString(getResult(uniqueId));
+	}
+
 	@RequestMapping("/testSearchRecipe")
 	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -313,6 +322,7 @@ public class Controller {
 
 	}
 
+	// 
 	public Result getResult(String uniqueId) {
 		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
 		for (Recipe recipe : mostRecentRecipes) {
