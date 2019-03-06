@@ -105,10 +105,44 @@ public class Controller {
 	}
 
 
-
 	@RequestMapping("/testRecipe")
 	public String handleTestRecipeRequest() {
 		return getTestRecipeString();
+	}
+
+
+	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
+	// a query which has "uniqueId" set to "test" should retrieve this result.
+	@RequestMapping("/testGetResult")
+	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mostRecentRecipes.add(new Recipe("test"));
+
+		String resultString = "";
+		try {
+			resultString = mapper.writeValueAsString(getResult(uniqueId));
+		} catch (JsonProcessingException e) {
+			System.out.println(e);
+		}
+
+		return resultString;
+	}
+
+	// returns the JSON of the result object if it exists, null otherwise
+	@RequestMapping("/getResult")
+	public String handleGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		String resultString = "";
+		try {
+			resultString = mapper.writeValueAsString(getResult(uniqueId));
+		} catch (JsonProcessingException e) {
+			System.out.println(e);
+		}
+
+		return resultString;
 	}
 
 	@RequestMapping("/testSearchRecipe")
@@ -313,9 +347,21 @@ public class Controller {
 
 	}
 
+	// 
 	public Result getResult(String uniqueId) {
-		// TODO: iterate over the items in the most recently generated results and return it if there's a matching one.
-		return new Result("placholder");
+		for (Recipe recipe : mostRecentRecipes) {
+			if (recipe.getUniqueId().equals(uniqueId)) {
+				return recipe;
+			}
+		}
+
+		for (Restaurant restaurant : mostRecentRestaurants) {
+			if (restaurant.getUniqueId().equals(uniqueId)) {
+				return restaurant;
+			}
+		}
+
+		return null;
 	}
 
 	//API call / get request
