@@ -109,6 +109,9 @@
       );
       let resultsList = document.getElementById("results-list");
       let newRow = document.createElement("div");
+      let listNameParameter = getListNameParameter(
+        sessionStorage.getItem("listName")
+      );
       newRow.className = "row";
 
       let newCardCol = document.createElement("div");
