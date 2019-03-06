@@ -39,6 +39,12 @@
           </div>
           <div class="reults-wrapper text-center">
             <h1>Results For: <span id="query"></spam> </h1>
+            <div id="loading-spinner" class="row">
+              <div class="col">
+                <i class="fas fa-spinner fa-spin fa-5x"></i>
+                <h3 id="loading-message"> Loading... </h3>
+              </div>
+            </div>
             <div class="row">
               <div id="restaurants" class="col">
                 <h3>Restaurants</h3>
@@ -85,10 +91,11 @@
       let parameters = "searchQuery=" + query + "&numResults=" + numResults;
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
-      xhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
+      xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhttp.onreadystatechange = function() {
         JSONObj = JSON.parse(this.responseText);
         sortJSON(JSONObj);
+        hideSpinner();
         loadCollage();
         loadRestaurants();
         loadRecipes();
@@ -114,6 +121,10 @@
         if(prepTimeA > prepTimeB) return 1;
         return 0;
       });
+    }
+
+    function hideSpinner() {
+      document.getElementById('loading-spinner').style.display = "none";
     }
 
     function loadCollage() {

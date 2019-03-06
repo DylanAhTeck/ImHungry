@@ -24,6 +24,11 @@ body {
   flex-direction: column;
 }
 
+.input-group button {
+  margin: 1px;
+  width: 100%;
+}
+
 #list-select {
   width: 100%;
 }
