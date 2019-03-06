@@ -36,9 +36,8 @@ public class Controller {
 	private ListManager listManager = new ListManager();
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
-	private ArrayList<Result> mostRecentResults = new ArrayList<Result>();
-
-
+	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
+	private ArrayList<Restaurant> mostRecentRestaurants = new ArrayList<Restaurant>();
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -135,15 +134,19 @@ public class Controller {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
-
-		ArrayList<Result> restaurants = new ArrayList<Result>();
+		
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		try {
 			restaurants = retrieveRestaurants(searchQuery, numResults);
+			// saved list of restaurants returned from query in "cache" 
+			mostRecentRestaurants = restaurants;
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
 
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
+		// saved list of recipes returned from query in "cache" 
+		mostRecentRecipes = recipes;
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -296,10 +299,9 @@ public class Controller {
 		}
 		return new String[]{address, phone, website};
 	}
-
-	private ArrayList<Result> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
-		ArrayList<Result> res = new ArrayList<Result>();
-
+	
+	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
+		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		JSONArray results = json.getJSONArray("results");
 
 		//it takes too long for the API to response
@@ -363,21 +365,21 @@ public class Controller {
 		    	restaurant.writeToJSON();
 		    	//check for fav
 		    	if(fav.contains(place_id)) {
-		    		res.add(0, restaurant); //add to front
+		    		restaurants.add(0, restaurant); //add to front
 		    	} else {
-		    		res.add(restaurant);
+		    		restaurants.add(restaurant); 
 		    	}
-
 		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
-	    	}
-	    }
-		return res;
+	    	}	    	
+	    }		
+		return restaurants;
 	}
-
-	// TODO: Need to write this.
-	public ArrayList<Result> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
+	
+	
+	// TODO: Need to write this. 
+	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 		
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
@@ -504,17 +506,14 @@ public class Controller {
 		final String searchType = "image";
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
-		// constructs requestUrl with function call
-		
 		String encodeQuery = "";
 		
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		// constructs requestUrl with function call
 		String requestUrl = constructRequest(GET_URL, encodeQuery, cx, searchType, key);
 		// gets JSON response based on GET request
 		String jsonResponse = getImagesJson(requestUrl);
