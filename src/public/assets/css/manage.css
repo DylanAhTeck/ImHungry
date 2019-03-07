@@ -38,3 +38,8 @@ body {
   align-items: center;
   display: flex;
 }
+
+.icon-container i:hover {
+  opacity: 0.3;
+  cursor: pointer;
+}

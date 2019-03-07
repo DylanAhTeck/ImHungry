@@ -168,18 +168,18 @@ public class Controller {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
-		
+
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		try {
 			restaurants = retrieveRestaurants(searchQuery, numResults);
-			// saved list of restaurants returned from query in "cache" 
+			// saved list of restaurants returned from query in "cache"
 			mostRecentRestaurants = restaurants;
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
 
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
-		// saved list of recipes returned from query in "cache" 
+		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
@@ -201,14 +201,14 @@ public class Controller {
 		return "failure";
 
 	}
-	
+
 	@RequestMapping("/getList")
 	@CrossOrigin
 	public String getList(@RequestParam(defaultValue="null") String listName) {
-		if (listName == null) { 
+		if (listName == null) {
 			return "Invalid list name";
 		}
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		try {
@@ -217,13 +217,13 @@ public class Controller {
 			} else if (listName.equals("toExplore")) {
 				((ObjectNode) rootNode).set("toExplore", mapper.readTree(mapper.writeValueAsString(listManager.getToExplore())));
 			} else if (listName.equals("doNotShow")) {
-				((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getFavorites())));
+				((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getdoNotShow())));
 			} else {
 				return "Invalid list name";
 			}
-			
+
 			return mapper.writeValueAsString(rootNode);
-			
+
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 			return "JsonProcessing Exception";
@@ -259,7 +259,7 @@ public class Controller {
 		else if (targetListName.equals("")) {
 			return "No targetListName provided";
 		}
-		
+
 		Result toAdd = null;
 		// allows to skip searching second list if result is found in first list
 		boolean foundItem = false;
@@ -288,7 +288,7 @@ public class Controller {
 		if (!foundItem) {
 			return "Couldn't find uniqueId";
 		}
-		
+
 		boolean addSuccessful = listManager.addToList(toAdd, targetListName);
 		if (addSuccessful) {
 			return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
@@ -347,7 +347,7 @@ public class Controller {
 
 	}
 
-	// 
+	//
 	public Result getResult(String uniqueId) {
 		for (Recipe recipe : mostRecentRecipes) {
 			if (recipe.getUniqueId().equals(uniqueId)) {
@@ -419,7 +419,7 @@ public class Controller {
 		}
 		return new String[]{address, phone, website};
 	}
-	
+
 	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		JSONArray results = json.getJSONArray("results");
@@ -487,26 +487,26 @@ public class Controller {
 		    	if(fav.contains(place_id)) {
 		    		restaurants.add(0, restaurant); //add to front
 		    	} else {
-		    		restaurants.add(restaurant); 
+		    		restaurants.add(restaurant);
 		    	}
 		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
-	    	}	    	
-	    }		
+	    	}
+	    }
 		return restaurants;
 	}
-	
-	
+
+
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
 	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-		
+
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
-		
+
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
-		
-		
+
+
 		String res = callAPI(placesRequestURL);
 
 		JSONObject json = new JSONObject(res);
@@ -627,7 +627,7 @@ public class Controller {
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
 		String encodeQuery = "";
-		
+
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

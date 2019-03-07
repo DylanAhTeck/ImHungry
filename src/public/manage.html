@@ -24,11 +24,15 @@
               <div class="input-group">
                 <select class="custom-select" id="list-select">
                   <option selected>Choose List...</option>
-                  <option value="1">To Explore</option>
-                  <option value="2">Favorites</option>
-                  <option value="3">Do Not Show</option>
+                  <option value="To Explore">To Explore</option>
+                  <option value="Favorites">Favorites</option>
+                  <option value="Do Not Show">Do Not Show</option>
                 </select>
-                <button type="button" class="btn btn-secondary">
+                <button
+                  id="manage-list"
+                  type="button"
+                  class="btn btn-secondary"
+                >
                   Manage List
                 </button>
                 <a href="results.html">
@@ -58,6 +62,16 @@
       retrieveList();
     });
 
+    document.getElementById("manage-list").onclick = function() {
+      let listName = document.getElementById("list-select").value;
+      if (listName !== "Choose List..." && listName !== "") {
+        sessionStorage.setItem("listName", listName);
+        location.href = "manage.html";
+      } else {
+        console.log("List not selected.");
+      }
+    };
+
     function retrieveList() {
       let xhttp = new XMLHttpRequest();
       let listNameParameter = getListNameParameter(
@@ -70,7 +84,7 @@
         if (xhttp.readyState == 4 && xhttp.status == 200) {
           if (xhttp.responseText) {
             JSONObj = JSON.parse(this.responseText);
-            populateList();
+            populateList(listNameParameter);
           }
         }
       };
@@ -89,41 +103,88 @@
       }
     }
 
-    function populateList() {
+    function populateList(listName) {
       // Populate list using returned results
-      let listNameParameter = getListNameParameter(
-        sessionStorage.getItem("listName")
-      );
-      for (let idx in JSONObj[listNameParameter]) {
-        if (JSONObj[listNameParameter][idx]["type"] === "restaurant") {
-          addRestaurantCard(idx);
+      for (let idx in JSONObj[listName]) {
+        if (JSONObj[listName][idx]["type"] === "restaurant") {
+          addRestaurantCard(idx, listName);
         } else {
-          addRecipeCard(idx);
+          addRecipeCard(idx, listName);
         }
       }
     }
 
-    function addRestaurantCard(idx) {
-      let listNameParameter = getListNameParameter(
-        sessionStorage.getItem("listName")
-      );
+    function addRestaurantCard(idx, listNameParameter) {
       let resultsList = document.getElementById("results-list");
       let newRow = document.createElement("div");
-      let listNameParameter = getListNameParameter(
-        sessionStorage.getItem("listName")
-      );
       newRow.className = "row";
 
       let newCardCol = document.createElement("div");
       newCardCol.className = "col-8";
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
-      newRemoveCol.innerHTML = `<i class="fas fa-times-circle fa-3x" />`;
+      let newRemoveIcon = document.createElement("i");
+      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
+      newRemoveIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "itemToRemoveId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&originListName=" +
+          listNameParameter;
+        console.log(parameters);
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/removeFromList?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newRemoveCol.appendChild(newRemoveIcon);
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
-      newMoveCol.innerHTML = `<i class="fas fa-exchange-alt fa-3x" />`;
+      let newMoveIcon = document.createElement("i");
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
+      newMoveIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "itemToMoveId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&originListName=" +
+          listNameParameter +
+          "&targetListName=" +
+          "doNotShow"; // Change later
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/moveBetweenLists?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newMoveCol.appendChild(newMoveIcon);
 
       let newCard = document.createElement("div");
+
       if (idx % 2 === 0) {
         newCard.className = "card text-white bg-secondary mb-3";
       } else {
@@ -184,10 +245,7 @@
       resultsList.append(newRow);
     }
 
-    function addRecipeCard(idx) {
-      let listNameParameter = getListNameParameter(
-        sessionStorage.getItem("listName")
-      );
+    function addRecipeCard(idx, listNameParameter) {
       let resultsList = document.getElementById("results-list");
       let newRow = document.createElement("div");
       newRow.className = "row";
@@ -196,12 +254,67 @@
       newCardCol.className = "col-8";
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
-      newRemoveCol.innerHTML = `<i class="fas fa-times-circle fa-3x" />`;
+      let newRemoveIcon = document.createElement("i");
+      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
+      newRemoveIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "itemToRemoveId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&originListName=" +
+          listNameParameter;
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/removeFromList?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newRemoveCol.appendChild(newRemoveIcon);
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
-      newMoveCol.innerHTML = `<i class="fas fa-exchange-alt fa-3x" />`;
+      let newMoveIcon = document.createElement("i");
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
+      newMoveIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "itemToMoveId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&originListName=" +
+          listNameParameter +
+          "&targetListName=" +
+          "doNotShow"; // Change later
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/moveBetweenLists?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newMoveCol.appendChild(newMoveIcon);
 
       let newCard = document.createElement("div");
+      newCard.id = JSONObj[listNameParameter][idx].uniqueId;
       if (idx % 2 === 0) {
         newCard.className = "card text-white bg-secondary mb-3";
       } else {
