@@ -177,11 +177,13 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
-
-		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
+		
+		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		ArrayList<String> collageURLs = new ArrayList<String>();
+		//ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		ArrayList<String> collageURLs = createCollage(searchQuery);
+		//ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
 		try {
@@ -403,19 +405,14 @@ public class Controller {
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
-		String address = "unknown";
-		if(result.has("formatted_address")) {
-			address = result.getString("formatted_address");
-		} else {
-			System.out.println("no info");
-		}
+		String address = result.getString("formatted_address");
 
-		String phone = "unknown";
-		if(result.has("formatted_phone_number")) {
-			phone = result.getString("formatted_phone_number");
-		} else {
-			System.out.println("no info");
-		}
+		String phone = result.getString("formatted_phone_number");
+//		if(result.has("formatted_phone_number")) {
+//			phone = result.getString("formatted_phone_number");
+//		} else {
+//			System.out.println("no info");
+//		}
 
 		String website = "unknown";
 		if(result.has("website")) {
