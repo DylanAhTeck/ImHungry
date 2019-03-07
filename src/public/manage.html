@@ -230,7 +230,7 @@
       restaurantName.innerHTML = JSONObj[listNameParameter][idx].name;
       let restaurantDrivingTime = document.createElement("h6");
       restaurantDrivingTime.innerHTML =
-        JSONObj[listNameParameter][idx].drivingTime;
+        "Driving Time: " + JSONObj[listNameParameter][idx].drivingTime;
       restaurantNameCol.appendChild(restaurantName);
       restaurantNameCol.appendChild(restaurantDrivingTime);
 
@@ -388,7 +388,7 @@
       recipeName.innerHTML = JSONObj[listNameParameter][idx].name;
       let recipePrepTime = document.createElement("h6");
       recipePrepTime.innerHTML =
-        JSONObj[listNameParameter][idx].prepTime + " mins";
+        "Prep Time: " + JSONObj[listNameParameter][idx].prepTime + " mins";
       recipeNameCol.appendChild(recipeName);
       recipeNameCol.appendChild(recipePrepTime);
 
@@ -401,7 +401,7 @@
         recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
       let recipeCookTime = document.createElement("h6");
       recipeCookTime.innerHTML =
-        JSONObj[listNameParameter][idx].cookTime + " mins";
+        "Cook Time: " + JSONObj[listNameParameter][idx].cookTime + " mins";
       recipeRatingCol.appendChild(recipeRating);
       recipeRatingCol.append(recipeCookTime);
 
