@@ -18,17 +18,20 @@ public class TestController {
 	
 	@Test
 	public void testRetrieveRestaurants() {
-		fail("Not yet implemented");
+		String query = "burger";
+		int numResults = 2;
+		controller.handleSearchRequest("null", numResults);
+		controller.handleSearchRequest(query, numResults);
 	}
 	
 	@Test
 	public void testRetrieveRecipes() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 	
 	@Test
 	public void testCreateCollage() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 
 }
