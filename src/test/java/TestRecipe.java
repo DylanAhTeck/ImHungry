@@ -22,9 +22,18 @@ public class TestRecipe {
 	}
 
 	@Test
-	public void testToString() {
-		String expectedString = "Recipe [name=null, rating=0.0, prepTime=0.0, cookTime=0.0, ingredients=null, instructions=null, sourceURL=null, imageURL=null]";
-		assertEquals(expectedString, recipe.toString());
+	public void testCompareTo() {
+		Recipe recipe1 = new Recipe("test1");
+		Recipe recipe2 = new Recipe("test2");
+		Recipe recipe3 = new Recipe("test3");
+
+		recipe1.setPrepTime(10);
+		recipe2.setPrepTime(20);
+		recipe3.setPrepTime((10));
+
+		assertEquals(-1, recipe1.compareTo((recipe2)));
+		assertEquals(1, recipe2.compareTo((recipe1)));
+		assertEquals(0, recipe1.compareTo(recipe3));
 	}
 	
 	@Test

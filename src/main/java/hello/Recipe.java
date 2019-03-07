@@ -106,7 +106,7 @@ public class Recipe extends Result implements Comparable<Recipe> {
 			 /* For Ascending order*/
 			 if(this.prepTime < comparePrepTime) {
 				 return -1;
-			 } else if (this.prepTime < comparePrepTime) {
+			 } else if (this.prepTime > comparePrepTime) {
 				 return 1;
 			 } else return 0;
 
