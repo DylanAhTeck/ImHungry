@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -175,7 +176,7 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
-		
+
 		//ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		//ArrayList<String> collageURLs = new ArrayList<String>();
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
@@ -446,7 +447,7 @@ public class Controller {
 	    for(Result result: listManager.getdoNotShow()) {
 	    	doNotShow += result.getUniqueId();
 	    }
-	    
+
 	    for(Result result: listManager.getFavorites()) {
 	    	fav += result.getUniqueId();
 	    }
@@ -495,12 +496,12 @@ public class Controller {
 	    }
 		return restaurants;
 	}
-	
+
 	//only for testing purposes
 	public void setFav(ArrayList<Result> list){
 		listManager.setFavorites(list);
 	}
-	
+
 	//only for testing purposes
 	public void setDoNotShow(ArrayList<Result> list){
 		listManager.setDoNotShow(list);
@@ -528,11 +529,21 @@ public class Controller {
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 
+		String doNotShow = "", fav = "";
+
+		for(Result result: listManager.getdoNotShow()) {
+			doNotShow += result.getUniqueId();
+		}
+
+		for(Result result: listManager.getFavorites()) {
+			fav += result.getUniqueId();
+		}
+
 		try {
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
 					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
 					.queryString("query", searchQuery)
-					.queryString("number", numResults)
+					.queryString("number", numResults + listManager.getdoNotShow().size())
 					.asJson();
 
 
@@ -546,12 +557,18 @@ public class Controller {
 
     		for (JsonNode result : resultsNode) {
     			// identify the sourceURL, use it to construct the recipes and set the unique id the uniqueID
-				Recipe r = new Recipe(result.get("id").toString());
-				r.setName(result.get("title").toString().replaceAll("\"", "")); // get rid of quotes in actual results
-				if (result.get("image") != null) {
-					r.setImageURL("https://spoonacular.com/recipeImages/" + result.get("image").toString().replaceAll("\"", ""));
-				}
-				recipes.add(r);
+					Recipe r = new Recipe(result.get("id").toString());
+					r.setName(result.get("title").toString().replaceAll("\"", "")); // get rid of quotes in actual results
+					if (result.get("image") != null) {
+						r.setImageURL("https://spoonacular.com/recipeImages/" + result.get("image").toString().replaceAll("\"", ""));
+					}
+					if(!doNotShow.contains(r.getUniqueId())) {
+						if(fav.contains(r.getUniqueId())) {
+							recipes.add(0, r);
+						} else {
+							recipes.add(r);
+						}
+					}
     		}
 
     		// now that we have all the recipes and their IDs, we need to go get the individual info for them....
@@ -613,6 +630,7 @@ public class Controller {
 
     		}
 
+				Collections.sort(recipes);
     		return recipes;
 
 

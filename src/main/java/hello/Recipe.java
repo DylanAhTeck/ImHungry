@@ -1,6 +1,7 @@
 package hello;
 
 import java.util.ArrayList;
+import java.lang.Comparable;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Result class which Recipe and Restaurant will both subclass off of...
 
-public class Recipe extends Result {
+public class Recipe extends Result implements Comparable<Recipe> {
 	private String name;
 	private double rating; // number of stars out of 5
 	private double prepTime; // in mins
@@ -111,4 +112,17 @@ public class Recipe extends Result {
 		this.imageURL = imageURL;
 	}
 
+	@Override
+	 public int compareTo(Recipe compareRecipe) {
+			 double comparePrepTime=((Recipe)compareRecipe).getPrepTime();
+			 /* For Ascending order*/
+			 if(this.prepTime < comparePrepTime) {
+				 return -1;
+			 } else if (this.prepTime < comparePrepTime) {
+				 return 1;
+			 } else return 0;
+
+			 /* For Descending order do like this */
+			 //return compareage-this.studentage;
+	 }
 }
