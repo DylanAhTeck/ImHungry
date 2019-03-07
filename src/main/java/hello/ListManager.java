@@ -24,6 +24,13 @@ public class ListManager {
 		return doNotShow;
 	}
 
+	public void setFavorites(ArrayList<Result> list) {
+		this.favorites = list;
+	}
+
+	public void setDoNotShow(ArrayList<Result> doNotShow) {
+		this.doNotShow = doNotShow;
+	}
 
 	// returns whether item was added successfully to list
 	public boolean addToList(Result itemToAdd, String targetListName) {

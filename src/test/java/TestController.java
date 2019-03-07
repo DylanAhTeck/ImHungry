@@ -1,4 +1,4 @@
-import static org.junit.Assert.*;
+import java.util.ArrayList;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,14 +22,19 @@ public class TestController {
 	
 	@Test
 	public void testRetrieveRestaurants() {
-		String query = "fries";
-		int numResults = 2;
+		String query = "burger"; // do not change the query
+		int numResults = 20;
+		
+		Result fav = new Result("ChIJLyzMquXHwoAR0RpYK9bAM3M");
+		ArrayList<Result> favorite = new ArrayList<Result>();
+		favorite.add(fav);
+		Result not = new Result("ChIJg6NxEefHwoARgGH0PL8Rx7A");
+		ArrayList<Result> doNotShow = new ArrayList<Result>();
+		doNotShow.add(not);
+		controller.setDoNotShow(doNotShow);
+		controller.setFav(favorite);
 		controller.handleSearchRequest("null", numResults);
-		controller.handleSearchRequest(query, numResults);
-		Result fav = new Result("ChIJIW3OiuHHwoAR6paZISsjQ7Q");
-		listManager.addToList(fav, "favorites");
-		Result not = new Result("123456");
-		listManager.addToList(not, "ChIJg6NxEefHwoARgGH0PL8Rx7A");
+		controller.handleSearchRequest(query, 1);
 		controller.handleSearchRequest(query, numResults);
 	}
 	

@@ -178,12 +178,12 @@ public class Controller {
 			System.out.println("ioexception retrieving restaurants");
 		}
 		
-		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-		ArrayList<String> collageURLs = new ArrayList<String>();
-		//ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
+		//ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		//ArrayList<String> collageURLs = new ArrayList<String>();
+		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		//ArrayList<String> collageURLs = createCollage(searchQuery);
+		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
 		try {
@@ -448,7 +448,7 @@ public class Controller {
 	    for(Result result: listManager.getdoNotShow()) {
 	    	doNotShow += result.getUniqueId();
 	    }
-
+	    
 	    for(Result result: listManager.getFavorites()) {
 	    	fav += result.getUniqueId();
 	    }
@@ -497,7 +497,16 @@ public class Controller {
 	    }
 		return restaurants;
 	}
-
+	
+	//only for testing purposes
+	public void setFav(ArrayList<Result> list){
+		listManager.setFavorites(list);
+	}
+	
+	//only for testing purposes
+	public void setDoNotShow(ArrayList<Result> list){
+		listManager.setDoNotShow(list);
+	}
 
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
 	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
