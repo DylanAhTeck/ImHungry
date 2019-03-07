@@ -47,11 +47,18 @@
     document.getElementById("feedMeButton").onclick = function() {
       let query = document.getElementById("query").value;
       let numResults = document.getElementById("num-results").value;
-      sessionStorage.setItem("query", query);
-      sessionStorage.setItem("numResults", numResults);
-      console.log("Feed Me", query, numResults);
-      location.href = "results.html";
+      if (isNormalInteger(numResults)) {
+        sessionStorage.setItem("query", query);
+        sessionStorage.setItem("numResults", numResults);
+        console.log("Feed Me", query, numResults);
+        location.href = "results.html";
+      }
     };
+
+    function isNormalInteger(str) {
+      var n = Math.floor(Number(str));
+      return n !== Infinity && String(n) === str && n >= 0;
+    }
   </script>
   <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
 </html>
