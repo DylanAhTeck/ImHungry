@@ -34,10 +34,10 @@
 
           <div id="feedMeButton" class="button">
             <div class="icons">
-              <i class="fas fa-frown fa-5x icon-default"></i>
-              <i class="fas fa-smile fa-5x icon-hover"></i>
+              <i id="frownIcon" class="fas fa-frown fa-5x icon-default"></i>
+              <i id="smileIcon" class="fas fa-smile fa-5x icon-hover"></i>
             </div>
-            <h3>Feed Me</h3>
+            <h3 id="feedMeText" style="color:blue">Feed Me!</h3>
           </div>
         </div>
       </div>
@@ -47,6 +47,8 @@
     document.getElementById("feedMeButton").onclick = function() {
       let query = document.getElementById("query").value;
       let numResults = document.getElementById("num-results").value;
+      if (numResults % 1 !== 0 || numResults < 1) return;
+      if (query == "") return;
       if (isNormalInteger(numResults)) {
         sessionStorage.setItem("query", query);
         sessionStorage.setItem("numResults", numResults);
