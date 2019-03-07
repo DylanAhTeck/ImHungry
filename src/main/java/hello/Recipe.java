@@ -22,21 +22,9 @@ public class Recipe extends Result implements Comparable<Recipe> {
 	private String imageURL;
 	private String type;
 
-	public String writeToJSON() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String jsonString = "empty";
-		try {
-			jsonString = objectMapper.writeValueAsString(this);
-		} catch (JsonProcessingException exception) {
-			System.out.println(exception);
-		}
-		return jsonString;
-
-	}
-
 	public Recipe(String uniqueId) {
 		super(uniqueId);
-		type = "recipe";
+		type = "Recipe";
 		// set default image url for those cases where there is no image url
 		this.imageURL = "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg";
 	}
@@ -118,7 +106,7 @@ public class Recipe extends Result implements Comparable<Recipe> {
 			 /* For Ascending order*/
 			 if(this.prepTime < comparePrepTime) {
 				 return -1;
-			 } else if (this.prepTime < comparePrepTime) {
+			 } else if (this.prepTime > comparePrepTime) {
 				 return 1;
 			 } else return 0;
 

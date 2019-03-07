@@ -110,10 +110,10 @@ public class Controller {
 	}
 
 
-	@RequestMapping("/testRecipe")
-	public String handleTestRecipeRequest() {
-		return getTestRecipeString();
-	}
+//	@RequestMapping("/testRecipe")
+//	public String handleTestRecipeRequest() {
+//		return getTestRecipeString();
+//	}
 
 
 	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
@@ -329,30 +329,30 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
-	public String getTestRecipeString() {
-
-		ArrayList<String> ingredients = new ArrayList<String>();
-		ingredients.add("1 oz ham");
-		ingredients.add("2oz cheese");
-		ingredients.add("2 slices bread");
-
-		ArrayList<String> instructions = new ArrayList<String>();
-		instructions.add("1. do the thing");
-		instructions.add("2. finish the thing");
-
-		Recipe r = new Recipe("1");
-		r.setIngredients(ingredients);
-		r.setName("best recipe");
-		r.setSourceURL("http://localhost:1000");
-		r.setPrepTime(40);
-		r.setInstructions(instructions);
-		r.setRating(2);
-
-		r.setCookTime(20);
-
-		return r.writeToJSON();
-
-	}
+//	public String getTestRecipeString() {
+//
+//		ArrayList<String> ingredients = new ArrayList<String>();
+//		ingredients.add("1 oz ham");
+//		ingredients.add("2oz cheese");
+//		ingredients.add("2 slices bread");
+//
+//		ArrayList<String> instructions = new ArrayList<String>();
+//		instructions.add("1. do the thing");
+//		instructions.add("2. finish the thing");
+//
+//		Recipe r = new Recipe("1");
+//		r.setIngredients(ingredients);
+//		r.setName("best recipe");
+//		r.setSourceURL("http://localhost:1000");
+//		r.setPrepTime(40);
+//		r.setInstructions(instructions);
+//		r.setRating(2);
+//
+//		r.setCookTime(20);
+//
+//		return r.writeToJSON();
+//
+//	}
 
 	//
 	public Result getResult(String uniqueId) {
