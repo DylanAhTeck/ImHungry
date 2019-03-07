@@ -36,7 +36,7 @@ public class Restaurant extends Result {
 	}
 
 
-	public JSONObject writeToJSON() {
+	public JSONObject writeToJSON() throws JsonProcessingException { 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String jsonString = "empty";
 		try {
@@ -116,12 +116,12 @@ public class Restaurant extends Result {
 	}
 
 
-	public Integer getPriceLevel() {
+	public int getPriceLevel() {
 		return priceLevel;
 	}
 
 
-	public void setPriceLevel(Integer priceLevel) {
+	public void setPriceLevel(int priceLevel) {
 		this.priceLevel = priceLevel;
 	}
 
