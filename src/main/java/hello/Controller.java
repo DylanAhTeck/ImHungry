@@ -35,6 +35,12 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
+	
+	// used for Google Images Searching
+	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+	public final String cx = "008434952456518231152:6_jh7_s5v-g";
+	public final String searchType = "image";
+	public final String key = "AIzaSyDiTKuGgmBVVUmf-gHBArAT7eXjJK7FKHI";
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
