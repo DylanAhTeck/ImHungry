@@ -50,12 +50,25 @@
       if (numResults % 1 !== 0 || numResults < 1) return;
       if (query == "") return;
       if (isNormalInteger(numResults)) {
-        sessionStorage.setItem("query", query);
-        sessionStorage.setItem("numResults", numResults);
-        console.log("Feed Me", query, numResults);
-        location.href = "results.html";
+        let smileIcon = document.getElementById("smileIcon");
+        smileIcon.style.opacity = 1;
+        smileIcon.style.transform = "rotate(45deg)";
+        let frownIcon = document.getElementById("frownIcon");
+        frownIcon.style.opacity = 0;
+        let feedMeText = document.getElementById("feedMeText");
+        feedMeText.style.left = "30%";
+        setTimeout(function() {
+          redirectToResults(query, numResults);
+        }, 1000);
       }
     };
+
+    function redirectToResults(query, numResults) {
+      sessionStorage.setItem("query", query);
+      sessionStorage.setItem("numResults", numResults);
+      console.log("Feed Me", query, numResults);
+      location.href = "results.html";
+    }
 
     function isNormalInteger(str) {
       var n = Math.floor(Number(str));
