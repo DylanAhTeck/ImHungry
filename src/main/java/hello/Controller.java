@@ -45,8 +45,6 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
-
-
 	@RequestMapping("/test")
 	@CrossOrigin
 	public String handleTestRequest() {
