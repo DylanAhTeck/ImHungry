@@ -206,8 +206,7 @@
         newCard.appendChild(newCardBody);
         newCard.onclick = function() {
           let currentItem = JSONObj.restaurants[idx];
-          console.log(currentItem);
-          sessionStorage.setItem('currentItem', currentItem);
+          sessionStorage.setItem('currentItem', JSON.stringify(currentItem));
           location.href = "restaurant.html";
         }
 
@@ -257,8 +256,7 @@
         newCard.appendChild(newCardBody);
         newCard.onclick = function() {
           let currentItem = JSONObj.recipes[idx];
-          console.log(currentItem);
-          sessionStorage.setItem('currentItem', currentItem);
+          sessionStorage.setItem('currentItem', JSON.stringify(currentItem));
           location.href = "recipe.html";
         }
 

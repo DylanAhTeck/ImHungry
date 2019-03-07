@@ -6,16 +6,8 @@ body {
 	width: 150px;
 }
 
-#address {
-	width: max-content;
-}
-
 #address:hover {
 	cursor: pointer;
-}
-
-#website {
-	width: max-content;
 }
 
 #website:hover {

@@ -15,9 +15,10 @@
 		<div class="row">
 			<div class="col-6">
 				<h1 class="mb-3" id="restaurantName">Name of Restaurant</h1>
-				<p id="address" onclick="redirectToGoogleMaps();" >Address</p>
+				<a id="address" onclick="redirectToGoogleMaps();">Address</a>
+				<p></p>
 				<p id="phoneNumber">Phone Number</p>
-				<p id="website" onclick="redirectToWebsite();">Website</p>
+				<a id="website" onclick="redirectToWebsite();">Website</a>
 			</div>
 			<div class="col-6">
 				<button type="button" class="btn btn-secondary mb-4" onclick="window.print();">Printable Version</button>
@@ -25,10 +26,10 @@
 				<button type="button" class="btn btn-secondary mb-4" onclick="location.href='results.html'">Back to Results</button>
 				<br />
 				<select class="form-control mb-4" id="listDropdown">
-					<option value="none"></option>
-					<option value="To Explore">To Explore</option>
-					<option value="Favorites">Favorites</option>
-					<option value="Do Not Show">Do Not Show</option>
+					<option value=""></option>
+					<option value="toExplore">To Explore</option>
+					<option value="favorites">Favorites</option>
+					<option value="doNotShow">Do Not Show</option>
 				</select>
 				<button type="button" class="btn btn-secondary mb-4" onclick="addToList();">Add to list</button>
 			</div>
@@ -38,43 +39,42 @@
 	<script>
 		var googleMapsAddress;
 		var websiteAddress;
+		var uniqueId;
 
 		function setData() {
-			sessionStorage.setItem('restaurantName', 'McDonald\'s');
-			sessionStorage.setItem('address', '201 W Washington Blvd, Los Angeles, CA 90007');
-			sessionStorage.setItem('phoneNumber', '(213) 746-0525');
-			sessionStorage.setItem('website', 'https://www.mcdonalds.com/us/en-us.html');
+			let currentItem = JSON.parse(sessionStorage.getItem('currentItem'));
+			uniqueId = currentItem.uniqueId;
 
 			// Set the restaurant name
-			let restaurantName = sessionStorage.getItem('restaurantName');
+			let restaurantName = currentItem.name;
 			document.getElementById("restaurantName").innerHTML = restaurantName;
 
 			// Set the restaurant address
-			let address = sessionStorage.getItem('address');
+			let address = currentItem.address;
 			document.getElementById("address").innerHTML = address;
 			let googleMapsDestination = address.split(' ').join('+');
 			googleMapsAddress = "https://www.google.com/maps/dir/Tommy+Trojan/" + googleMapsDestination;
 
 			// Set the phone number
-			let phoneNumber = sessionStorage.getItem('phoneNumber');
+			let phoneNumber = currentItem.phoneNumber;
 			document.getElementById("phoneNumber").innerHTML = phoneNumber;
 
 			// Set the website
-			let website = sessionStorage.getItem('website');
+			let website = currentItem.website;
 			document.getElementById("website").innerHTML = website;
 			websiteAddress = website;
 		}
 
 		function addToList() {
-			let parameters = "list=" + document.getElementById("listDropdown").value + 
-				"&resultId=" + 123; // Update this with however we implement result IDs TODO
+			let parameters = "targetListName=" + document.getElementById("listDropdown").value + 
+				"&itemToAddId=" + uniqueId;
 			var xhttp = new XMLHttpRequest();
-			xhttp.open("POST", "AddToList", true); // Update this with correct name TODO
+			xhttp.open('GET', "http://localhost:8080/addToList?" + parameters, true);
 			xhttp.onreadystatechange = function () {
 				console.log("Success!"); // Replace this with whatever confirmation feature we agree on TODO
 			}
 			xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhttp.send(parameters);
+			xhttp.send();
 		}
 
 		function redirectToGoogleMaps() {

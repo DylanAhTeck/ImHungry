@@ -25,10 +25,10 @@
 				<button type="button" class="btn btn-secondary mb-4" onclick="location.href='results.html'">Back to Results</button>
 				<br />
 				<select class="form-control mb-4" id="listDropdown">
-					<option value="none"></option>
-					<option value="To Explore">To Explore</option>
-					<option value="Favorites">Favorites</option>
-					<option value="Do Not Show">Do Not Show</option>
+					<option value=""></option>
+					<option value="toExplore">To Explore</option>
+					<option value="favorites">Favorites</option>
+					<option value="doNotShow">Do Not Show</option>
 				</select>
 				<button type="button" class="btn btn-secondary mb-4" onclick="addToList();">Add to list</button>
 			</div>
@@ -67,28 +67,28 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 	<script>
+		var uniqueId;
+
 		function setData() {
-			// For visualization only, replace with back-end implementation
-			sessionStorage.setItem('recipeTitle', 'Chicken Recipe');
-			sessionStorage.setItem('prepTime', '1 minute');
-			sessionStorage.setItem('cookTime', '3 minutes');
-			let tempIngredients = ["Pepper" , "Salt", "Chicken", "Lettuce", "Potatoes"];
-			let tempInstructions = ["Wash your hands" , "Prepare the ingredients", "Make the dish"];
-			sessionStorage.setItem('ingredients', tempIngredients);
-			sessionStorage.setItem('instructions', tempInstructions);
+			let currentItem = JSON.parse(sessionStorage.getItem('currentItem'));
+			uniqueId = currentItem.uniqueId;
 
 			// Set the recipe title
-			let recipeTitle = sessionStorage.getItem('recipeTitle');
+			let recipeTitle = currentItem.name;
 			document.getElementById("recipeTitle").innerHTML = recipeTitle;
 
 			// Set the prep time and cook time
-			let prepTime = sessionStorage.getItem('prepTime');
+			let prepTime = currentItem.prepTime;
+			if (prepTime == 1) prepTime = prepTime + " minute";
+			else prepTime = prepTime + " minutes";
 			document.getElementById("prepTime").innerHTML = "Prep time: " + prepTime;
-			let cookTime = sessionStorage.getItem('cookTime');
+			let cookTime = currentItem.cookTime;
+			if (cookTime == 1) cookTime = cookTime + " minute";
+			else cookTime = cookTime + " minutes";
 			document.getElementById("cookTime").innerHTML = "Cook time: " + cookTime;
 
 			// Set the ingredients
-			let ingredients = sessionStorage.getItem('ingredients').split(',');
+			let ingredients = currentItem.ingredients;
 			let firstIngredientsListSize = Math.round(ingredients.length / 2);
 			let firstIngredientsList = document.getElementById("firstIngredientsList");
 
@@ -108,7 +108,7 @@
 			}
 
 			// Set the instructions
-			let instructions = sessionStorage.getItem('instructions').split(',');
+			let instructions = currentItem.instructions;
 			let instructionsList = document.getElementById("instructionsList");
 			for(let i = 0; i < instructions.length; i++) {
 				let listElement = document.createElement("li");
@@ -119,15 +119,15 @@
 		}
 
 		function addToList() {
-			let parameters = "list=" + document.getElementById("listDropdown").value + 
-				"&resultId=" + 123; // Update this with however we implement result IDs TODO
+			let parameters = "targetListName=" + document.getElementById("listDropdown").value + 
+				"&itemToAddId=" + uniqueId;
 			var xhttp = new XMLHttpRequest();
-			xhttp.open("POST", "AddToList", true); // Update this with correct name TODO
+			xhttp.open('GET', "http://localhost:8080/addToList?" + parameters, true);
 			xhttp.onreadystatechange = function () {
 				console.log("Success!"); // Replace this with whatever confirmation feature we agree on TODO
 			}
 			xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhttp.send(parameters);
+			xhttp.send();
 		}
 	</script>
 </body>
