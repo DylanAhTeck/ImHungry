@@ -35,12 +35,6 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
-	
-	// used for Google Images Searching
-	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
-	public final String cx = "008434952456518231152:6_jh7_s5v-g";
-	public final String searchType = "image";
-	public final String key = "AIzaSyDiTKuGgmBVVUmf-gHBArAT7eXjJK7FKHI";
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
@@ -57,6 +51,7 @@ public class Controller {
 	public String handleTestRequest() {
 		return "Look's like you're up and running!";
 	}
+
 
 	// @RequestMapping("/testCollage")
 	// @CrossOrigin
@@ -106,7 +101,6 @@ public class Controller {
 	// 	if (m.getToExplore().size() == 0) {
 	// 		System.out.println("<" + uniqueId + "> was removed from toExplore");
 	// 	}
-
 	// }
 
 
@@ -133,6 +127,82 @@ public class Controller {
 
 	// 	return resultString;
 	// }
+
+	@RequestMapping("/testCollage")
+	@CrossOrigin
+    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+        ArrayList<String> imageURLs = createCollage(searchQuery);
+        return imageURLs.toString();
+    }
+
+	@RequestMapping("/testRestaurant")
+	@CrossOrigin
+	public void handleTestRecipeRestaurant() {
+		try {
+			retrieveRestaurants("cream", 25);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping("/testAddToList")
+	@CrossOrigin
+	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
+		ListManager m = new ListManager();
+
+		// quick test of add to list
+		m.addToList(new Result(uniqueId), targetList);
+		ArrayList<Result> favorites = m.getFavorites();
+		if (favorites.get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
+		} else {
+			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
+		}
+		// move Result from one list to another
+		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
+		if (favorites.size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from favorites");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
+		}
+		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
+			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
+		} else {
+			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
+		}
+		// remove Result from toExplore
+		m.removeFromList(uniqueId, "toExplore");
+		if (m.getToExplore().size() == 0) {
+			System.out.println("<" + uniqueId + "> was removed from toExplore");
+		}
+
+	}
+
+
+//	@RequestMapping("/testRecipe")
+//	public String handleTestRecipeRequest() {
+//		return getTestRecipeString();
+//	}
+
+
+	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
+	// a query which has "uniqueId" set to "test" should retrieve this result.
+	@RequestMapping("/testGetResult")
+	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mostRecentRecipes.add(new Recipe("test"));
+
+		String resultString = "";
+		try {
+			resultString = mapper.writeValueAsString(getResult(uniqueId));
+		} catch (JsonProcessingException e) {
+			System.out.println(e);
+		}
+
+		return resultString;
+	}
 
 	// returns the JSON of the result object if it exists, null otherwise
 	@RequestMapping("/getResult")
@@ -188,8 +258,8 @@ public class Controller {
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		
 		ArrayList<String> collageURLs = createCollage(searchQuery);
+
 
 		try {
 			// using readtree to set these as json nodes
@@ -329,6 +399,7 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
+
 	// public String getTestRecipeString() {
 
 	// 	ArrayList<String> ingredients = new ArrayList<String>();
@@ -353,6 +424,31 @@ public class Controller {
 	// 	return r.writeToJSON();
 
 	// }
+
+//	public String getTestRecipeString() {
+//
+//		ArrayList<String> ingredients = new ArrayList<String>();
+//		ingredients.add("1 oz ham");
+//		ingredients.add("2oz cheese");
+//		ingredients.add("2 slices bread");
+//
+//		ArrayList<String> instructions = new ArrayList<String>();
+//		instructions.add("1. do the thing");
+//		instructions.add("2. finish the thing");
+//
+//		Recipe r = new Recipe("1");
+//		r.setIngredients(ingredients);
+//		r.setName("best recipe");
+//		r.setSourceURL("http://localhost:1000");
+//		r.setPrepTime(40);
+//		r.setInstructions(instructions);
+//		r.setRating(2);
+//
+//		r.setCookTime(20);
+//
+//		return r.writeToJSON();
+//
+//	}
 
 	//
 	public Result getResult(String uniqueId) {
@@ -570,6 +666,7 @@ public class Controller {
 					}
 					if(!doNotShow.contains(r.getUniqueId())) {
 						if(fav.contains(r.getUniqueId())) {
+							r.setAsFavorite();
 							recipes.add(0, r);
 						} else {
 							recipes.add(r);
@@ -652,6 +749,12 @@ public class Controller {
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
+
+		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+		final String cx = "001349756157526882706%3An5pmkqrjpfc";
+		final String searchType = "image";
+		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
+
 		String encodeQuery = "";
 
 		try {
@@ -683,6 +786,7 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success
 			int responseCode = con.getResponseCode();
+			System.out.println("RESPONSE: " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -697,15 +801,15 @@ public class Controller {
 				// returns the formatted json
 				return response.toString();
 			} else {
-				return "GET request did not work";
+				return "GET request not worked";
 			}
 		} catch (MalformedURLException e) {
-			System.out.println("MalformedUrlException");
-			return "MalformedUrlException";
+			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("IOException");
-			return "IOException";
+			e.printStackTrace();
 		}
+		// request did not work because an exception was thrown
+		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
@@ -730,6 +834,7 @@ public class Controller {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
 				thumbnailLinks.add(thumbnailLink);
+				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
