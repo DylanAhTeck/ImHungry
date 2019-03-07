@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-hello\Result.class
-hello\Recipe.class
-hello\Application.class
-hello\ListManager.class
-hello\Restaurant.class
-hello\Controller.class
-=======
 hello/ListManager.class
 hello/Controller.class
 hello/Application.class
 hello/Result.class
 hello/Restaurant.class
 hello/Recipe.class
->>>>>>> f9969bbd120bc480645cc2b39b14dacb60367d13
