@@ -158,30 +158,58 @@
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
-        let parameters =
-          "itemToMoveId=" +
-          JSONObj[listNameParameter][idx].uniqueId +
-          "&originListName=" +
-          listNameParameter +
-          "&targetListName=" +
-          "doNotShow"; // Change later
-        xhttp.open(
-          "GET",
-          "http://localhost:8080/moveBetweenLists?" + parameters,
-          true
-        );
-        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-        xhttp.onreadystatechange = function() {
-          if (xhttp.readyState == 4 && xhttp.status == 200) {
-            if (xhttp.responseText) {
-              console.log(this.responseText);
-              location.reload();
+        let moveDest = document.getElementById(
+          "move-select-" + JSONObj[listNameParameter][idx].uniqueId
+        ).value;
+        let moveDestParam = getListNameParameter(moveDest);
+        if (moveDestParam != "") {
+          let parameters =
+            "itemToMoveId=" +
+            JSONObj[listNameParameter][idx].uniqueId +
+            "&originListName=" +
+            listNameParameter +
+            "&targetListName=" +
+            moveDestParam;
+          xhttp.open(
+            "GET",
+            "http://localhost:8080/moveBetweenLists?" + parameters,
+            true
+          );
+          xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+          xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              if (xhttp.responseText) {
+                console.log(this.responseText);
+                location.reload();
+              }
             }
-          }
-        };
-        xhttp.send();
+          };
+          xhttp.send();
+        }
       };
+      let newMoveSelect = document.createElement("select");
+      newMoveSelect.className = "custom-select";
+      newMoveSelect.id =
+        "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
+      let chooseOneOption = document.createElement("option");
+      chooseOneOption.selected = true;
+      chooseOneOption.innerHTML = "Choose List...";
+      let toExploreOption = document.createElement("option");
+      toExploreOption.value = "To Explore";
+      toExploreOption.innerHTML = "To Explore";
+      let favoritesOption = document.createElement("option");
+      favoritesOption.value = "Favorites";
+      favoritesOption.innerHTML = "Favorites";
+      let doNotShowOption = document.createElement("option");
+      doNotShowOption.value = "Do Not Show";
+      doNotShowOption.innerHTML = "Do Not Show";
+      newMoveSelect.appendChild(chooseOneOption);
+      newMoveSelect.appendChild(toExploreOption);
+      newMoveSelect.appendChild(favoritesOption);
+      newMoveSelect.appendChild(doNotShowOption);
+      newMoveCol.appendChild(newMoveSelect);
       newMoveCol.appendChild(newMoveIcon);
+      newMoveCol.style.flexDirection = "column";
 
       let newCard = document.createElement("div");
 
@@ -288,30 +316,58 @@
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
-        let parameters =
-          "itemToMoveId=" +
-          JSONObj[listNameParameter][idx].uniqueId +
-          "&originListName=" +
-          listNameParameter +
-          "&targetListName=" +
-          "doNotShow"; // Change later
-        xhttp.open(
-          "GET",
-          "http://localhost:8080/moveBetweenLists?" + parameters,
-          true
-        );
-        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-        xhttp.onreadystatechange = function() {
-          if (xhttp.readyState == 4 && xhttp.status == 200) {
-            if (xhttp.responseText) {
-              console.log(this.responseText);
-              location.reload();
+        let moveDest = document.getElementById(
+          "move-select-" + JSONObj[listNameParameter][idx].uniqueId
+        ).value;
+        let moveDestParam = getListNameParameter(moveDest);
+        if (moveDestParam != "") {
+          let parameters =
+            "itemToMoveId=" +
+            JSONObj[listNameParameter][idx].uniqueId +
+            "&originListName=" +
+            listNameParameter +
+            "&targetListName=" +
+            moveDestParam; // Change later
+          xhttp.open(
+            "GET",
+            "http://localhost:8080/moveBetweenLists?" + parameters,
+            true
+          );
+          xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+          xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              if (xhttp.responseText) {
+                console.log(this.responseText);
+                location.reload();
+              }
             }
-          }
-        };
-        xhttp.send();
+          };
+          xhttp.send();
+        }
       };
+      let newMoveSelect = document.createElement("select");
+      newMoveSelect.className = "custom-select";
+      newMoveSelect.id =
+        "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
+      let chooseOneOption = document.createElement("option");
+      chooseOneOption.selected = true;
+      chooseOneOption.innerHTML = "Choose List...";
+      let toExploreOption = document.createElement("option");
+      toExploreOption.value = "To Explore";
+      toExploreOption.innerHTML = "To Explore";
+      let favoritesOption = document.createElement("option");
+      favoritesOption.value = "Favorites";
+      favoritesOption.innerHTML = "Favorites";
+      let doNotShowOption = document.createElement("option");
+      doNotShowOption.value = "Do Not Show";
+      doNotShowOption.innerHTML = "Do Not Show";
+      newMoveSelect.appendChild(chooseOneOption);
+      newMoveSelect.appendChild(toExploreOption);
+      newMoveSelect.appendChild(favoritesOption);
+      newMoveSelect.appendChild(doNotShowOption);
+      newMoveCol.appendChild(newMoveSelect);
       newMoveCol.appendChild(newMoveIcon);
+      newMoveCol.style.flexDirection = "column";
 
       let newCard = document.createElement("div");
       newCard.id = JSONObj[listNameParameter][idx].uniqueId;
