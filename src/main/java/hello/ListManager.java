@@ -30,22 +30,54 @@ public class ListManager {
 		if (itemToAdd == null) {
 			return false;
 		}
-		
+
+		System.out.println("DUPLICATE: " + itemToAdd.uniqueId + " / " + itemInList(itemToAdd, targetListName));
+
 		if (targetListName.equals("favorites")) {
-			favorites.add(itemToAdd);
+			if(!itemInList(itemToAdd, targetListName)) {
+				favorites.add(itemToAdd);
+			}
 			return true;
 		}
 		else if (targetListName.equals("toExplore")) {
-			toExplore.add(itemToAdd);
+			if(!itemInList(itemToAdd, targetListName)) {
+				toExplore.add(itemToAdd);
+			}
 			return true;
 		}
 		else if (targetListName.equals("doNotShow")) {
-			doNotShow.add(itemToAdd);
+			if(!itemInList(itemToAdd, targetListName)) {
+				doNotShow.add(itemToAdd);
+			}
 			return true;
 		}
 		else {
 			return false;
 		}
+	}
+
+	public boolean itemInList(Result itemToAdd, String listName) {
+		if(listName.equals("favorites")) {
+			for(Result item : favorites) {
+				if (item.uniqueId.equals(itemToAdd.uniqueId)) {
+					return true;
+				}
+			}
+		} else if(listName.equals("toExplore")) {
+			for(Result item : toExplore) {
+				if(item.uniqueId.equals(itemToAdd.uniqueId)) {
+					return true;
+				}
+			}
+		} else if(listName.equals("doNotShow")) {
+			for(Result item : doNotShow) {
+				if (item.uniqueId.equals(itemToAdd.uniqueId)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 
@@ -78,7 +110,7 @@ public class ListManager {
 		if (uniqueId == null || originListName == null) {
 			return null;
 		}
-		
+
 		Result itemToRemove = null;
 		// if toMove originates in favorites list
 		if (originListName.equals("favorites")) {

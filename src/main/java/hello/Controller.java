@@ -655,7 +655,7 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success
 			int responseCode = con.getResponseCode();
-
+			System.out.println("RESPONSE: " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
