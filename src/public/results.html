@@ -179,7 +179,7 @@
         let restaurantDistance = document.createElement('h6');
         restaurantName.className = "card-title";
         restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
-        restaurantDistance.innerHTML = JSONObj.restaurants[idx]['drivingTime'];
+        restaurantDistance.innerHTML = "Driving Time: " + JSONObj.restaurants[idx]['drivingTime'];
         newNameCol.appendChild(restaurantName);
         newNameCol.appendChild(restaurantDistance);
 
@@ -195,7 +195,11 @@
         let restaurantPrice = document.createElement('h6');
         restaurantPrice.className = "card-title";
         let restaurantPriceLevel = JSONObj.restaurants[idx]['priceLevel'];
-        restaurantPrice.innerHTML = restaurantPriceLevel + `<i class="fas fa-dollar-sign"></i>`;
+        let priceString = "";
+        for (let i = 0; i < restaurantPriceLevel; i++) {
+          priceString += `<i class="fas fa-dollar-sign"></i>`;
+        }
+        restaurantPrice.innerHTML = priceString;
         newPriceCol.appendChild(restaurantPrice);
 
         newRow.appendChild(newNameCol);
@@ -236,7 +240,7 @@
         let recipePrepTime = document.createElement('h6');
         recipeName.className = "card-title";
         recipeName.innerHTML = JSONObj.recipes[idx]['name'];
-        recipePrepTime.innerHTML = JSONObj.recipes[idx]['prepTime'] + " mins";
+        recipePrepTime.innerHTML = "Prep Time: " + JSONObj.recipes[idx]['prepTime'] + " mins";
         newNameCol.appendChild(recipeName);
         newNameCol.appendChild(recipePrepTime);
 
@@ -245,7 +249,7 @@
         recipeRating.clasName = "card-title";
         let recipeRatingValue = (JSONObj.recipes[idx]['rating']/100)*5;
         recipeRating.innerHTML = recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
-        recipeCookTime.innerHTML = JSONObj.recipes[idx]['cookTime'] + " mins";
+        recipeCookTime.innerHTML = "Cook Time: " + JSONObj.recipes[idx]['cookTime'] + " mins";
         newRatingCol.appendChild(recipeRating);
         newRatingCol.appendChild(recipeCookTime);
 
