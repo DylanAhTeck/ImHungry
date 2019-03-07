@@ -175,7 +175,9 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
-
+		
+		//ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+		//ArrayList<String> collageURLs = new ArrayList<String>();
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
@@ -401,15 +403,14 @@ public class Controller {
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
-		String address = "unknown";
-		if(result.has("formatted_address")) {
-			address = result.getString("formatted_address");
-		}
+		String address = result.getString("formatted_address");
 
-		String phone = "unknown";
-		if(result.has("formatted_phone_number")) {
-			phone = result.getString("formatted_phone_number");
-		}
+		String phone = result.getString("formatted_phone_number");
+//		if(result.has("formatted_phone_number")) {
+//			phone = result.getString("formatted_phone_number");
+//		} else {
+//			System.out.println("no info");
+//		}
 
 		String website = "unknown";
 		if(result.has("website")) {
@@ -445,7 +446,7 @@ public class Controller {
 	    for(Result result: listManager.getdoNotShow()) {
 	    	doNotShow += result.getUniqueId();
 	    }
-
+	    
 	    for(Result result: listManager.getFavorites()) {
 	    	fav += result.getUniqueId();
 	    }
@@ -494,7 +495,16 @@ public class Controller {
 	    }
 		return restaurants;
 	}
-
+	
+	//only for testing purposes
+	public void setFav(ArrayList<Result> list){
+		listManager.setFavorites(list);
+	}
+	
+	//only for testing purposes
+	public void setDoNotShow(ArrayList<Result> list){
+		listManager.setDoNotShow(list);
+	}
 
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
 	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
