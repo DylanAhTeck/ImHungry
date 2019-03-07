@@ -35,6 +35,12 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
+	
+	// used for Google Images Searching
+	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+	public final String cx = "008434952456518231152:6_jh7_s5v-g";
+	public final String searchType = "image";
+	public final String key = "AIzaSyDiTKuGgmBVVUmf-gHBArAT7eXjJK7FKHI";
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
@@ -182,8 +188,8 @@ public class Controller {
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
+		
 		ArrayList<String> collageURLs = createCollage(searchQuery);
-
 
 		try {
 			// using readtree to set these as json nodes
@@ -646,12 +652,6 @@ public class Controller {
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
-
-		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
-		final String cx = "001349756157526882706%3An5pmkqrjpfc";
-		final String searchType = "image";
-		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
-
 		String encodeQuery = "";
 
 		try {
@@ -683,7 +683,6 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success
 			int responseCode = con.getResponseCode();
-			System.out.println("RESPONSE: " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -698,15 +697,15 @@ public class Controller {
 				// returns the formatted json
 				return response.toString();
 			} else {
-				return "GET request not worked";
+				return "GET request did not work";
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			System.out.println("MalformedUrlException");
+			return "MalformedUrlException";
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("IOException");
+			return "IOException";
 		}
-		// request did not work because an exception was thrown
-		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
@@ -731,7 +730,6 @@ public class Controller {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
 				thumbnailLinks.add(thumbnailLink);
-				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();

@@ -44,6 +44,7 @@ public class Restaurant extends Result {
 		} catch (JsonProcessingException exception) {
 			System.out.println(exception);
 		}
+		System.out.println(jsonString);
 		JSONObject json = new JSONObject(jsonString);
 		return json;
 
