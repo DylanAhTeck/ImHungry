@@ -1,13 +1,20 @@
 import static org.junit.Assert.*;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestController {
+import hello.Controller;
 
-	@Test
-	public void test() {
-		fail("Not yet implemented");
+public class TestController {
+	
+	private static Controller controller;
+
+	@BeforeClass
+	public static void setup() {
+		controller = new Controller();
 	}
+	
+	//TODO: implement each method
 	
 	@Test
 	public void testRetrieveRestaurants() {
