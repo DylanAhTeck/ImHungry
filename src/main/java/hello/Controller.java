@@ -406,11 +406,15 @@ public class Controller {
 		String address = "unknown";
 		if(result.has("formatted_address")) {
 			address = result.getString("formatted_address");
+		} else {
+			System.out.println("no info");
 		}
 
 		String phone = "unknown";
 		if(result.has("formatted_phone_number")) {
 			phone = result.getString("formatted_phone_number");
+		} else {
+			System.out.println("no info");
 		}
 
 		String website = "unknown";

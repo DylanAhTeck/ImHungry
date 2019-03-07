@@ -18,8 +18,8 @@ public class TestController {
 	
 	@Test
 	public void testRetrieveRestaurants() {
-		String query = "burger";
-		int numResults = 2;
+		String query = "asian";
+		int numResults = 10;
 		controller.handleSearchRequest("null", numResults);
 		controller.handleSearchRequest(query, numResults);
 	}
