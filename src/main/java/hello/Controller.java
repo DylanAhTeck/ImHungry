@@ -188,16 +188,13 @@ public class Controller {
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
 		
-		// NOTE: NEED UNCOMMENT THIS OUT LATER
-		//ArrayList<String> collageURLs = createCollage(searchQuery);
-
+		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 		try {
 			// using readtree to set these as json nodes
 			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
 			((ObjectNode) rootNode).set("restaurants", mapper.readTree(mapper.writeValueAsString(restaurants)));
-			// NOTE: NEED UNCOMMENT THIS OUT LATER
-			//((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
+			((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
 
 			return mapper.writeValueAsString(rootNode);
 
