@@ -27,6 +27,10 @@ public class ListManager {
 
 	// returns whether item was added successfully to list
 	public boolean addToList(Result itemToAdd, String targetListName) {
+		if (itemToAdd == null) {
+			return false;
+		}
+		
 		if (targetListName.equals("favorites")) {
 			favorites.add(itemToAdd);
 			return true;
@@ -63,12 +67,18 @@ public class ListManager {
 		// target list is doNotDisturb
 		else if (targetListName.equals("doNotShow")) {
 			doNotShow.add(itemToMove);
+		} else {
+			return false;
 		}
 		return true;
 	}
 
 	// given uniqueId of item to remove and origin list, removes object from list and returns it
 	public Result removeFromList(String uniqueId, String originListName) {
+		if (uniqueId == null || originListName == null) {
+			return null;
+		}
+		
 		Result itemToRemove = null;
 		// if toMove originates in favorites list
 		if (originListName.equals("favorites")) {
