@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.Collections;
 
@@ -636,7 +637,7 @@ public class Controller {
 
     		}
 
-				Collections.sort(recipes);
+			Collections.sort(recipes);
     		return recipes;
 
 

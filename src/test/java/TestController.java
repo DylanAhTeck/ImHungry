@@ -51,6 +51,12 @@ public class TestController {
 //		//fail("Not yet implemented");
 //	}
 //	
+	
+	@Test 
+	public void testAddItemToFavorites() {
+		//controller.addItemToFavorites("123456");
+	}
+	
 	// NEED TO TEST UnsupportedEncodingException
 	// ASSERT STATEMENT IS STRANGELY HIT AND MISS CURRENTLY
 	@Test
