@@ -23,7 +23,7 @@
             <div class="controls">
               <div class="input-group">
                 <select class="custom-select" id="list-select">
-                  <option selected>Choose List...</option>
+                  <option selected></option>
                   <option value="To Explore">To Explore</option>
                   <option value="Favorites">Favorites</option>
                   <option value="Do Not Show">Do Not Show</option>
@@ -36,12 +36,12 @@
                   Manage List
                 </button>
                 <a href="results.html">
-                  <button type="button" class="btn btn-secondary">
+                  <button type="button" class="btn btn-secondary" id="backToResultsButton">
                     Back to Results
                   </button>
                 </a>
                 <a href="search.html">
-                  <button type="button" class="btn btn-secondary">
+                  <button type="button" class="btn btn-secondary" id="backToSearchButton">
                     Back to Search
                   </button>
                 </a>
@@ -65,7 +65,7 @@
 
     document.getElementById("manage-list").onclick = function() {
       let listName = document.getElementById("list-select").value;
-      if (listName !== "Choose List..." && listName !== "") {
+      if (listName !== "") {
         sessionStorage.setItem("listName", listName);
         location.href = "manage.html";
       } else {
@@ -195,7 +195,7 @@
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
       chooseOneOption.selected = true;
-      chooseOneOption.innerHTML = "Choose List...";
+      chooseOneOption.innerHTML = "";
       let toExploreOption = document.createElement("option");
       toExploreOption.value = "To Explore";
       toExploreOption.innerHTML = "To Explore";
@@ -353,7 +353,7 @@
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
       chooseOneOption.selected = true;
-      chooseOneOption.innerHTML = "Choose List...";
+      chooseOneOption.innerHTML = "";
       let toExploreOption = document.createElement("option");
       toExploreOption.value = "To Explore";
       toExploreOption.innerHTML = "To Explore";
