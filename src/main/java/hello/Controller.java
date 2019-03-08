@@ -9,9 +9,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -528,7 +528,6 @@ public class Controller {
 		    	} else {
 		    		restaurants.add(restaurant);
 		    	}
-		    	System.out.println(restaurant);
 	    	} else {
 	    	    size++;
 	    	}
@@ -614,7 +613,7 @@ public class Controller {
     		// now that we have all the recipes and their IDs, we need to go get the individual info for them....
 
     		for (Recipe recipe : recipes) {
-    			System.out.println("retrieving information for recipe id: " + recipe.getUniqueId());
+//    			System.out.println("retrieving information for recipe id: " + recipe.getUniqueId());
     			response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeID}/information")
 					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
 					.routeParam("recipeID", recipe.getUniqueId())
@@ -723,7 +722,6 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success
 			int responseCode = con.getResponseCode();
-			System.out.println("RESPONSE: " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -734,7 +732,7 @@ public class Controller {
 				}
 				in.close();
 				// print result
-				System.out.println(response.toString());
+//				System.out.println(response.toString());
 				// returns the formatted json
 				return response.toString();
 			} else {
@@ -750,6 +748,9 @@ public class Controller {
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
 		ArrayList<String> thumbnailLinks = new ArrayList<String>();
+		if (jsonResponse.equals("GET request not worked")) {
+			return thumbnailLinks;
+		}
 		JSONParser parser = new JSONParser();
 		try {
 			// obtains JSON to be parsed
@@ -768,7 +769,6 @@ public class Controller {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
 				thumbnailLinks.add(thumbnailLink);
-				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			System.out.println("ParserException");
