@@ -1,134 +1,190 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Recipe Page</title>
+  <head>
+    <title>Recipe Page</title>
 
-	<meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <meta
+      name="viewport"
+      charset="UTF-8"
+      content="width=device-width, initial-scale=1"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+      integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+      crossorigin="anonymous"
+    />
 
-	<link rel="stylesheet" type="text/css" href="recipe.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/recipe.css" />
+  </head>
+  <body onload="setData();">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-6">
+          <h1 class="mb-3" id="recipeTitle">Title of Recipe</h1>
+          <img
+            id="recipe-image"
+            class="img-fluid mb-4 border border-dark"
+            src="recipe_test_img.jpg"
+            alt="Recipe Image"
+          />
+          <p id="prepTime">Prep time:</p>
+          <p id="cookTime">Cook time:</p>
+        </div>
+        <div class="col-6">
+          <button
+            id="printable-version"
+            type="button"
+            class="btn btn-secondary mb-4"
+            onclick="window.print();"
+          >
+            Printable Version
+          </button>
+          <br />
+          <button
+            id="back-to-results"
+            type="button"
+            class="btn btn-secondary mb-4"
+            onclick="location.href='results.html'"
+          >
+            Back to Results
+          </button>
+          <br />
+          <select class="form-control mb-4" id="listDropdown">
+            <option value=""></option>
+            <option value="toExplore">To Explore</option>
+            <option value="favorites">Favorites</option>
+            <option value="doNotShow">Do Not Show</option>
+          </select>
+          <button
+            type="button"
+            class="btn btn-secondary mb-4"
+            onclick="addToList();"
+          >
+            Add to list
+          </button>
+        </div>
+      </div>
 
-</head>
-<body onload="setData();">
-	<div class="container mt-5">
-		<div class="row">
-			<div class="col-6">
-				<h1 class="mb-3" id="recipeTitle">Title of Recipe</h1>
-				<img class="img-fluid mb-4 border border-dark" src="recipe_test_img.jpg" alt="Recipe Image"/>
-				<p id="prepTime">Prep time:</p>
-				<p id="cookTime">Cook time:</p>
-			</div>
-			<div class="col-6">
-				<button type="button" class="btn btn-secondary mb-4" id="printButton" onclick="window.print();">Printable Version</button>
-				<br />
-				<button type="button" class="btn btn-secondary mb-4" id="backToResultsButton" onclick="location.href='results.html'">Back to Results</button>
-				<br />
-				<select class="form-control mb-4" id="listDropdown">
-					<option value=""></option>
-					<option value="toExplore">To Explore</option>
-					<option value="favorites">Favorites</option>
-					<option value="doNotShow">Do Not Show</option>
-				</select>
-				<button type="button" class="btn btn-secondary mb-4" id="addToListButton" onclick="addToList();">Add to list</button>
-			</div>
-		</div>
+      <div class="row">
+        <div class="col-6"><h1 class="mb-3">Ingredients</h1></div>
+      </div>
+      <div class="row">
+        <br />
+        <div class="col-6"><ul id="firstIngredientsList"></ul></div>
+        <div class="col-6"><ul id="secondIngredientsList"></ul></div>
+      </div>
 
-		<div class="row">
-			<div class="col-6">
-				<h1 class="mb-3">Ingredients</h1>
-			</div>
-		</div>
-		<div class="row">
-			<br />
-			<div class="col-6">
-				<ul id="firstIngredientsList"></ul>
-			</div>
-			<div class="col-6">
-				<ul id="secondIngredientsList"></ul>
-			</div>
-		</div>
+      <div class="row">
+        <div class="col-6"><h1 class="mb-3">Instructions</h1></div>
+      </div>
+      <div class="row">
+        <br />
+        <div class="col-12"><ol id="instructionsList"></ol></div>
+      </div>
+    </div>
 
-		<div class="row">
-			<div class="col-6">
-				<h1 class="mb-3">Instructions</h1>
-			</div>
-		</div>
-		<div class="row">
-			<br />
-			<div class="col-12">
-				<ol id="instructionsList"></ol>
-			</div>
-		</div>
-	</div>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+      crossorigin="anonymous"
+    ></script>
 
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script>
+      var uniqueId;
 
-	<script>
-		var uniqueId;
+      function setData() {
+        let currentItem = JSON.parse(sessionStorage.getItem("currentItem"));
+        uniqueId = currentItem.uniqueId;
 
-		function setData() {
-			let currentItem = JSON.parse(sessionStorage.getItem('currentItem'));
-			uniqueId = currentItem.uniqueId;
+        // Set the recipe title
+        let recipeTitle = currentItem.name;
+        document.getElementById("recipeTitle").innerHTML = recipeTitle;
 
-			// Set the recipe title
-			let recipeTitle = currentItem.name;
-			document.getElementById("recipeTitle").innerHTML = recipeTitle;
+        // Set the prep time and cook time
+        let prepTime = currentItem.prepTime;
+        if (prepTime == 1) prepTime = prepTime + " minute";
+        else prepTime = prepTime + " minutes";
+        document.getElementById("prepTime").innerHTML =
+          "Prep time: " + prepTime;
+        let cookTime = currentItem.cookTime;
+        if (cookTime == 1) cookTime = cookTime + " minute";
+        else cookTime = cookTime + " minutes";
+        document.getElementById("cookTime").innerHTML =
+          "Cook time: " + cookTime;
 
-			// Set the prep time and cook time
-			let prepTime = currentItem.prepTime;
-			if (prepTime == 1) prepTime = prepTime + " minute";
-			else prepTime = prepTime + " minutes";
-			document.getElementById("prepTime").innerHTML = "Prep time: " + prepTime;
-			let cookTime = currentItem.cookTime;
-			if (cookTime == 1) cookTime = cookTime + " minute";
-			else cookTime = cookTime + " minutes";
-			document.getElementById("cookTime").innerHTML = "Cook time: " + cookTime;
+        // Set the ingredients
+        let ingredients = currentItem.ingredients;
+        let firstIngredientsListSize = Math.round(ingredients.length / 2);
+        let firstIngredientsList = document.getElementById(
+          "firstIngredientsList"
+        );
 
-			// Set the ingredients
-			let ingredients = currentItem.ingredients;
-			let firstIngredientsListSize = Math.round(ingredients.length / 2);
-			let firstIngredientsList = document.getElementById("firstIngredientsList");
+        for (let i = 0; i < firstIngredientsListSize; i++) {
+          let listElement = document.createElement("li");
+          listElement.className = "mb-2";
+          listElement.appendChild(document.createTextNode(ingredients[i]));
+          firstIngredientsList.appendChild(listElement);
+        }
 
-			for(let i = 0; i < firstIngredientsListSize; i++) {
-				let listElement = document.createElement("li");
-				listElement.className = "mb-2";
-				listElement.appendChild(document.createTextNode(ingredients[i]));
-				firstIngredientsList.appendChild(listElement);
-			}
+        let secondIngredientsList = document.getElementById(
+          "secondIngredientsList"
+        );
+        for (let i = firstIngredientsListSize; i < ingredients.length; i++) {
+          let listElement = document.createElement("li");
+          listElement.className = "mb-2";
+          listElement.appendChild(document.createTextNode(ingredients[i]));
+          secondIngredientsList.appendChild(listElement);
+        }
 
-			let secondIngredientsList = document.getElementById("secondIngredientsList");
-			for(let i = firstIngredientsListSize; i < ingredients.length; i++) {
-				let listElement = document.createElement("li");
-				listElement.className = "mb-2";
-				listElement.appendChild(document.createTextNode(ingredients[i]));
-				secondIngredientsList.appendChild(listElement);
-			}
+        // Set the instructions
+        let instructions = currentItem.instructions;
+        let instructionsList = document.getElementById("instructionsList");
+        for (let i = 0; i < instructions.length; i++) {
+          let listElement = document.createElement("li");
+          listElement.className = "mb-2";
+          listElement.appendChild(document.createTextNode(instructions[i]));
+          instructionsList.appendChild(listElement);
+        }
+      }
 
-			// Set the instructions
-			let instructions = currentItem.instructions;
-			let instructionsList = document.getElementById("instructionsList");
-			for(let i = 0; i < instructions.length; i++) {
-				let listElement = document.createElement("li");
-				listElement.className = "mb-2";
-				listElement.appendChild(document.createTextNode(instructions[i]));
-				instructionsList.appendChild(listElement);
-			}
-		}
-
-		function addToList() {
-			let parameters = "targetListName=" + document.getElementById("listDropdown").value + 
-				"&itemToAddId=" + uniqueId;
-			var xhttp = new XMLHttpRequest();
-			xhttp.open('GET', "http://localhost:8080/addToList?" + parameters, true);
-			xhttp.onreadystatechange = function () {
-				console.log("Success!"); // Replace this with whatever confirmation feature we agree on TODO
-			}
-			xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xhttp.send();
-		}
-	</script>
-</body>
+      function addToList() {
+        let parameters =
+          "targetListName=" +
+          document.getElementById("listDropdown").value +
+          "&itemToAddId=" +
+          uniqueId;
+        var xhttp = new XMLHttpRequest();
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/addToList?" + parameters,
+          true
+        );
+        xhttp.onreadystatechange = function() {
+          console.log("Success!"); // Replace this with whatever confirmation feature we agree on TODO
+        };
+        xhttp.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhttp.send();
+      }
+    </script>
+  </body>
 </html>
