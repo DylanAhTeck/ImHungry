@@ -190,7 +190,7 @@
         }
       };
       let newMoveSelect = document.createElement("select");
-      newMoveSelect.className = "custom-select";
+      newMoveSelect.className = "custom-select move_select_" + currentIndex;
       newMoveSelect.id =
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
@@ -348,7 +348,7 @@
         }
       };
       let newMoveSelect = document.createElement("select");
-      newMoveSelect.className = "custom-select";
+      newMoveSelect.className = "custom-select move_select_" + currentIndex;
       newMoveSelect.id =
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
