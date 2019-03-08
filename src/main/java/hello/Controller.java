@@ -188,8 +188,8 @@ public class Controller {
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		
 		ArrayList<String> collageURLs = createCollage(searchQuery);
+
 
 		try {
 			// using readtree to set these as json nodes
@@ -250,6 +250,7 @@ public class Controller {
 //		String favoritesString = listManager.getFavorites().toString();
 //		return "favorites: " + favoritesString;
 //	}
+
 
 	@RequestMapping("/addToList")
 	@CrossOrigin
@@ -334,6 +335,32 @@ public class Controller {
 	// NOTE: This is where the actual work happens.  //
 	// 												 //
 	///////////////////////////////////////////////////
+
+
+	// public String getTestRecipeString() {
+
+	// 	ArrayList<String> ingredients = new ArrayList<String>();
+	// 	ingredients.add("1 oz ham");
+	// 	ingredients.add("2oz cheese");
+	// 	ingredients.add("2 slices bread");
+
+	// 	ArrayList<String> instructions = new ArrayList<String>();
+	// 	instructions.add("1. do the thing");
+	// 	instructions.add("2. finish the thing");
+
+	// 	Recipe r = new Recipe("1");
+	// 	r.setIngredients(ingredients);
+	// 	r.setName("best recipe");
+	// 	r.setSourceURL("http://localhost:1000");
+	// 	r.setPrepTime(40);
+	// 	r.setInstructions(instructions);
+	// 	r.setRating(2);
+
+	// 	r.setCookTime(20);
+
+	// 	return r.writeToJSON();
+
+	// }
 
 //	public String getTestRecipeString() {
 //
@@ -576,6 +603,7 @@ public class Controller {
 					}
 					if(!doNotShow.contains(r.getUniqueId())) {
 						if(fav.contains(r.getUniqueId())) {
+							r.setAsFavorite();
 							recipes.add(0, r);
 						} else {
 							recipes.add(r);
@@ -658,6 +686,12 @@ public class Controller {
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
+
+		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
+		final String cx = "001349756157526882706%3An5pmkqrjpfc";
+		final String searchType = "image";
+		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
+
 		String encodeQuery = "";
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
@@ -689,6 +723,7 @@ public class Controller {
 			con.setRequestMethod("GET");
 			// response code == 200 means success
 			int responseCode = con.getResponseCode();
+			System.out.println("RESPONSE: " + responseCode);
 			if (responseCode == HttpURLConnection.HTTP_OK) { // success
 				// reads data from response
 				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -703,13 +738,8 @@ public class Controller {
 				// returns the formatted json
 				return response.toString();
 			} else {
-				return "GET request did not work";
+				return "GET request not worked";
 			}
-		} catch (IOException e) {
-			System.out.println("IOException");
-			return "IOException";
-		}
-	
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
@@ -734,6 +764,7 @@ public class Controller {
 				org.json.simple.JSONObject resultItem = (org.json.simple.JSONObject) iterator.next();
 				String thumbnailLink = (String) resultItem.get("link");
 				thumbnailLinks.add(thumbnailLink);
+				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			System.out.println("ParserException");

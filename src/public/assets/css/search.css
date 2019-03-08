@@ -48,19 +48,6 @@ h1 {
   cursor: pointer;
 }
 
-.button:hover .icon-hover {
-  opacity: 1;
-  transform: rotate(45deg);
-}
-
-.button:hover .icon-default {
-  opacity: 0;
-}
-
-.button:hover h3 {
-  left: 30%;
-}
-
 .button h3 {
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
