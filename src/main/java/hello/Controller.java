@@ -566,9 +566,14 @@ public class Controller {
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 
 		String doNotShow = "", fav = "";
+		int numExtra = 0;
 
 		for(Result result: listManager.getdoNotShow()) {
-			doNotShow += result.getUniqueId();
+			if(result.getUniqueId().matches("[0-9]+")) {
+				doNotShow += result.getUniqueId();
+				numExtra += 1;
+			}
+
 		}
 
 		for(Result result: listManager.getFavorites()) {
@@ -579,7 +584,7 @@ public class Controller {
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
 					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
 					.queryString("query", searchQuery)
-					.queryString("number", numResults + listManager.getdoNotShow().size())
+					.queryString("number", numResults + numExtra)
 					.asJson();
 
 
