@@ -54,11 +54,24 @@ public class TestController {
 		controller.retrieveRestaurants(query, numResults);
 	}
 	
-//	@Test
-//	public void testRetrieveRecipes() {
-//		//fail("Not yet implemented");
-//	}
-//	
+	@Test
+	public void testRetrieveRecipes() {
+		String query = "burger"; // do not change the query
+		int numResults = 20;
+		
+		Result fav = new Result("449835");
+		ArrayList<Result> favorite = new ArrayList<Result>();
+		favorite.add(fav);
+		Result not = new Result("669071");
+		ArrayList<Result> doNotShow = new ArrayList<Result>();
+		doNotShow.add(not);
+		controller.setDoNotShow(doNotShow);
+		controller.setFav(favorite);
+		controller.retrieveRecipes("null", numResults);
+		controller.retrieveRecipes(query, 1);
+		controller.retrieveRecipes(query, numResults);
+	}
+	
 	@Test 
 	public void testHandleGetResult() {
 		// test for invalid parameters 
