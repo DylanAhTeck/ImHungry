@@ -52,200 +52,127 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
-	@RequestMapping("/test")
-	@CrossOrigin
-	public String handleTestRequest() {
-		return "Look's like you're up and running!";
-	}
-
-
-	// @RequestMapping("/testCollage")
-	// @CrossOrigin
- //    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
- //        ArrayList<String> imageURLs = createCollage(searchQuery);
- //        return imageURLs.toString();
- //    }
-
-	// @RequestMapping("/testRestaurant")
-	// @CrossOrigin
-	// public void handleTestRecipeRestaurant() {
-	// 	try {
-	// 		retrieveRestaurants("cream", 25);
-	// 	} catch (IOException e) {
-	// 		// TODO Auto-generated catch block
-	// 		e.printStackTrace();
-	// 	}
-	// }
-
-	// @RequestMapping("/testAddToList")
-	// @CrossOrigin
-	// public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
-	// 	ListManager m = new ListManager();
-
-	// 	// quick test of add to list
-	// 	m.addToList(new Result(uniqueId), targetList);
-	// 	ArrayList<Result> favorites = m.getFavorites();
-	// 	if (favorites.get(0).uniqueId.equals(uniqueId)) {
-	// 		System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
-	// 	} else {
-	// 		System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
-	// 	}
-	// 	// move Result from one list to another
-	// 	m.moveBetweenLists(uniqueId, "favorites", "toExplore");
-	// 	if (favorites.size() == 0) {
-	// 		System.out.println("<" + uniqueId + "> was removed from favorites");
-	// 	} else {
-	// 		System.out.println("<" + uniqueId + "> was NOT removed from favorites");
-	// 	}
-	// 	if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
-	// 		System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
-	// 	} else {
-	// 		System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
-	// 	}
-	// 	// remove Result from toExplore
-	// 	m.removeFromList(uniqueId, "toExplore");
-	// 	if (m.getToExplore().size() == 0) {
-	// 		System.out.println("<" + uniqueId + "> was removed from toExplore");
-	// 	}
-	// }
-
-
-	// @RequestMapping("/testRecipe")
-	// public String handleTestRecipeRequest() {
-	// 	return getTestRecipeString();
-	// }
-
-
-	// // creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
-	// // a query which has "uniqueId" set to "test" should retrieve this result.
-	// @RequestMapping("/testGetResult")
-	// public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
-
-	// 	ObjectMapper mapper = new ObjectMapper();
-	// 	mostRecentRecipes.add(new Recipe("test"));
-
-	// 	String resultString = "";
-	// 	try {
-	// 		resultString = mapper.writeValueAsString(getResult(uniqueId));
-	// 	} catch (JsonProcessingException e) {
-	// 		System.out.println(e);
-	// 	}
-
-	// 	return resultString;
-	// }
-
-	@RequestMapping("/testCollage")
-	@CrossOrigin
-    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
-        ArrayList<String> imageURLs = createCollage(searchQuery);
-        return imageURLs.toString();
-    }
-
-	@RequestMapping("/testRestaurant")
-	@CrossOrigin
-	public void handleTestRecipeRestaurant() {
-		try {
-			retrieveRestaurants("cream", 25);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@RequestMapping("/testAddToList")
-	@CrossOrigin
-	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
-		ListManager m = new ListManager();
-
-		// quick test of add to list
-		m.addToList(new Result(uniqueId), targetList);
-		ArrayList<Result> favorites = m.getFavorites();
-		if (favorites.get(0).uniqueId.equals(uniqueId)) {
-			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
-		} else {
-			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
-		}
-		// move Result from one list to another
-		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
-		if (favorites.size() == 0) {
-			System.out.println("<" + uniqueId + "> was removed from favorites");
-		} else {
-			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
-		}
-		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
-			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
-		} else {
-			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
-		}
-		// remove Result from toExplore
-		m.removeFromList(uniqueId, "toExplore");
-		if (m.getToExplore().size() == 0) {
-			System.out.println("<" + uniqueId + "> was removed from toExplore");
-		}
-
-	}
-
+//	@RequestMapping("/test")
+//	@CrossOrigin
+//	public String handleTestRequest() {
+//		return "Look's like you're up and running!";
+//	}
+//
+//	@RequestMapping("/testCollage")
+//	@CrossOrigin
+//    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+//        ArrayList<String> imageURLs = createCollage(searchQuery);
+//        return imageURLs.toString();
+//    }
+//
+//	@RequestMapping("/testRestaurant")
+//	@CrossOrigin
+//	public void handleTestRecipeRestaurant() {
+//		try {
+//			retrieveRestaurants("cream", 25);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@RequestMapping("/testAddToList")
+//	@CrossOrigin
+//	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
+//		ListManager m = new ListManager();
+//
+//		// quick test of add to list
+//		m.addToList(new Result(uniqueId), targetList);
+//		ArrayList<Result> favorites = m.getFavorites();
+//		if (favorites.get(0).uniqueId.equals(uniqueId)) {
+//			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
+//		} else {
+//			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
+//		}
+//		// move Result from one list to another
+//		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
+//		if (favorites.size() == 0) {
+//			System.out.println("<" + uniqueId + "> was removed from favorites");
+//		} else {
+//			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
+//		}
+//		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
+//			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
+//		} else {
+//			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
+//		}
+//		// remove Result from toExplore
+//		m.removeFromList(uniqueId, "toExplore");
+//		if (m.getToExplore().size() == 0) {
+//			System.out.println("<" + uniqueId + "> was removed from toExplore");
+//		}
+//
+//	}
+//
 
 //	@RequestMapping("/testRecipe")
 //	public String handleTestRecipeRequest() {
 //		return getTestRecipeString();
 //	}
 
-
-	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
-	// a query which has "uniqueId" set to "test" should retrieve this result.
-	@RequestMapping("/testGetResult")
-	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
-
-		ObjectMapper mapper = new ObjectMapper();
-		mostRecentRecipes.add(new Recipe("test"));
-
-		String resultString = "";
-		try {
-			resultString = mapper.writeValueAsString(getResult(uniqueId));
-		} catch (JsonProcessingException e) {
-			System.out.println(e);
-		}
-
-		return resultString;
-	}
+//
+//	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
+//	// a query which has "uniqueId" set to "test" should retrieve this result.
+//	@RequestMapping("/testGetResult")
+//	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+//
+//		ObjectMapper mapper = new ObjectMapper();
+//		mostRecentRecipes.add(new Recipe("test"));
+//
+//		String resultString = "";
+//		try {
+//			resultString = mapper.writeValueAsString(getResult(uniqueId));
+//		} catch (JsonProcessingException e) {
+//			System.out.println(e);
+//		}
+//
+//		return resultString;
+//	}
 
 	// returns the JSON of the result object if it exists, null otherwise
 	@RequestMapping("/getResult")
 	public String handleGetResult(@RequestParam(defaultValue="null") String uniqueId) {
-
+		// tests for invalid parameters
+		if (uniqueId == null) return "uniqueId == null";
+		else if (uniqueId.equals("")) return "uniqueId is empty";
+		
 		ObjectMapper mapper = new ObjectMapper();
 
 		String resultString = "";
 		try {
 			resultString = mapper.writeValueAsString(getResult(uniqueId));
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) { // JSONProcessingException
 			System.out.println(e);
 		}
-
+		System.out.println(resultString);
 		return resultString;
 	}
 
-	// @RequestMapping("/testSearchRecipe")
-	// public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
-	// 	ObjectMapper mapper = new ObjectMapper();
-	// 	try {
-	// 		return mapper.writeValueAsString(retrieveRecipes(searchQuery, numResults));
-	// 	} catch (JsonProcessingException e){
-	// 		System.out.println("json processing exception when returning test recipe retrievals");
-	// 	}
-	// 	return "failure";
-	// }
+//	@RequestMapping("/testSearchRecipe")
+//	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
+//		ObjectMapper mapper = new ObjectMapper();
+//		try {
+//			return mapper.writeValueAsString(retrieveRecipes(searchQuery, numResults));
+//		} catch (JsonProcessingException e){
+//			System.out.println("json processing exception when returning test recipe retrievals");
+//		}
+//		return "failure";
+//	}
 
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
-		if (searchQuery.equals("null")) {
+		if (searchQuery == null) {
 			return "Thanks for searching!";
 		}
-
+		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
@@ -259,8 +186,6 @@ public class Controller {
 			System.out.println("ioexception retrieving restaurants");
 		}
 
-		//ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-		//ArrayList<String> collageURLs = new ArrayList<String>();
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
@@ -316,16 +241,17 @@ public class Controller {
 		}
 	}
 
-	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
-	// to the end of the favorites list.
-	// @RequestMapping("/addItemToFavorites")
-	// @CrossOrigin
-	// public String addItemToFavorites() {
-	// 	Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
-	// 	listManager.addToList(tempResult, "favorites");
-	// 	String favoritesString = listManager.getFavorites().toString();
-	// 	return "favorites: " + favoritesString;
-	// }
+//	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
+//	// to the end of the favorites list.
+//	@RequestMapping("/addItemToFavorites")
+//	@CrossOrigin
+//	public String addItemToFavorites() {
+//		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
+//		listManager.addToList(tempResult, "favorites");
+//		String favoritesString = listManager.getFavorites().toString();
+//		return "favorites: " + favoritesString;
+//	}
+
 
 	@RequestMapping("/addToList")
 	@CrossOrigin
@@ -372,31 +298,37 @@ public class Controller {
 			return "Couldn't find uniqueId";
 		}
 
-		boolean addSuccessful = listManager.addToList(toAdd, targetListName);
-		if (addSuccessful) {
-			return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
-		} else {
-			return "Failure adding: " + toAdd.getUniqueId() + " to list: " + targetListName + " (likely invalid targetListName)";
-		}
+		listManager.addToList(toAdd, targetListName);
+		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
-	// TODO: Need to write this.
 	@RequestMapping("/removeFromList")
 	@CrossOrigin
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
+		// checks for invalid parameters
+		if (itemToRemoveId == null) return "itemToRemoveId == null";
+		else if (itemToRemoveId.equals("")) return "itemToRemoveId is empty";
+		if (originListName == null) return "originListName == null";
+		else if (originListName.equals("")) return "originListName is empty";
+		// performs removal
 		listManager.removeFromList(itemToRemoveId, originListName);
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
-	// TODO: Need to write this.
 	@RequestMapping("/moveBetweenLists")
 	@CrossOrigin
 	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
+		// checks for invalid parameters 
+		if (itemToMoveId == null) return "itemToMoveId == null";
+		else if (itemToMoveId.equals("")) return "itemToMoveId is empty";
+		if (originListName == null) return "originListName == null";
+		else if (originListName.equals("")) return "originListName is empty";
+		if (targetListName == null) return "targetListName == null";
+		else if (targetListName.equals("")) return "targetListName is empty";
+		
 		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		return "Moved item:" + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
+		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
-
-
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -739,7 +671,7 @@ public class Controller {
 
     		}
 
-				Collections.sort(recipes);
+			Collections.sort(recipes);
     		return recipes;
 
 
@@ -762,11 +694,11 @@ public class Controller {
 		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
 
 		String encodeQuery = "";
-
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			System.out.println("UnsupportedEncodingException");
+			return null;
 		}
 		// constructs requestUrl with function call
 		String requestUrl = constructRequest(GET_URL, encodeQuery, cx, searchType, key);
@@ -809,13 +741,6 @@ public class Controller {
 			} else {
 				return "GET request not worked";
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// request did not work because an exception was thrown
-		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
@@ -843,7 +768,8 @@ public class Controller {
 				System.out.println(i+1 + ") " + thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
-			e.printStackTrace();
+			System.out.println("ParserException");
+			return null;
 		}
 		return thumbnailLinks;
 	}
