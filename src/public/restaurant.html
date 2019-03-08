@@ -21,9 +21,9 @@
 				<a id="website" onclick="redirectToWebsite();">Website</a>
 			</div>
 			<div class="col-6">
-				<button type="button" class="btn btn-secondary mb-4" onclick="window.print();">Printable Version</button>
+				<button type="button" class="btn btn-secondary mb-4" id="printButton" onclick="window.print();">Printable Version</button>
 				<br />
-				<button type="button" class="btn btn-secondary mb-4" onclick="location.href='results.html'">Back to Results</button>
+				<button type="button" class="btn btn-secondary mb-4" id="backToResultsButton" onclick="location.href='results.html'">Back to Results</button>
 				<br />
 				<select class="form-control mb-4" id="listDropdown">
 					<option value=""></option>
@@ -31,7 +31,7 @@
 					<option value="favorites">Favorites</option>
 					<option value="doNotShow">Do Not Show</option>
 				</select>
-				<button type="button" class="btn btn-secondary mb-4" onclick="addToList();">Add to list</button>
+				<button type="button" class="btn btn-secondary mb-4" id="addToListButton" onclick="addToList();">Add to list</button>
 			</div>
 		</div>
 	</div>

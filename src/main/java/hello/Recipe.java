@@ -21,12 +21,14 @@ public class Recipe extends Result implements Comparable<Recipe> {
 	private String sourceURL; // source url for our own reference...
 	private String imageURL;
 	private String type;
+	private boolean isFavorite;
 
 	public Recipe(String uniqueId) {
 		super(uniqueId);
 		type = "Recipe";
 		// set default image url for those cases where there is no image url
 		this.imageURL = "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg";
+		this.isFavorite = false;
 	}
 	public String getType() {
 		return type;
@@ -100,17 +102,36 @@ public class Recipe extends Result implements Comparable<Recipe> {
 		this.imageURL = imageURL;
 	}
 
+	public void setAsFavorite() {
+		this.isFavorite = true;
+	}
+
+	public boolean getIsFavorite() {
+		return this.isFavorite;
+	}
+
 	@Override
 	 public int compareTo(Recipe compareRecipe) {
 			 double comparePrepTime=((Recipe)compareRecipe).getPrepTime();
+			 boolean compareIsFavorite = ((Recipe)compareRecipe).getIsFavorite();
 			 /* For Ascending order*/
-			 if(this.prepTime < comparePrepTime) {
-				 return -1;
-			 } else if (this.prepTime > comparePrepTime) {
+			 if(compareIsFavorite && this.isFavorite) {
+				 if(this.prepTime < comparePrepTime) {
+					 return -1;
+				 } else if (this.prepTime < comparePrepTime) {
+					 return 1;
+				 } else return 0;
+			 } else if(compareIsFavorite && !this.isFavorite) {
 				 return 1;
-			 } else return 0;
+			 } else if(!compareIsFavorite && this.isFavorite) {
+				 return -1;
+			 } else {
+				 if(this.prepTime < comparePrepTime) {
+					 return -1;
+				 } else if (this.prepTime < comparePrepTime) {
+					 return 1;
+				 } else return 0;
+			 }
 
-			 /* For Descending order do like this */
-			 //return compareage-this.studentage;
 	 }
 }
