@@ -55,6 +55,7 @@
   </body>
   <script type="text/javascript">
     let JSONObj = {};
+    let currentIndex = 0;
 
     document.addEventListener("DOMContentLoaded", function() {
       let listName = sessionStorage.getItem("listName");
@@ -111,6 +112,7 @@
         } else {
           addRecipeCard(idx, listName);
         }
+        currentIndex++;
       }
     }
 
@@ -124,7 +126,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -154,7 +156,7 @@
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
       let newMoveIcon = document.createElement("i");
-      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x move_" + currentIndex;
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -283,7 +285,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -312,7 +314,7 @@
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
       let newMoveIcon = document.createElement("i");
-      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x move_" + currentIndex;
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
