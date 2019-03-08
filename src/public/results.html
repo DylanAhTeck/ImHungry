@@ -157,8 +157,11 @@
 
     function loadRestaurants() {
       let restaurantsDiv = document.getElementById('restaurants');
+      let currentIndex = 0;
       for (let idx in JSONObj.restaurants) {
         let newCard = document.createElement('div');
+        newCard.id = "restaurant_" + currentIndex;
+        currentIndex++;
         if(idx%2 === 0) {
           newCard.className = "card text-white bg-secondary mb-3";
         } else {
@@ -224,8 +227,11 @@
 
     function loadRecipes() {
       let recipesDiv = document.getElementById('recipes');
+      let currentIndex = 0;
       for (let idx in JSONObj.recipes) {
         let newCard = document.createElement('div');
+        newCard.id = "recipe_" + currentIndex;
+        currentIndex++;
         if(idx%2 === 0) {
           newCard.className = "card text-white bg-secondary mb-3";
         } else {
