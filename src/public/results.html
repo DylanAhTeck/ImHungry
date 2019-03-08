@@ -135,22 +135,25 @@
       let viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       let viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
+
       // Generate collage
       let imageUrls = JSONObj.imageUrls;
-      for(let imageURL of imageUrls) {
-        let img = new Image();
-        let div = document.getElementById("collage");
-        let rotation = 90*Math.random() - 45;
+      if(imageUrls) {
+        for(let imageURL of imageUrls) {
+          let img = new Image();
+          let div = document.getElementById("collage");
+          let rotation = 90*Math.random() - 45;
 
-        img.style.maxWidth = 0.2*0.6*viewportWidth+'px';
-        img.style.minWidth = 0.2*0.4*viewportWidth+'px';
-        img.style.height = 'auto';
-        img.style.transform = 'rotate(' + rotation + 'deg)';
+          img.style.maxWidth = 0.2*0.6*viewportWidth+'px';
+          img.style.minWidth = 0.2*0.4*viewportWidth+'px';
+          img.style.height = 'auto';
+          img.style.transform = 'rotate(' + rotation + 'deg)';
 
-        img.src = imageURL;
+          img.src = imageURL;
 
-        img.onload = function() {
-          div.appendChild(img);
+          img.onload = function() {
+            div.appendChild(img);
+          }
         }
       }
     }

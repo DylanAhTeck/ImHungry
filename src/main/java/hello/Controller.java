@@ -35,7 +35,7 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
-	
+
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 	public final String cx = "000316813068596776800:nkwqoquwebi";
@@ -140,7 +140,7 @@ public class Controller {
 		// tests for invalid parameters
 		if (uniqueId == null) return "uniqueId == null";
 		else if (uniqueId.equals("")) return "uniqueId is empty";
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 
 		String resultString = "";
@@ -171,7 +171,7 @@ public class Controller {
 		if (searchQuery == null) {
 			return "Thanks for searching!";
 		}
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
@@ -315,14 +315,14 @@ public class Controller {
 	@RequestMapping("/moveBetweenLists")
 	@CrossOrigin
 	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
-		// checks for invalid parameters 
+		// checks for invalid parameters
 		if (itemToMoveId == null) return "itemToMoveId == null";
 		else if (itemToMoveId.equals("")) return "itemToMoveId is empty";
 		if (originListName == null) return "originListName == null";
 		else if (originListName.equals("")) return "originListName is empty";
 		if (targetListName == null) return "targetListName == null";
 		else if (targetListName.equals("")) return "targetListName is empty";
-		
+
 		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
@@ -683,7 +683,7 @@ public class Controller {
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
-		
+
 		String encodeQuery = "";
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
@@ -765,7 +765,7 @@ public class Controller {
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			System.out.println("ParserException");
-			return null;
+			return new ArrayList<String>();
 		}
 		return thumbnailLinks;
 	}
