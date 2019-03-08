@@ -443,12 +443,13 @@ public class Controller {
 		JSONObject result = json.getJSONObject("result");
 		String address = result.getString("formatted_address");
 
-		String phone = result.getString("formatted_phone_number");
-//		if(result.has("formatted_phone_number")) {
-//			phone = result.getString("formatted_phone_number");
-//		} else {
-//			System.out.println("no info");
-//		}
+		//String phone = result.getString("formatted_phone_number");
+		String phone = "unknown";
+		if(result.has("formatted_phone_number")) {
+			phone = result.getString("formatted_phone_number");
+		} else {
+			System.out.println("no info");
+		}
 
 		String website = "unknown";
 		if(result.has("website")) {
