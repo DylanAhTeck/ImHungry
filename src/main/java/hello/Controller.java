@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.Collections;
 
@@ -138,16 +137,19 @@ public class Controller {
 	// returns the JSON of the result object if it exists, null otherwise
 	@RequestMapping("/getResult")
 	public String handleGetResult(@RequestParam(defaultValue="null") String uniqueId) {
-
+		// tests for invalid parameters
+		if (uniqueId == null) return "uniqueId == null";
+		else if (uniqueId.equals("")) return "uniqueId is empty";
+		
 		ObjectMapper mapper = new ObjectMapper();
 
 		String resultString = "";
 		try {
 			resultString = mapper.writeValueAsString(getResult(uniqueId));
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) { // JSONProcessingException
 			System.out.println(e);
 		}
-
+		System.out.println(resultString);
 		return resultString;
 	}
 
@@ -167,10 +169,10 @@ public class Controller {
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
 
-		if (searchQuery.equals("null")) {
+		if (searchQuery == null) {
 			return "Thanks for searching!";
 		}
-
+		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode rootNode = mapper.createObjectNode();
 		JsonNode imagesNode = mapper.createObjectNode();
@@ -184,8 +186,6 @@ public class Controller {
 			System.out.println("ioexception retrieving restaurants");
 		}
 
-		//ArrayList<Recipe> recipes = new ArrayList<Recipe>();
-		//ArrayList<String> collageURLs = new ArrayList<String>();
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
@@ -241,16 +241,16 @@ public class Controller {
 		}
 	}
 
-	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
-	// to the end of the favorites list.
-	@RequestMapping("/addItemToFavorites")
-	@CrossOrigin
-	public String addItemToFavorites() {
-		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
-		listManager.addToList(tempResult, "favorites");
-		String favoritesString = listManager.getFavorites().toString();
-		return "favorites: " + favoritesString;
-	}
+//	// NOTE: this is a test endpoint that you can hit to make sure that you're actually adding a random item
+//	// to the end of the favorites list.
+//	@RequestMapping("/addItemToFavorites")
+//	@CrossOrigin
+//	public String addItemToFavorites() {
+//		Result tempResult = new Result(String.valueOf(counter.incrementAndGet()));
+//		listManager.addToList(tempResult, "favorites");
+//		String favoritesString = listManager.getFavorites().toString();
+//		return "favorites: " + favoritesString;
+//	}
 
 	@RequestMapping("/addToList")
 	@CrossOrigin
@@ -297,31 +297,37 @@ public class Controller {
 			return "Couldn't find uniqueId";
 		}
 
-		boolean addSuccessful = listManager.addToList(toAdd, targetListName);
-		if (addSuccessful) {
-			return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
-		} else {
-			return "Failure adding: " + toAdd.getUniqueId() + " to list: " + targetListName + " (likely invalid targetListName)";
-		}
+		listManager.addToList(toAdd, targetListName);
+		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
-	// TODO: Need to write this.
 	@RequestMapping("/removeFromList")
 	@CrossOrigin
 	public String handleRemoveFromList(@RequestParam String itemToRemoveId, @RequestParam String originListName) {
+		// checks for invalid parameters
+		if (itemToRemoveId == null) return "itemToRemoveId == null";
+		else if (itemToRemoveId.equals("")) return "itemToRemoveId is empty";
+		if (originListName == null) return "originListName == null";
+		else if (originListName.equals("")) return "originListName is empty";
+		// performs removal
 		listManager.removeFromList(itemToRemoveId, originListName);
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
-	// TODO: Need to write this.
 	@RequestMapping("/moveBetweenLists")
 	@CrossOrigin
 	public String handleMoveLists(@RequestParam String itemToMoveId, @RequestParam String originListName, @RequestParam String targetListName) {
+		// checks for invalid parameters 
+		if (itemToMoveId == null) return "itemToMoveId == null";
+		else if (itemToMoveId.equals("")) return "itemToMoveId is empty";
+		if (originListName == null) return "originListName == null";
+		else if (originListName.equals("")) return "originListName is empty";
+		if (targetListName == null) return "targetListName == null";
+		else if (targetListName.equals("")) return "targetListName is empty";
+		
 		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		return "Moved item:" + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
+		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
-
-
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -654,7 +660,6 @@ public class Controller {
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
 		String encodeQuery = "";
-//		System.out.println("Encoding: " + encoding);
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
