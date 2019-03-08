@@ -38,9 +38,9 @@ public class Controller {
 	
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
-	public final String cx = "008434952456518231152:6_jh7_s5v-g";
+	public final String cx = "000316813068596776800:nkwqoquwebi";
 	public final String searchType = "image";
-	public final String key = "AIzaSyDiTKuGgmBVVUmf-gHBArAT7eXjJK7FKHI";
+	public final String key = "AIzaSyBQNiCgpE0gGKEu9lDStS04HEfZzY_7H6o";
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
@@ -553,7 +553,6 @@ public class Controller {
 
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 
-
 		String res = callAPI(placesRequestURL);
 
 		JSONObject json = new JSONObject(res);
@@ -685,12 +684,7 @@ public class Controller {
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
-
-		final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
-		final String cx = "001349756157526882706%3An5pmkqrjpfc";
-		final String searchType = "image";
-		final String key = "AIzaSyBiGl3y-IJ-tnfO_AhuUoeqIIhIHTqEJyo";
-
+		
 		String encodeQuery = "";
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
@@ -738,10 +732,9 @@ public class Controller {
 			} else {
 				return "GET request not worked";
 			}
-		} catch (Exception e) {
-			
+		} catch (IOException e) {
+			return "IOException";
 		}
-		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
