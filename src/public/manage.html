@@ -226,7 +226,7 @@
       let restaurantNameCol = document.createElement("div");
       restaurantNameCol.className = "col-5";
       let restaurantName = document.createElement("h5");
-      restaurantName.className = "card-title";
+      restaurantName.className = "card-title restaurant-name";
       restaurantName.innerHTML = JSONObj[listNameParameter][idx].name;
       let restaurantDrivingTime = document.createElement("h6");
       restaurantDrivingTime.innerHTML =
@@ -264,6 +264,12 @@
       newCardBodyRow.appendChild(restaurantPriceCol);
       newCardBody.appendChild(newCardBodyRow);
       newCard.appendChild(newCardBody);
+      newCard.style.cursor = "pointer";
+      newCard.onclick = function() {
+        let currentItem = JSONObj[listNameParameter][idx];
+        sessionStorage.setItem("currentItem", JSON.stringify(currentItem));
+        location.href = "restaurant.html";
+      };
 
       newCardCol.appendChild(newCard);
       newRow.appendChild(newCardCol);
@@ -409,6 +415,12 @@
       newCardBodyRow.appendChild(recipeRatingCol);
       newCardBody.appendChild(newCardBodyRow);
       newCard.appendChild(newCardBody);
+      newCard.style.cursor = "pointer";
+      newCard.onclick = function() {
+        let currentItem = JSONObj[listNameParameter][idx];
+        sessionStorage.setItem("currentItem", JSON.stringify(currentItem));
+        location.href = "recipe.html";
+      };
 
       newCardCol.appendChild(newCard);
       newRow.appendChild(newCardCol);

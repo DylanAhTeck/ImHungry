@@ -207,7 +207,18 @@
         }
         restaurantPrice.innerHTML = priceString;
         restaurantPrice.className = "restaurant-price"
+        // For scraping purposes only
+        let restaurantPhone = document.createElement('h6');
+        restaurantPhone.innerHTML = JSONObj.restaurants[idx]['phoneNumber'];
+        restaurantPhone.className = "restaurant-phone";
+        restaurantPhone.style.display = "none";
+        let restaurantWebsite = document.createElement('h6');
+        restaurantWebsite.innerHTML = JSONObj.restaurants[idx]['website'];
+        restaurantWebsite.className = "restaurant-website";
+        restaurantWebsite.style.display = "none";
         newPriceCol.appendChild(restaurantPrice);
+        newPriceCol.appendChild(restaurantPhone);
+        newPriceCol.appendChild(restaurantWebsite);
 
         newRow.appendChild(newNameCol);
         newRow.appendChild(newRatingCol);
