@@ -52,6 +52,17 @@ public class TestController {
 //		//fail("Not yet implemented");
 //	}
 //	
+	@Test 
+	public void testHandleGetResult() {
+		// test for invalid parameters 
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		
+		controller.handleSearchRequest("burger", 1);
+		// tests valid handleGetResult() call
+		String expectedJson = "{\"uniqueId\":\"449835\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"type\":\"Recipe\"}";
+		assertEquals(expectedJson, controller.handleGetResult("449835"));
+	}
 	
 	@Test 
 	public void testHandleSearchRequest() {
