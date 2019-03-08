@@ -53,87 +53,87 @@ public class Controller {
 	// 												 //
 	///////////////////////////////////////////////////
 
-	@RequestMapping("/test")
-	@CrossOrigin
-	public String handleTestRequest() {
-		return "Look's like you're up and running!";
-	}
-
-	@RequestMapping("/testCollage")
-	@CrossOrigin
-    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
-        ArrayList<String> imageURLs = createCollage(searchQuery);
-        return imageURLs.toString();
-    }
-
-	@RequestMapping("/testRestaurant")
-	@CrossOrigin
-	public void handleTestRecipeRestaurant() {
-		try {
-			retrieveRestaurants("cream", 25);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@RequestMapping("/testAddToList")
-	@CrossOrigin
-	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
-		ListManager m = new ListManager();
-
-		// quick test of add to list
-		m.addToList(new Result(uniqueId), targetList);
-		ArrayList<Result> favorites = m.getFavorites();
-		if (favorites.get(0).uniqueId.equals(uniqueId)) {
-			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
-		} else {
-			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
-		}
-		// move Result from one list to another
-		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
-		if (favorites.size() == 0) {
-			System.out.println("<" + uniqueId + "> was removed from favorites");
-		} else {
-			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
-		}
-		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
-			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
-		} else {
-			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
-		}
-		// remove Result from toExplore
-		m.removeFromList(uniqueId, "toExplore");
-		if (m.getToExplore().size() == 0) {
-			System.out.println("<" + uniqueId + "> was removed from toExplore");
-		}
-
-	}
-
+//	@RequestMapping("/test")
+//	@CrossOrigin
+//	public String handleTestRequest() {
+//		return "Look's like you're up and running!";
+//	}
+//
+//	@RequestMapping("/testCollage")
+//	@CrossOrigin
+//    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
+//        ArrayList<String> imageURLs = createCollage(searchQuery);
+//        return imageURLs.toString();
+//    }
+//
+//	@RequestMapping("/testRestaurant")
+//	@CrossOrigin
+//	public void handleTestRecipeRestaurant() {
+//		try {
+//			retrieveRestaurants("cream", 25);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@RequestMapping("/testAddToList")
+//	@CrossOrigin
+//	public void handleTestAddToList(@RequestParam(defaultValue="null") String uniqueId, @RequestParam(defaultValue="null") String targetList) {
+//		ListManager m = new ListManager();
+//
+//		// quick test of add to list
+//		m.addToList(new Result(uniqueId), targetList);
+//		ArrayList<Result> favorites = m.getFavorites();
+//		if (favorites.get(0).uniqueId.equals(uniqueId)) {
+//			System.out.println("Added <" + uniqueId + "> to <" + targetList + ">");
+//		} else {
+//			System.out.println("Couldn't add <" + uniqueId + "> to <favorites>");
+//		}
+//		// move Result from one list to another
+//		m.moveBetweenLists(uniqueId, "favorites", "toExplore");
+//		if (favorites.size() == 0) {
+//			System.out.println("<" + uniqueId + "> was removed from favorites");
+//		} else {
+//			System.out.println("<" + uniqueId + "> was NOT removed from favorites");
+//		}
+//		if (m.getToExplore().get(0).uniqueId.equals(uniqueId)) {
+//			System.out.println("<" + uniqueId + "> was successfully moved to toExplore");
+//		} else {
+//			System.out.println("<" + uniqueId + "> was NOT successfully moved to toExplore");
+//		}
+//		// remove Result from toExplore
+//		m.removeFromList(uniqueId, "toExplore");
+//		if (m.getToExplore().size() == 0) {
+//			System.out.println("<" + uniqueId + "> was removed from toExplore");
+//		}
+//
+//	}
+//
 
 //	@RequestMapping("/testRecipe")
 //	public String handleTestRecipeRequest() {
 //		return getTestRecipeString();
 //	}
 
-
-	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
-	// a query which has "uniqueId" set to "test" should retrieve this result.
-	@RequestMapping("/testGetResult")
-	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
-
-		ObjectMapper mapper = new ObjectMapper();
-		mostRecentRecipes.add(new Recipe("test"));
-
-		String resultString = "";
-		try {
-			resultString = mapper.writeValueAsString(getResult(uniqueId));
-		} catch (JsonProcessingException e) {
-			System.out.println(e);
-		}
-
-		return resultString;
-	}
+//
+//	// creates a Result with uniqueId: "test" and adds it to the recent recipe list and tried to retrieve it.
+//	// a query which has "uniqueId" set to "test" should retrieve this result.
+//	@RequestMapping("/testGetResult")
+//	public String handleTestGetResult(@RequestParam(defaultValue="null") String uniqueId) {
+//
+//		ObjectMapper mapper = new ObjectMapper();
+//		mostRecentRecipes.add(new Recipe("test"));
+//
+//		String resultString = "";
+//		try {
+//			resultString = mapper.writeValueAsString(getResult(uniqueId));
+//		} catch (JsonProcessingException e) {
+//			System.out.println(e);
+//		}
+//
+//		return resultString;
+//	}
 
 	// returns the JSON of the result object if it exists, null otherwise
 	@RequestMapping("/getResult")
@@ -151,16 +151,16 @@ public class Controller {
 		return resultString;
 	}
 
-	@RequestMapping("/testSearchRecipe")
-	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.writeValueAsString(retrieveRecipes(searchQuery, numResults));
-		} catch (JsonProcessingException e){
-			System.out.println("json processing exception when returning test recipe retrievals");
-		}
-		return "failure";
-	}
+//	@RequestMapping("/testSearchRecipe")
+//	public String handleTestRecipeRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
+//		ObjectMapper mapper = new ObjectMapper();
+//		try {
+//			return mapper.writeValueAsString(retrieveRecipes(searchQuery, numResults));
+//		} catch (JsonProcessingException e){
+//			System.out.println("json processing exception when returning test recipe retrievals");
+//		}
+//		return "failure";
+//	}
 
 	@RequestMapping("/search")
 	@CrossOrigin
@@ -654,11 +654,12 @@ public class Controller {
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
 		String encodeQuery = "";
-
+//		System.out.println("Encoding: " + encoding);
 		try {
 			encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			System.out.println("UnsupportedEncodingException");
+			return null;
 		}
 		// constructs requestUrl with function call
 		String requestUrl = constructRequest(GET_URL, encodeQuery, cx, searchType, key);
@@ -700,13 +701,11 @@ public class Controller {
 			} else {
 				return "GET request did not work";
 			}
-		} catch (MalformedURLException e) {
-			System.out.println("MalformedUrlException");
-			return "MalformedUrlException";
 		} catch (IOException e) {
 			System.out.println("IOException");
 			return "IOException";
 		}
+	
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
@@ -733,7 +732,8 @@ public class Controller {
 				thumbnailLinks.add(thumbnailLink);
 			}
 		} catch (org.json.simple.parser.ParseException e) {
-			e.printStackTrace();
+			System.out.println("ParserException");
+			return null;
 		}
 		return thumbnailLinks;
 	}

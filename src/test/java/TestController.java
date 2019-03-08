@@ -1,8 +1,10 @@
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import hello.Controller;
 import hello.ListManager;
@@ -57,8 +61,7 @@ public class TestController {
 		//controller.addItemToFavorites("123456");
 	}
 	
-	// NEED TO TEST UnsupportedEncodingException
-	// ASSERT STATEMENT IS STRANGELY HIT AND MISS CURRENTLY
+	// CAN'T CAUSE UNSUPPORTED ENCODING EXCEPTION BECAUSE PARAM WILL ALWAYS BE UTF-8
 	@Test
 	public void testCreateCollage() throws IOException {
 		ArrayList<String> thumbnailLinks = controller.createCollage("burger");
@@ -75,7 +78,6 @@ public class TestController {
 	}
 	
 	// CAN'T TEST VALID JSON BECAUSE RESPONSE TIME WILL ALWAYS BE DIFFERENT
-	// NEED TO TEST IOException
 	@Test
 	public void testGetImagesJson() throws IOException, ParseException {
 		// tests a valid GET request
@@ -98,12 +100,10 @@ public class TestController {
 		String invalidFunctionJson = controller.getImagesJson(invalidRequestUrl);
 		assertEquals("GET request did not work", invalidFunctionJson);
 		
-		// tests MalformedUrlException
-		assertEquals("MalformedUrlException", controller.getImagesJson("badUrl"));
 		// tests IOException
+		assertEquals("IOException", controller.getImagesJson("badUrl"));
 	}
 
-	// STILL NEED TO TEST org.json.simple.parser.ParseException
 	@Test 
 	public void testGetThumbnailLinks() throws IOException {
 		// tests getThumbnailLinks with no results
@@ -123,6 +123,9 @@ public class TestController {
 			assertEquals(expectedLink, functionLink);
 		}
 		expectedLinks.close();
+		
+		// tests org.json.simple.parser.ParseException
+		assertEquals(null, controller.getThumbnailLinks("(Invalid JSON)"));
 	}
 
 }
