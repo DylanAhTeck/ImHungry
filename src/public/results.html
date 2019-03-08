@@ -177,9 +177,10 @@
 
         let restaurantName = document.createElement('h5');
         let restaurantDistance = document.createElement('h6');
-        restaurantName.className = "card-title";
+        restaurantName.className = "card-title restaurant-title";
         restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
         restaurantDistance.innerHTML = "Driving Time: " + JSONObj.restaurants[idx]['drivingTime'];
+        restaurantDistance.className = "restaurant-distance";
         newNameCol.appendChild(restaurantName);
         newNameCol.appendChild(restaurantDistance);
 
@@ -188,7 +189,9 @@
         restaurantRating.clasName = "card-title";
         let restaurantRatingValue = JSONObj.restaurants[idx]['rating'];
         restaurantRating.innerHTML = restaurantRatingValue + `<i class="fas fa-star"></i>`;
+        restaurantRating.className = "restaurant-rating";
         restaurantAddress.innerHTML = JSONObj.restaurants[idx]['address'];
+        restaurantAddress.className = "restaurant-address";
         newRatingCol.appendChild(restaurantRating);
         newRatingCol.appendChild(restaurantAddress);
 
@@ -200,6 +203,7 @@
           priceString += `<i class="fas fa-dollar-sign"></i>`;
         }
         restaurantPrice.innerHTML = priceString;
+        restaurantPrice.className = "restaurant-price"
         newPriceCol.appendChild(restaurantPrice);
 
         newRow.appendChild(newNameCol);
@@ -238,18 +242,20 @@
 
         let recipeName = document.createElement('h5');
         let recipePrepTime = document.createElement('h6');
-        recipeName.className = "card-title";
+        recipeName.className = "card-title recipe-title";
         recipeName.innerHTML = JSONObj.recipes[idx]['name'];
         recipePrepTime.innerHTML = "Prep Time: " + JSONObj.recipes[idx]['prepTime'] + " mins";
+        recipePrepTime.className = "recipe-prep-time"
         newNameCol.appendChild(recipeName);
         newNameCol.appendChild(recipePrepTime);
 
         let recipeRating = document.createElement('h5');
         let recipeCookTime = document.createElement('h6');
-        recipeRating.clasName = "card-title";
+        recipeRating.className = "card-title recipe-rating";
         let recipeRatingValue = (JSONObj.recipes[idx]['rating']/100)*5;
         recipeRating.innerHTML = recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
         recipeCookTime.innerHTML = "Cook Time: " + JSONObj.recipes[idx]['cookTime'] + " mins";
+        recipeCookTime.className = "recipe-cook-time"
         newRatingCol.appendChild(recipeRating);
         newRatingCol.appendChild(recipeCookTime);
 
