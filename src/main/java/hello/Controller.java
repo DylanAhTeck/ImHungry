@@ -203,9 +203,8 @@ public class Controller {
 			System.out.println("json processing exception on creating search response");
 		} catch (IOException e) {
 			System.out.println("ioexception in reading tree");
-		} finally {
-			return "failure";
 		}
+		return "failure";
 	}
 
 	@RequestMapping("/getList")

@@ -32,8 +32,8 @@ public class TestController {
 		
 		// testing getResult from past query
 		controller.handleSearchRequest("burger", 1);
-		Result r = controller.getResult("ChIJLyzMquXHwoAR0RpYK9bAM3M");
-		assertEquals("ChIJLyzMquXHwoAR0RpYK9bAM3M", r.getUniqueId());
+		Result r = controller.getResult("ChIJg6NxEefHwoARgGH0PL8Rx7A");
+		assertEquals("ChIJg6NxEefHwoARgGH0PL8Rx7A", r.getUniqueId());
 	}
 	
 	@Test
@@ -73,11 +73,11 @@ public class TestController {
 	
 	@Test 
 	public void testHandleSearchRequest() {
-		// if no input is provided 
-		assertEquals("Thanks for searching!", controller.handleSearchRequest(null, 1));
 		// valid input 
 		String jsonResponse = controller.handleSearchRequest("burger", 1);
-		// MAKE SURE THAT SEARCH IS CORRECTLY ADDED
+		System.out.println(jsonResponse);
+		// if no input is provided 
+		assertEquals("Thanks for searching!", controller.handleSearchRequest(null, 1));
 	}
 	
 	// CAN'T CAUSE UNSUPPORTED ENCODING EXCEPTION BECAUSE PARAM WILL ALWAYS BE UTF-8
@@ -122,7 +122,7 @@ public class TestController {
 		// tests add to list from recipes 
 		assertEquals("Added item: 449835 to list: favorites", controller.handleAddToList("449835", "favorites"));
 		// tests add to list from restaurants
-		assertEquals("Added item: ChIJLyzMquXHwoAR0RpYK9bAM3M to list: favorites", controller.handleAddToList("ChIJLyzMquXHwoAR0RpYK9bAM3M", "favorites"));
+		assertEquals("Added item: ChIJg6NxEefHwoARgGH0PL8Rx7A to list: favorites", controller.handleAddToList("ChIJg6NxEefHwoARgGH0PL8Rx7A", "favorites"));
 		// tests nonexistent id 
 		assertEquals("Couldn't find uniqueId", controller.handleAddToList("123456", "favorites"));
 	}
@@ -163,6 +163,14 @@ public class TestController {
 	// CAN'T TEST VALID JSON BECAUSE RESPONSE TIME WILL ALWAYS BE DIFFERENT
 	@Test
 	public void testGetImagesJson() throws IOException, ParseException {
+		// tests IOException
+		assertEquals("IOException", controller.getImagesJson("badUrl"));
+		
+		// tests an invalid GET request
+		String invalidRequestUrl = controller.constructRequest(controller.GET_URL, "burger", controller.cx, controller.searchType, "invalidKey");
+		String invalidFunctionJson = controller.getImagesJson(invalidRequestUrl);
+		assertEquals("GET request not worked", invalidFunctionJson);
+
 		// tests a valid GET request
 		String validRequestUrl = controller.constructRequest(controller.GET_URL, "burger", controller.cx, controller.searchType, controller.key);
 		System.out.println(controller.GET_URL);
@@ -181,14 +189,6 @@ public class TestController {
 		String titleString = (String) title.get("title");
 		// checks that the search made matches the request 
 		assertEquals("Google Custom Search - burger", titleString);
-		
-		// tests an invalid GET request
-		String invalidRequestUrl = controller.constructRequest(controller.GET_URL, "burger", controller.cx, controller.searchType, "invalidKey");
-		String invalidFunctionJson = controller.getImagesJson(invalidRequestUrl);
-		assertEquals("GET request not worked", invalidFunctionJson);
-		
-		// tests IOException
-		assertEquals("IOException", controller.getImagesJson("badUrl"));
 	}
 
 	@Test 
