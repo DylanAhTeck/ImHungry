@@ -149,7 +149,6 @@ public class Controller {
 		} catch (Exception e) { // JSONProcessingException
 			System.out.println(e);
 		}
-		System.out.println(resultString);
 		return resultString;
 	}
 
