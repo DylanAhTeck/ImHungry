@@ -118,6 +118,9 @@
         let recipeTitle = currentItem.name;
         document.getElementById("recipeTitle").innerHTML = recipeTitle;
 
+        let recipeImage = currentItem.imageURL;
+        document.getElementById("recipe-image").src = recipeImage;
+
         // Set the prep time and cook time
         let prepTime = currentItem.prepTime;
         if (prepTime == 1) prepTime = prepTime + " minute";
