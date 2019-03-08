@@ -36,20 +36,12 @@
                   Manage List
                 </button>
                 <a href="results.html">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    id="backToResultsButton"
-                  >
+                  <button type="button" class="btn btn-secondary" id="backToResultsButton">
                     Back to Results
                   </button>
                 </a>
                 <a href="search.html">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    id="backToSearchButton"
-                  >
+                  <button type="button" class="btn btn-secondary" id="backToSearchButton">
                     Back to Search
                   </button>
                 </a>
@@ -134,8 +126,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className =
-        "fas fa-times-circle fa-3x remove_" + currentIndex;
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -225,9 +216,9 @@
       let newCard = document.createElement("div");
 
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3 restaurant-card";
+        newCard.className = "card text-white bg-secondary mb-3 restaurant-card card_" + currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3 restaurant-card";
+        newCard.className = "card text-white bg-dark mb-3 restaurant-card card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
@@ -300,8 +291,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className =
-        "fas fa-times-circle fa-3x remove_" + currentIndex;
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -390,9 +380,9 @@
       let newCard = document.createElement("div");
       newCard.id = JSONObj[listNameParameter][idx].uniqueId;
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3 recipe-card";
+        newCard.className = "card text-white bg-secondary mb-3 recipe-card card_" + currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3 recipe-card";
+        newCard.className = "card text-white bg-dark mb-3 recipe-card card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
@@ -402,7 +392,7 @@
       let recipeNameCol = document.createElement("div");
       recipeNameCol.className = "col";
       let recipeName = document.createElement("h5");
-      recipeName.className = "card-title recipe-name";
+      recipeName.className = "card-title";
       recipeName.innerHTML = JSONObj[listNameParameter][idx].name;
       let recipePrepTime = document.createElement("h6");
       recipePrepTime.innerHTML =
