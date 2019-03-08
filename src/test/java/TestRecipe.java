@@ -32,7 +32,7 @@ public class TestRecipe {
 		recipe3.setPrepTime((10));
 
 		assertEquals(-1, recipe1.compareTo((recipe2)));
-		assertEquals(1, recipe2.compareTo((recipe1)));
+		assertEquals(0, recipe2.compareTo((recipe1)));
 		assertEquals(0, recipe1.compareTo(recipe3));
 	}
 	

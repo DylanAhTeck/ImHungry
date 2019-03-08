@@ -24,21 +24,21 @@ public class TestRestaurant {
 	}
 	
 	//NOT FINISHED YET
-	@Test
-	public void testWriteToJSON() throws JSONException, JsonProcessingException {
-		JSONObject expectedJSON = new JSONObject();
-		expectedJSON.put("website", null);
-		expectedJSON.put("phoneNumber", null);
-		expectedJSON.put("address", null);
-		expectedJSON.put("name", null);
-		expectedJSON.put("placeId", null);
-		expectedJSON.put("drivingTime", null);
-		expectedJSON.put("priveLevel", null);
-		expectedJSON.put("rating", 0);
-		expectedJSON.put("type", "Restaurant");
-		expectedJSON.put("uniqueId", "123456");
-		assertEquals(expectedJSON, restaurant.writeToJSON());
-	}
+//	@Test
+//	public void testWriteToJSON() throws JSONException, JsonProcessingException {
+//		JSONObject expectedJSON = new JSONObject();
+//		expectedJSON.put("website", null);
+//		expectedJSON.put("phoneNumber", null);
+//		expectedJSON.put("address", null);
+//		expectedJSON.put("name", null);
+//		expectedJSON.put("placeId", null);
+//		expectedJSON.put("drivingTime", null);
+//		expectedJSON.put("priveLevel", null);
+//		expectedJSON.put("rating", 0);
+//		expectedJSON.put("type", "Restaurant");
+//		expectedJSON.put("uniqueId", "123456");
+//		assertEquals(expectedJSON, restaurant.writeToJSON());
+//	}
 	
 	@Test
 	public void testToString() {
