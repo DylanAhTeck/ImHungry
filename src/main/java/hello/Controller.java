@@ -740,6 +740,10 @@ public class Controller {
 			} else {
 				return "GET request not worked";
 			}
+		} catch (Exception e) {
+			
+		}
+		return "GET request not worked";
 	}
 
 	// extracts thumbnail links from JSON and returns them in ArrayList
