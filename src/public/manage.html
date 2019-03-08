@@ -23,7 +23,7 @@
             <div class="controls">
               <div class="input-group">
                 <select class="custom-select" id="list-select">
-                  <option selected>Choose List...</option>
+                  <option selected></option>
                   <option value="To Explore">To Explore</option>
                   <option value="Favorites">Favorites</option>
                   <option value="Do Not Show">Do Not Show</option>
@@ -36,12 +36,12 @@
                   Manage List
                 </button>
                 <a href="results.html">
-                  <button type="button" class="btn btn-secondary">
+                  <button type="button" class="btn btn-secondary" id="backToResultsButton">
                     Back to Results
                   </button>
                 </a>
                 <a href="search.html">
-                  <button type="button" class="btn btn-secondary">
+                  <button type="button" class="btn btn-secondary" id="backToSearchButton">
                     Back to Search
                   </button>
                 </a>
@@ -55,6 +55,7 @@
   </body>
   <script type="text/javascript">
     let JSONObj = {};
+    let currentIndex = 0;
 
     document.addEventListener("DOMContentLoaded", function() {
       let listName = sessionStorage.getItem("listName");
@@ -64,7 +65,7 @@
 
     document.getElementById("manage-list").onclick = function() {
       let listName = document.getElementById("list-select").value;
-      if (listName !== "Choose List..." && listName !== "") {
+      if (listName !== "") {
         sessionStorage.setItem("listName", listName);
         location.href = "manage.html";
       } else {
@@ -111,6 +112,7 @@
         } else {
           addRecipeCard(idx, listName);
         }
+        currentIndex++;
       }
     }
 
@@ -124,7 +126,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -154,7 +156,7 @@
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
       let newMoveIcon = document.createElement("i");
-      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x move_" + currentIndex;
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -188,12 +190,12 @@
         }
       };
       let newMoveSelect = document.createElement("select");
-      newMoveSelect.className = "custom-select";
+      newMoveSelect.className = "custom-select move_select_" + currentIndex;
       newMoveSelect.id =
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
       chooseOneOption.selected = true;
-      chooseOneOption.innerHTML = "Choose List...";
+      chooseOneOption.innerHTML = "";
       let toExploreOption = document.createElement("option");
       toExploreOption.value = "To Explore";
       toExploreOption.innerHTML = "To Explore";
@@ -289,7 +291,7 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x";
+      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -318,7 +320,7 @@
       let newMoveCol = document.createElement("div");
       newMoveCol.className = "col-2 icon-container";
       let newMoveIcon = document.createElement("i");
-      newMoveIcon.className = "fas fa-exchange-alt fa-3x";
+      newMoveIcon.className = "fas fa-exchange-alt fa-3x move_" + currentIndex;
       newMoveIcon.id = "move-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -352,12 +354,12 @@
         }
       };
       let newMoveSelect = document.createElement("select");
-      newMoveSelect.className = "custom-select";
+      newMoveSelect.className = "custom-select move_select_" + currentIndex;
       newMoveSelect.id =
         "move-select-" + JSONObj[listNameParameter][idx].uniqueId;
       let chooseOneOption = document.createElement("option");
       chooseOneOption.selected = true;
-      chooseOneOption.innerHTML = "Choose List...";
+      chooseOneOption.innerHTML = "";
       let toExploreOption = document.createElement("option");
       toExploreOption.value = "To Explore";
       toExploreOption.innerHTML = "To Explore";

@@ -38,25 +38,29 @@ public class ListManager {
 			return false;
 		}
 
-		System.out.println("DUPLICATE: " + itemToAdd.uniqueId + " / " + itemInList(itemToAdd, targetListName));
-
 		if (targetListName.equals("favorites")) {
 			if(!itemInList(itemToAdd, targetListName)) {
 				favorites.add(itemToAdd);
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 		else if (targetListName.equals("toExplore")) {
 			if(!itemInList(itemToAdd, targetListName)) {
 				toExplore.add(itemToAdd);
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 		else if (targetListName.equals("doNotShow")) {
 			if(!itemInList(itemToAdd, targetListName)) {
 				doNotShow.add(itemToAdd);
+				return true;
+			} else {
+				return false;
 			}
-			return true;
 		}
 		else {
 			return false;
@@ -72,7 +76,7 @@ public class ListManager {
 			}
 		} else if(listName.equals("toExplore")) {
 			for(Result item : toExplore) {
-				if(item.uniqueId.equals(itemToAdd.uniqueId)) {
+				if (item.uniqueId.equals(itemToAdd.uniqueId)) {
 					return true;
 				}
 			}
