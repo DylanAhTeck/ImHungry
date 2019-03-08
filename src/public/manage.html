@@ -216,9 +216,9 @@
       let newCard = document.createElement("div");
 
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3";
+        newCard.className = "card text-white bg-secondary mb-3 card_" + currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3";
+        newCard.className = "card text-white bg-dark mb-3 card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
@@ -380,9 +380,9 @@
       let newCard = document.createElement("div");
       newCard.id = JSONObj[listNameParameter][idx].uniqueId;
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3";
+        newCard.className = "card text-white bg-secondary mb-3 card_" + currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3";
+        newCard.className = "card text-white bg-dark mb-3 card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
