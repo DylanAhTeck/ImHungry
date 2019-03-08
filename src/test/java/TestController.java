@@ -32,8 +32,8 @@ public class TestController {
 		
 		// testing getResult from past query
 		controller.handleSearchRequest("burger", 1);
-		Result r = controller.getResult("ChIJg6NxEefHwoARgGH0PL8Rx7A");
-		assertEquals("ChIJg6NxEefHwoARgGH0PL8Rx7A", r.getUniqueId());
+		Result r = controller.getResult("ChIJk2uXa-PHwoARFOHSKjqYyFo");
+		assertEquals("ChIJk2uXa-PHwoARFOHSKjqYyFo", r.getUniqueId());
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class TestController {
 		Result fav = new Result("ChIJLyzMquXHwoAR0RpYK9bAM3M");
 		ArrayList<Result> favorite = new ArrayList<Result>();
 		favorite.add(fav);
-		Result not = new Result("ChIJg6NxEefHwoARgGH0PL8Rx7A");
+		Result not = new Result("ChIJk2uXa-PHwoARFOHSKjqYyFo");
 		ArrayList<Result> doNotShow = new ArrayList<Result>();
 		doNotShow.add(not);
 		controller.setDoNotShow(doNotShow);
@@ -122,7 +122,7 @@ public class TestController {
 		// tests add to list from recipes 
 		assertEquals("Added item: 449835 to list: favorites", controller.handleAddToList("449835", "favorites"));
 		// tests add to list from restaurants
-		assertEquals("Added item: ChIJg6NxEefHwoARgGH0PL8Rx7A to list: favorites", controller.handleAddToList("ChIJg6NxEefHwoARgGH0PL8Rx7A", "favorites"));
+		assertEquals("Added item: ChIJk2uXa-PHwoARFOHSKjqYyFo to list: favorites", controller.handleAddToList("ChIJk2uXa-PHwoARFOHSKjqYyFo", "favorites"));
 		// tests nonexistent id 
 		assertEquals("Couldn't find uniqueId", controller.handleAddToList("123456", "favorites"));
 	}
@@ -177,6 +177,7 @@ public class TestController {
 		System.out.println("burger");
 		System.out.println(controller.searchType);
 		System.out.println(controller.key);
+		
 		String functionJson = controller.getImagesJson(validRequestUrl);
 		// used to parse JSON 
 		JSONParser parser = new JSONParser();
