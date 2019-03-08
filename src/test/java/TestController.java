@@ -25,6 +25,17 @@ public class TestController {
 		controller = new Controller();
 	}
 	
+	@Test 
+	public void testGetResult() {
+		// result doesn't exist
+		assertEquals(null, controller.getResult("123"));
+		
+		// testing getResult from past query
+		controller.handleSearchRequest("burger", 1);
+		Result r = controller.getResult("ChIJLyzMquXHwoAR0RpYK9bAM3M");
+		assertEquals("ChIJLyzMquXHwoAR0RpYK9bAM3M", r.getUniqueId());
+	}
+	
 	@Test
 	public void testRetrieveRestaurants() throws IOException {
 		String query = "burger"; // do not change the query
@@ -185,6 +196,9 @@ public class TestController {
 		// tests getThumbnailLinks with no results
 		String noResultsJson = new String(Files.readAllBytes(Paths.get("NoResultsQuery.txt"))); 
 		assertEquals("Search returned no results", controller.getThumbnailLinks(noResultsJson).get(0));
+		
+		// tests "GET request not worked"
+		assertEquals(null, controller.getThumbnailLinks("GET request not worked"));
 			
 		// tests getThumbnailLinks with results
 		String resultsJson = new String(Files.readAllBytes(Paths.get("ExampleQuery.txt")));

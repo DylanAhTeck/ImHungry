@@ -203,10 +203,9 @@ public class Controller {
 			System.out.println("json processing exception on creating search response");
 		} catch (IOException e) {
 			System.out.println("ioexception in reading tree");
+		} finally {
+			return "failure";
 		}
-
-		return "failure";
-
 	}
 
 	@RequestMapping("/getList")
@@ -740,10 +739,11 @@ public class Controller {
 	// extracts thumbnail links from JSON and returns them in ArrayList
 	@SuppressWarnings("unchecked")
 	public ArrayList<String> getThumbnailLinks(String jsonResponse) {
-		ArrayList<String> thumbnailLinks = new ArrayList<String>();
+		ArrayList<String> thumbnailLinks = null;
 		if (jsonResponse.equals("GET request not worked")) {
 			return thumbnailLinks;
 		}
+		thumbnailLinks = new ArrayList<String>();
 		JSONParser parser = new JSONParser();
 		try {
 			// obtains JSON to be parsed
