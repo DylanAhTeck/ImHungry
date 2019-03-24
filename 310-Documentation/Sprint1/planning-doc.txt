@@ -11,6 +11,7 @@
 	- Andy Yalung
 	- Wayne Yu
 	- Absent: Chris Lam
+
 - SHA containing Sprint 1 Backlog: dde0184da64a5a1c3c39451c4f78f885b8b1d1e9
 
 
