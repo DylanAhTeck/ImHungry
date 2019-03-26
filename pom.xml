@@ -99,6 +99,13 @@
     <groupId>org.springframework</groupId>
     <artifactId>spring-test</artifactId>
     </dependency>
+    
+    	<!--  Firebase  -->
+    	<dependency>
+		  <groupId>com.google.firebase</groupId>
+		  <artifactId>firebase-admin</artifactId>
+		  <version>6.8.0</version>
+		</dependency>
  
 		<!-- This is for mocking the service -->
 		 

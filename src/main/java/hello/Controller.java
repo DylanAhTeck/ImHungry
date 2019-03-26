@@ -1,6 +1,8 @@
 package hello;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -25,6 +27,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
+import com.google.firebase.FirebaseApp;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -45,12 +54,39 @@ public class Controller {
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
 	private ArrayList<Restaurant> mostRecentRestaurants = new ArrayList<Restaurant>();
+	
+	//User logged in ID
+	private String userId;
+	
 
 	///////////////////////////////////////////////////
 	// 												 //
 	// 			OUR ENDPOINTS AND ROUTES   		     //
 	// 												 //
 	///////////////////////////////////////////////////
+	
+	public Controller() {
+		super();
+		//Configuration for Google Firebase Auth and database
+		try {
+			FileInputStream serviceAccount;
+			serviceAccount = new FileInputStream("src/public/assets/serviceAccountKey.json");
+			FirebaseOptions options = new FirebaseOptions.Builder()
+					  .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					  .setDatabaseUrl("https://csci310project2.firebaseio.com")
+					  .build();
+			FirebaseApp.initializeApp(options);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Working Directory = " +
+		              System.getProperty("user.dir"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+	}
 
 //	@RequestMapping("/test")
 //	@CrossOrigin
@@ -327,6 +363,48 @@ public class Controller {
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
+	//Endpoints for interacting with Firebase Authentication
+	@RequestMapping("/loginUser")
+	@CrossOrigin
+	public String loginUser(@RequestParam String id) {
+		
+		UserRecord userRecord;
+		try {
+			userRecord = FirebaseAuth.getInstance().getUser(id);
+			// See the UserRecord reference doc for the contents of userRecord.
+			System.out.println("Successfully fetched user data: " + userRecord.getEmail());
+			this.userId = id;
+			return "success";
+		} catch (FirebaseAuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return "failed";
+	}
+	
+	@RequestMapping("/registerUser")
+	@CrossOrigin
+	public String registerUser(@RequestParam String email, @RequestParam String password) {
+		CreateRequest request = new CreateRequest()
+			    .setEmail(email)
+			    .setEmailVerified(false)
+			    .setPassword(password)
+			    .setDisabled(false);
+
+		try {
+			UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+			System.out.println("Successfully created new user: " + userRecord.getUid());
+			return "success";
+		} catch (FirebaseAuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "failed";
+	}
+	
 	///////////////////////////////////////////////////
 	// 												 //
 	// 	EXTERNAL API INTERACTION AND PROCESSING      //
