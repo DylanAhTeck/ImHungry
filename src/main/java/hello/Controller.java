@@ -17,9 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import java.util.Map;
 import java.util.HashMap;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.firestore.Firestore;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,12 +32,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.Firestore;
+
+import com.google.firebase.cloud.FirestoreClient;
+
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.FirebaseApp;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
