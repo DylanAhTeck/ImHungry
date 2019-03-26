@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -388,6 +390,23 @@ public class Controller {
 			// See the UserRecord reference doc for the contents of userRecord.
 			System.out.println("Successfully fetched user data: " + userRecord.getEmail());
 			this.userId = id;
+
+			DocumentReference docRef = db.collection("users").document(userId);
+			System.out.println(userId);
+
+			ApiFuture<DocumentSnapshot> future = docRef.get();
+
+			try {
+				DocumentSnapshot document = future.get();
+				if (document.exists()) {
+					System.out.println("Document data: " + document.getData());
+				} else {
+					System.out.println("No such document.");
+				}
+			} catch (Exception e){
+				System.out.println(e);
+			}
+
 			return "success";
 		} catch (FirebaseAuthException e) {
 			// TODO Auto-generated catch block
@@ -416,6 +435,8 @@ public class Controller {
 			// TODO: maybe establish some baseline properties of the lists (e.g. what info they contain?)
 
 			Map<String, Object> docData = new HashMap<>();
+			docData.put("userEmail", email);
+			docData.put("password", password);
 			docData.put("doNotShow", new ArrayList<Result>());
 			docData.put("favorites", new ArrayList<Result>());
 			docData.put("toExplore", new ArrayList<Result>());
