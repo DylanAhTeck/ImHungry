@@ -407,7 +407,7 @@ public class Controller {
 			docData.put("toExplore", new ArrayList<Result>());
 			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
 
-			ApiFuture<WriteResult> future - db.collection("users").document(userId).set(docData);
+			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
 			
 
 			System.out.println("Successfully created new user: " + userRecord.getUid());
