@@ -1,4 +1,6 @@
 import static org.junit.Assert.assertEquals;
+import java.util.Random; 
+
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -234,5 +236,34 @@ public class TestController {
 		// tests org.json.simple.parser.ParseException
 		assertEquals(temp, controller.getThumbnailLinks("(Invalid JSON)"));
 	}
+
+
+	// test to ensure successful login of user at to-be-written "loginUser" endpoint
+	@Test
+	public void testLoginUser() throws IOException {
+		// String registerJSON = new String Files.readAllBytes(Paths.get("testLoginCredentials.json"));
+		String userEmail = "test@test.com";
+		String password = "testtest";
+		assertEquals("Logged in successfully", controller.loginUser(userEmail, password));
+	}
+
+	// test to ensure successful login of user at to-be-written "registerUser" endpoint
+	@Test
+	public void testRegisterUser() throws IOException {
+	        Random rand = new Random(); 
+            int randInt = rand.nextInt(1000);
+            String userEmail = "test" + randInt + "@test.com";
+            String password = "test" + randInt;
+            assertEquals("User registered successfully", controller.registerUser(userEmail, password)); 
+	}
+
+
+
+
+
+
+
+
+
 
 }
