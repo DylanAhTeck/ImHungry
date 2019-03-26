@@ -18,6 +18,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.Map;
 import java.util.HashMap;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.Firestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +50,7 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
+	private Firestore db = null;
 
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
@@ -80,6 +83,7 @@ public class Controller {
 					  .setDatabaseUrl("https://csci310project2.firebaseio.com")
 					  .build();
 			FirebaseApp.initializeApp(options);
+			db = FirestoreClient.getFirestore();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Working Directory = " +
