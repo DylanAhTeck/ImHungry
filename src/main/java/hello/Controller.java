@@ -396,6 +396,20 @@ public class Controller {
 
 		try {
 			UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+
+			// TODO: create a user database entry
+			// TODO: create list entries for the user (doNotShow, favorites, toExplore, and priorSearches)
+			// TODO: maybe establish some baseline properties of the lists (e.g. what info they contain?)
+
+			Map<String, Object> docData = new HashMap<>();
+			docData.put("doNotShow", new ArrayList<Result>());
+			docData.put("favorites", new ArrayList<Result>());
+			docData.put("toExplore", new ArrayList<Result>());
+			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
+
+			ApiFuture<WriteResult> future - db.collection("users").document(userId).set(docData);
+			
+
 			System.out.println("Successfully created new user: " + userRecord.getUid());
 			return "success";
 		} catch (FirebaseAuthException e) {
