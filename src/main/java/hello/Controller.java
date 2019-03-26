@@ -441,7 +441,7 @@ public class Controller {
 			docData.put("favorites", new ArrayList<Result>());
 			docData.put("toExplore", new ArrayList<Result>());
 			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
-
+			this.userId = userRecord.getUid();
 			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
 			
 
