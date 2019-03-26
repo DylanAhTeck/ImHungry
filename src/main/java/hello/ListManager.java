@@ -7,6 +7,9 @@ public class ListManager {
 	private ArrayList<Result> favorites = new ArrayList<Result>();
 	private ArrayList<Result> doNotShow = new ArrayList<Result>();
 
+	private ArrayList<PriorSearch> priorSearch = new ArrayList<PriorSearch>();
+
+
 
 	public ListManager() {
 
@@ -161,4 +164,13 @@ public class ListManager {
 		}
 		return itemToRemove;
 	}
+}
+
+
+//here is the function to add to Prior PriorSearch
+//keep in mind to check for duplicate searches
+public boolean addToPriorSearch(String priorSearchterm, Integer numberofResults) {
+	PriorSearch item = new PriorSearch(priorSearchterm,numberofResults);
+
+	priorSearch.add(item);
 }
