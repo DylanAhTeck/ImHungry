@@ -45,6 +45,8 @@ public class Controller {
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
 	private ArrayList<Restaurant> mostRecentRestaurants = new ArrayList<Restaurant>();
+	private ArrayList<PriorSearch> priorSearchList = new ArrayList<PriorSearch>();
+
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -181,6 +183,16 @@ public class Controller {
 			restaurants = retrieveRestaurants(searchQuery, numResults);
 			// saved list of restaurants returned from query in "cache"
 			mostRecentRestaurants = restaurants;
+
+
+			PriorSearch recentQuery = new PriorSearch();
+			recentQuery.term = searchQuery;
+			recentQuery.numberOfresults = numResults;
+			priorSearchList.add(recentQuery);
+			System.out.println("added searchQuery to PriorSearchList");
+
+
+
 		} catch (IOException e) {
 			System.out.println("ioexception retrieving restaurants");
 		}
