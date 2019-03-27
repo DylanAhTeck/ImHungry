@@ -1,4 +1,4 @@
-# Pair Programming Session Documentatino
+# Pair Programming Session Documentation
 
 ### Date: 03/27/19
 ### Time: 12:30pm
