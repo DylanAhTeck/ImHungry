@@ -235,6 +235,8 @@ public class Controller {
 				((ObjectNode) rootNode).set("toExplore", mapper.readTree(mapper.writeValueAsString(listManager.getToExplore())));
 			} else if (listName.equals("doNotShow")) {
 				((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getdoNotShow())));
+			} else if (listName.equals("priorSearch")) {
+				((ObjectNode) rootNode).set("priorSearch", mapper.readTree(mapper.writeValueAsString(listManager.getpriorSearch())));
 			} else {
 				return "Invalid list name";
 			}
