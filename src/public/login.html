@@ -57,7 +57,11 @@
       document.addEventListener('DOMContentLoaded', function() {
       	 firebase.auth().onAuthStateChanged(function(user) {
          	  if (user) { //User is signed in
-         		alert('Already Logged In: ' + user.email)
+           		console.log("ALready logged in.");
+              setTimeout(() => {
+                location.href = "search.html";
+              }, 1000);
+
          	  } else {
          	    // No user is signed in.
          	  }
