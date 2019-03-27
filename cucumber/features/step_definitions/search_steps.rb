@@ -22,6 +22,10 @@ Given(/^I am on the Login page$/) do
 	visit "#{Constants.file_path}login.html"
 end
 
+Given(/^I am on the Register page$/) do
+	visit "#{Constants.file_path}login.html"
+end
+
 Then(/^The background color of the page should be white smoke$/) do
 	color = find('body').native.css_value('background-color')
    	expect(color).to eq('rgba(245, 245, 245, 1)')
@@ -485,8 +489,8 @@ When(/^I click on the 'Results Page' button on the List Management Page$/) do
     find('#backToResultsButton').click
 end
 
-Then(/^I should see a username input field$/) do
-	expect(page).to have_css('#username')
+Then(/^I should see a email input field$/) do
+	expect(page).to have_css('#email')
 end
 
 Then(/^I should see a password input field$/) do
@@ -495,4 +499,16 @@ end
 
 Then(/^I should see a login button$/) do
 	expect(page).to have_css('#login-btn')
+end
+
+Then(/^I should see a register button$/) do
+	expect(page).to have_css('#register-btn')
+end
+
+When(/^I click on the register button$/) do
+	find('#register-btn').click
+end
+
+Then(/^I should be on the Register page$/) do
+	expect(page).to have_current_path("#{Constants.file_path}register.html")
 end
