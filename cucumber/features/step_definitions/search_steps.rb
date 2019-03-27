@@ -18,6 +18,10 @@ Given(/^I am on the List Management page$/) do
 	visit "#{Constants.file_path}manage.html"
 end
 
+Given(/^I am on the Login page$/) do
+	visit "#{Constants.file_path}login.html"
+end
+
 Then(/^The background color of the page should be white smoke$/) do
 	color = find('body').native.css_value('background-color')
    	expect(color).to eq('rgba(245, 245, 245, 1)')
@@ -481,9 +485,14 @@ When(/^I click on the 'Results Page' button on the List Management Page$/) do
     find('#backToResultsButton').click
 end
 
+Then(/^I should see a username input field$/) do
+	expect(page).to have_css('#username')
+end
 
+Then(/^I should see a password input field$/) do
+	expect(page).to have_css('#password')
+end
 
-
-
-
-
+Then(/^I should see a login button$/) do
+	expect(page).to have_css('#login-btn')
+end
