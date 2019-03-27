@@ -25,7 +25,7 @@
     <section>
       <div class="container">
         <div class="content-wrapper">
-          <h1 id="page-title">Login</h1>
+          <h1 id="page-title">Register</h1>
           <form>
             <div class="form-group">
               <label for="email">Email</label>
@@ -46,20 +46,59 @@
               />
             </div>
             <div class="form-group">
-              <button id="register-btn" class="btn btn-secondary">
+              <button id="register-btn" class="btn btn-primary">
                 Register
               </button>
-              <button id="login-btn" class="btn btn-primary">Login</button>
             </div>
           </form>
+          <h3 id="errorMsg"></h3>
         </div>
       </div>
     </section>
-
     <script type="text/javascript">
       document.getElementById("register-btn").addEventListener("click", e => {
         e.preventDefault();
-        location.href = "register.html";
+        // Get user data
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        if (email && password) {
+          let xhttp = new XMLHttpRequest();
+          let params = "email=" + email + "&password=" + password;
+          xhttp.open(
+            "GET",
+            "http://localhost:8080/registerUser?" + params,
+            true
+          );
+          xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+          xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              if (xhttp.responseText) {
+                if (xhttp.responseText == "success") {
+                  // Register success
+                  location.href = "login.html";
+                } else {
+                  // Register failed
+                  document.getElementById("errorMsg").innerHTML =
+                    "Register Failed";
+                  document.getElementById("errorMsg").style.opacity = 1;
+                  setTimeout(function() {
+                    document.getElementById("errorMsg").style.opacity = 0;
+                  }, 1000);
+                }
+              }
+            }
+          };
+          xhttp.send();
+        } else {
+          console.log("[Blank Field]");
+          if (!email) {
+            console.log("Email blank");
+          }
+
+          if (!password) {
+            console.log("Password blank");
+          }
+        }
       });
     </script>
   </body>
