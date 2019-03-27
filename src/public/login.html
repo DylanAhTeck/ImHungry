@@ -46,7 +46,7 @@
               />
             </div>
 
-            <button onclick="login()" class="btn btn-primary">Login</button>
+            <button id="login-btn" class="btn btn-primary">Login</button>
         </div>
       </div>
     </section>
@@ -64,8 +64,9 @@
          	});
       });
 
-      function login() {
-        let email = document.getElementById('username').value;
+      document.getElementById('login-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        let email = document.getElementById('email').value;
         let password = document.getElementById('password').value;
         firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
         	  // Handle Errors here. Such as wrong password and stuff
@@ -94,7 +95,8 @@
         	    // No user is signed in.
         	  }
         	});
-      }
+      });
+
     </script>
   </body>
 </html>
