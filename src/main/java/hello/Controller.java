@@ -1,6 +1,8 @@
 package hello;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -13,6 +15,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
+import java.util.Map;
+import java.util.HashMap;
+
+
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,6 +33,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.Firestore;
+
+import com.google.firebase.cloud.FirestoreClient;
+
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
+import com.google.firebase.FirebaseApp;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -35,6 +58,7 @@ public class Controller {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
+	private Firestore db = null;
 
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
@@ -45,12 +69,40 @@ public class Controller {
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
 	private ArrayList<Restaurant> mostRecentRestaurants = new ArrayList<Restaurant>();
+	
+	//User logged in ID
+	private String userId;
+	
 
 	///////////////////////////////////////////////////
 	// 												 //
 	// 			OUR ENDPOINTS AND ROUTES   		     //
 	// 												 //
 	///////////////////////////////////////////////////
+	
+	public Controller() {
+		super();
+		//Configuration for Google Firebase Auth and database
+		try {
+			FileInputStream serviceAccount;
+			serviceAccount = new FileInputStream("src/public/assets/serviceAccountKey.json");
+			FirebaseOptions options = new FirebaseOptions.Builder()
+					  .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+					  .setDatabaseUrl("https://csci310project2.firebaseio.com")
+					  .build();
+			FirebaseApp.initializeApp(options);
+			db = FirestoreClient.getFirestore();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Working Directory = " +
+		              System.getProperty("user.dir"));
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+	}
 
 //	@RequestMapping("/test")
 //	@CrossOrigin
@@ -327,6 +379,81 @@ public class Controller {
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
+	//Endpoints for interacting with Firebase Authentication
+	@RequestMapping("/loginUser")
+	@CrossOrigin
+	public String loginUser(@RequestParam String id) {
+		
+		UserRecord userRecord;
+		try {
+			userRecord = FirebaseAuth.getInstance().getUser(id);
+			// See the UserRecord reference doc for the contents of userRecord.
+			System.out.println("Successfully fetched user data: " + userRecord.getEmail());
+			this.userId = id;
+
+			DocumentReference docRef = db.collection("users").document(userId);
+			System.out.println(userId);
+
+			ApiFuture<DocumentSnapshot> future = docRef.get();
+
+			try {
+				DocumentSnapshot document = future.get();
+				if (document.exists()) {
+					System.out.println("Document data: " + document.getData());
+				} else {
+					System.out.println("No such document.");
+				}
+			} catch (Exception e){
+				System.out.println(e);
+			}
+
+			return "success";
+		} catch (FirebaseAuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		return "failed";
+	}
+	
+	@RequestMapping("/registerUser")
+	@CrossOrigin
+	public String registerUser(@RequestParam String email, @RequestParam String password) {
+		CreateRequest request = new CreateRequest()
+			    .setEmail(email)
+			    .setEmailVerified(false)
+			    .setPassword(password)
+			    .setDisabled(false);
+
+		try {
+			UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
+
+			// TODO: create a user database entry
+			// TODO: create list entries for the user (doNotShow, favorites, toExplore, and priorSearches)
+			// TODO: maybe establish some baseline properties of the lists (e.g. what info they contain?)
+
+			Map<String, Object> docData = new HashMap<>();
+			docData.put("userEmail", email);
+			docData.put("password", password);
+			docData.put("doNotShow", new ArrayList<Result>());
+			docData.put("favorites", new ArrayList<Result>());
+			docData.put("toExplore", new ArrayList<Result>());
+			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
+			this.userId = userRecord.getUid();
+			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
+			
+
+			System.out.println("Successfully created new user: " + userRecord.getUid());
+			return "success";
+		} catch (FirebaseAuthException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "failed";
+	}
+	
 	///////////////////////////////////////////////////
 	// 												 //
 	// 	EXTERNAL API INTERACTION AND PROCESSING      //
