@@ -69,17 +69,17 @@ public class Controller {
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
 	private ArrayList<Restaurant> mostRecentRestaurants = new ArrayList<Restaurant>();
-	
+
 	//User logged in ID
 	private String userId;
-	
+
 
 	///////////////////////////////////////////////////
 	// 												 //
 	// 			OUR ENDPOINTS AND ROUTES   		     //
 	// 												 //
 	///////////////////////////////////////////////////
-	
+
 	public Controller() {
 		super();
 		//Configuration for Google Firebase Auth and database
@@ -100,8 +100,8 @@ public class Controller {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	
-		
+		}
+
 	}
 
 //	@RequestMapping("/test")
@@ -383,7 +383,7 @@ public class Controller {
 	@RequestMapping("/loginUser")
 	@CrossOrigin
 	public String loginUser(@RequestParam String id) {
-		
+
 		UserRecord userRecord;
 		try {
 			userRecord = FirebaseAuth.getInstance().getUser(id);
@@ -412,12 +412,12 @@ public class Controller {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
+
+
+
 		return "failed";
 	}
-	
+
 	@RequestMapping("/registerUser")
 	@CrossOrigin
 	public String registerUser(@RequestParam String email, @RequestParam String password) {
@@ -443,7 +443,7 @@ public class Controller {
 			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
 			this.userId = userRecord.getUid();
 			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
-			
+
 
 			System.out.println("Successfully created new user: " + userRecord.getUid());
 			return "success";
@@ -453,7 +453,7 @@ public class Controller {
 		}
 		return "failed";
 	}
-	
+
 	///////////////////////////////////////////////////
 	// 												 //
 	// 	EXTERNAL API INTERACTION AND PROCESSING      //
