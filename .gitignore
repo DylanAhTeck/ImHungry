@@ -8,5 +8,9 @@ tar.gz
 .classpath 
 .project 
 */.settings/ 
+
 *.idea/
 .idea/
+
+.idea/*
+
