@@ -45,8 +45,9 @@
                 placeholder="Enter Password"
               />
             </div>
-
+            <button id="register-btn" class="btn btn-secondary">Register</button>
             <button id="login-btn" class="btn btn-primary">Login</button>
+            <h5 id="error-msg"></h5>
         </div>
       </div>
     </section>
@@ -57,11 +58,7 @@
       document.addEventListener('DOMContentLoaded', function() {
       	 firebase.auth().onAuthStateChanged(function(user) {
          	  if (user) { //User is signed in
-           		console.log("ALready logged in.");
-              setTimeout(() => {
-                location.href = "search.html";
-              }, 1000);
-
+           		location.href = "search.html";
          	  } else {
          	    // No user is signed in.
          	  }
@@ -72,34 +69,51 @@
         e.preventDefault();
         let email = document.getElementById('email').value;
         let password = document.getElementById('password').value;
-        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+        if(email && password) {
+          handleFirebaseAuth(email, password);
+        }
+      });
+
+      document.getElementById('register-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        location.href = "register.html";
+      })
+
+      function handleFirebaseAuth(email, password) {
+        firebase.auth().signInWithEmailAndPassword(email, password)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((error) => {
         	  // Handle Errors here. Such as wrong password and stuff
         	  var errorCode = error.code;
         	  var errorMessage = error.message;
-        	  alert(error.message)
+            console.log("Error Code: " + errorCode);
+        	  document.getElementById('error-msg').innerHTML = errorMessage;
         	  // ...
-        });
+          });
         //If user has been signed in, send request to server
         firebase.auth().onAuthStateChanged(function(user) {
-        	  if (user) { //User is signed in
-        		alert('Logged In: ' + user.email)
-        		let parameters = "id=" + user.uid;
-     	        let xhttp = new XMLHttpRequest();
-     	        xhttp.open('GET', "http://localhost:8080/loginUser?" + parameters, true);
-     	        xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-     	        xhttp.onreadystatechange = function() {
-     	          if (xhttp.readyState == 4 && xhttp.status == 200) {
-     	            if (xhttp.responseText) {
-     	              console.log(this.responseText)
-     	            }
-     	          }
-     	        }
-     	        xhttp.send();
-        	  } else {
+          if (user) { //User is signed in
+          	// alert('Logged In: ' + user.email)
+            sessionStorage.setItem("userUID", user.uid);
+          	let parameters = "id=" + user.uid;
+       	    let xhttp = new XMLHttpRequest();
+       	    xhttp.open('GET', "http://localhost:8080/loginUser?" + parameters, true);
+       	    xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+       	    xhttp.onreadystatechange = function() {
+         	    if (xhttp.readyState == 4 && xhttp.status == 200) {
+         	      if (xhttp.responseText) {
+           	      console.log(this.responseText)
+         	      }
+         	    }
+       	    }
+       	    xhttp.send();
+        	} else {
         	    // No user is signed in.
-        	  }
-        	});
-      });
+        	}
+        });
+      }
 
     </script>
   </body>
