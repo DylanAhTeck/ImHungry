@@ -1,4 +1,4 @@
-Ppackage hello;
+package hello;
 
 
 // Result class which Recipe and Restaurant will both subclass off of...
@@ -6,10 +6,12 @@ Ppackage hello;
 public class PriorSearch {
 	protected String term;
 	protected Integer numberOfresults;
+	protected Integer radius;
 
-	public PriorSearch(String term, Integer numberOfresults) {
+	public PriorSearch(String term, Integer numberOfresults, Integer radius) {
 		this.term = term;
 		this.numberOfresults = numberOfresults;
+		this.radius = radius;
 	}
 
 	public String getTerm() {
@@ -18,6 +20,10 @@ public class PriorSearch {
 
 	public Integer getNum() {
 		return this.numberOfresults;
+	}
+
+	public Integer getRadius() {
+		return this.radius;
 	}
 
 }
