@@ -12,3 +12,13 @@ body {
   transform: translate(-50%, -50%);
   text-align: center;
 }
+
+#page-title {
+  margin: 30px;
+}
+
+#errorMsg {
+  color: red;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+}
