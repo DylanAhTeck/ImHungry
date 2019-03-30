@@ -13,6 +13,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.HashMap;
 
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldValue;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,17 +33,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.auth.oauth2.GoogleCredentials;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.WriteResult;
 import com.google.cloud.firestore.Firestore;
-
+import com.google.cloud.firestore.Transaction;
 import com.google.firebase.cloud.FirestoreClient;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -348,6 +356,10 @@ public class Controller {
 		}
 
 		listManager.addToList(toAdd, targetListName);
+		
+		addToDB(targetListName, toAdd);
+		
+		
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -360,7 +372,11 @@ public class Controller {
 		if (originListName == null) return "originListName == null";
 		else if (originListName.equals("")) return "originListName is empty";
 		// performs removal
-		listManager.removeFromList(itemToRemoveId, originListName);
+		Result toBeRemoved = listManager.removeFromList(itemToRemoveId, originListName);
+		
+		removeFromDB(originListName, toBeRemoved);
+
+		
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
@@ -375,7 +391,11 @@ public class Controller {
 		if (targetListName == null) return "targetListName == null";
 		else if (targetListName.equals("")) return "targetListName is empty";
 
-		listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
+		Result result = listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
+		
+		removeFromDB(originListName, result);
+		addToDB(targetListName, result);
+		
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
@@ -399,17 +419,54 @@ public class Controller {
 			try {
 				DocumentSnapshot document = future.get();
 				if (document.exists()) {
-					System.out.println("Document data: " + document.getData());
-				} else {
-					System.out.println("No such document.");
+					//Setting all the list to the ones from the database. Have to convert from string to object though.
+					ArrayList<String> doNotShowString = (ArrayList<String>) document.get("doNotShow");
+					ArrayList<Result> doNotShow = new ArrayList<Result>();
+					for(int i = 0; i < doNotShowString.size(); i++) {
+						Gson gson = new Gson();
+						JsonElement element = gson.fromJson(doNotShowString.get(i), JsonElement.class);
+						JsonObject object = element.getAsJsonObject();
+						if(object.get("type").getAsString().equals("Recipe")) {
+							doNotShow.add(gson.fromJson(doNotShowString.get(i), Recipe.class));
+						} else {
+							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
+						}
+						
+					}
+					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
+					ArrayList<Result> favorites = new ArrayList<Result>();
+					for(int i = 0; i < favoritesString.size(); i++) {
+						Gson gson = new Gson();
+						JsonElement element = gson.fromJson(favoritesString.get(i), JsonElement.class);
+						JsonObject object = element.getAsJsonObject();
+						if(object.get("type").getAsString().equals("Recipe")) {
+							favorites.add(gson.fromJson(favoritesString.get(i), Recipe.class));
+						} else {
+							favorites.add(gson.fromJson(favoritesString.get(i), Restaurant.class));
+						}
+					}
+					ArrayList<String> toExploreString = (ArrayList<String>) document.get("toExplore");
+					ArrayList<Result> toExplore = new ArrayList<Result>();
+					for(int i = 0; i < toExploreString.size(); i++) {
+						Gson gson = new Gson();
+						JsonElement element = gson.fromJson(toExploreString.get(i), JsonElement.class);
+						JsonObject object = element.getAsJsonObject();
+						if(object.get("type").getAsString().equals("Recipe")) {
+							toExplore.add(gson.fromJson(toExploreString.get(i), Recipe.class));
+						} else {
+							toExplore.add(gson.fromJson(toExploreString.get(i), Restaurant.class));
+						}
+					}
+					listManager.setDoNotShow(doNotShow);
+					listManager.setFavorites(favorites);
+					listManager.setToExplore(toExplore);
 				}
 			} catch (Exception e){
-				System.out.println(e);
+				e.printStackTrace();
 			}
 
 			return "success";
 		} catch (FirebaseAuthException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -417,6 +474,16 @@ public class Controller {
 
 		return "failed";
 	}
+
+	
+	//Signs a user out
+	@RequestMapping("/signUserOut")
+	@CrossOrigin
+	public String signUserOut() {
+		this.userId = "";
+		return "success";
+	}
+	//Registering a user and setting database
 
 	@RequestMapping("/registerUser")
 	@CrossOrigin
@@ -448,10 +515,10 @@ public class Controller {
 			System.out.println("Successfully created new user: " + userRecord.getUid());
 			return "success";
 		} catch (FirebaseAuthException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "failed";
 		}
-		return "failed";
+		
 	}
 
 	///////////////////////////////////////////////////
@@ -548,7 +615,7 @@ public class Controller {
 
 	//Google distance matrix API
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
-		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyB9ygmPGReQW95GCkHazFsVPZBDI3MJoc0";
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
 		String res = callAPI(distanceRequestURL);
 		JSONObject json = new JSONObject(res);
 		JSONArray rows = json.getJSONArray("rows");
@@ -564,7 +631,7 @@ public class Controller {
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
@@ -677,7 +744,7 @@ public class Controller {
 
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
 
 		String res = callAPI(placesRequestURL);
 
@@ -709,7 +776,7 @@ public class Controller {
 
 		try {
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
-					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
+					.header("X-RapidAPI-Key", "e2ddeee7bamsh69f202abaea3a79p12dc38jsnbe7d032a1782")
 					.queryString("query", searchQuery)
 					.queryString("number", numResults + numExtra)
 					.asJson();
@@ -745,7 +812,7 @@ public class Controller {
     		for (Recipe recipe : recipes) {
 //    			System.out.println("retrieving information for recipe id: " + recipe.getUniqueId());
     			response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeID}/information")
-					.header("X-RapidAPI-Key", "ebff0f5311msh75407f578a41008p14174ejsnf16b8bcf5559")
+					.header("X-RapidAPI-Key", "e2ddeee7bamsh69f202abaea3a79p12dc38jsnbe7d032a1782")
 					.routeParam("recipeID", recipe.getUniqueId())
 					.asJson();
 
@@ -901,5 +968,41 @@ public class Controller {
 		}
 		return thumbnailLinks;
 	}
+	
+	//add result to db
+	public Boolean addToDB(String originListName, Result result) {
+		if(this.userId == "") return false;
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enableDefaultTyping();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		DocumentReference docRef = db.collection("users").document(userId);
+		try {
+			ApiFuture<WriteResult> arrayUnion = docRef.update(originListName,
+				    FieldValue.arrayUnion(mapper.writeValueAsString(result)));
+			return true;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+			
+	}
+	//remove result from db
+	public Boolean removeFromDB(String originListName, Result result) {
+		if(this.userId == "") return false;
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.enableDefaultTyping();
+		// run an asynchronous transaction
+		DocumentReference docRef = db.collection("users").document(userId);
+		try {
+			ApiFuture<WriteResult> arrayRm = docRef.update(originListName,
+				    FieldValue.arrayRemove(mapper.writeValueAsString(result)));
+			return true;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 
 }

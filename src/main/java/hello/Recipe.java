@@ -3,14 +3,22 @@ package hello;
 import java.util.ArrayList;
 import java.lang.Comparable;
 
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 
 // Result class which Recipe and Restaurant will both subclass off of...
-
+@JsonIgnoreProperties
 public class Recipe extends Result implements Comparable<Recipe> {
 	private String name;
 	private double rating; // number of stars out of 5
@@ -22,7 +30,7 @@ public class Recipe extends Result implements Comparable<Recipe> {
 	private String imageURL;
 	private String type;
 	private boolean isFavorite;
-
+	
 	public Recipe(String uniqueId) {
 		super(uniqueId);
 		type = "Recipe";
@@ -30,6 +38,8 @@ public class Recipe extends Result implements Comparable<Recipe> {
 		this.imageURL = "https://thumbs.dreamstime.com/z/freshly-cooked-feast-brazilian-dishes-top-down-view-various-home-made-recipes-displayed-colorful-textures-66645901.jpg";
 		this.isFavorite = false;
 	}
+	
+	
 	public String getType() {
 		return type;
 	}

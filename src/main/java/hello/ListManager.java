@@ -31,6 +31,10 @@ public class ListManager {
 	public void setDoNotShow(ArrayList<Result> doNotShow) {
 		this.doNotShow = doNotShow;
 	}
+	
+	public void setToExplore(ArrayList<Result> list) {
+		this.toExplore = list;
+	}
 
 	// returns whether item was added successfully to list
 	public boolean addToList(Result itemToAdd, String targetListName) {
@@ -92,12 +96,12 @@ public class ListManager {
 	}
 
 
-	public boolean moveBetweenLists(String uniqueId, String originListName, String targetListName) {
+	public Result moveBetweenLists(String uniqueId, String originListName, String targetListName) {
 		// removes object from originList
 		Result itemToMove = removeFromList(uniqueId, originListName);
 
 		// itemToMove was not in origin list
-		if (itemToMove == null) return false;
+		if (itemToMove == null) return null;
 
 		// target list is favorites
 		if (targetListName.equals("favorites")) {
@@ -111,9 +115,9 @@ public class ListManager {
 		else if (targetListName.equals("doNotShow")) {
 			doNotShow.add(itemToMove);
 		} else {
-			return false;
+			return null;
 		}
-		return true;
+		return itemToMove;
 	}
 
 	// given uniqueId of item to remove and origin list, removes object from list and returns it
@@ -161,4 +165,5 @@ public class ListManager {
 		}
 		return itemToRemove;
 	}
+
 }
