@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hello.Controller;
+import hello.Recipe;
 import hello.Restaurant;
 import hello.Result;
 
@@ -242,11 +243,10 @@ public class TestController {
 	@Test
 	public void testLoginUser() throws IOException {
 		// String registerJSON = new String Files.readAllBytes(Paths.get("testLoginCredentials.json"));
-		String userEmail = "test@test.com";
-		String password = "testtest";
-		assertEquals("success", controller.loginUser(userEmail));
-		userEmail = "doesnotexist@test.com";
-		assertEquals("failure", controller.loginUser(userEmail));
+		String userId = "kVsDRFOWJxU8Xdw5aDATPwTSkuY2";
+		assertEquals("success", controller.loginUser(userId));
+		userId = "doesnotexist";
+		assertEquals("failed", controller.loginUser(userId));
 	}
 
 	// test to ensure successful login of user at to-be-written "registerUser" endpoint
@@ -258,7 +258,46 @@ public class TestController {
             String password = "test" + randInt;
             assertEquals("success", controller.registerUser(userEmail, password)); 
 	}
+	//test to ensure successful signout
+	@Test
+	public void testSignUserOut() throws IOException {
+		assertEquals("success",controller.signUserOut());
+	}
+	
+	//Test to ensure successful add of result to the database for to-be-written function addToDB
+	@Test
+	public void testAddToDB() throws IOException {
+		 Random rand = new Random(); 
+		//Test valid add but user not logged in
+		controller.signUserOut();
+		String listName = "favorites";
+		Recipe result = new Recipe("randomID");
+		assertEquals(false, controller.addToDB(listName, result));
+		//Test valid recipe and restaurant add with user logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "favorites";
+		int randInt = rand.nextInt(1000);
+		Recipe recipe = new Recipe(Integer.toString(randInt));
+		randInt = rand.nextInt(1000);
+		
+		
+	}
 
+	//Test to ensure successful add of result to the database for to-be-written function addToDB
+	@Test
+	public void tesRemoveFromDB() throws IOException {
+		//Test remove but user not logged in
+		controller.signUserOut();
+		String listName = "favorites";
+		Recipe result = new Recipe("randomID");
+		assertEquals(false, controller.removeFromDB(listName, result));
+		//Test valid remove with user logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "favorites";
+		result = new Recipe("randomID");
+		controller.addToDB(listName, result);
+		assertEquals(true, controller.removeFromDB(listName, result));
+	}
 
 
 

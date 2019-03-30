@@ -1,8 +1,11 @@
 package hello;
 
+import java.util.HashMap;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 
 // Result class which Recipe and Restaurant will both subclass off of...
-
 public class Result {
 	protected String uniqueId; // sourceURL for Recipe, placeID for Restaurant
 	
