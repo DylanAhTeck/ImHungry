@@ -58,7 +58,25 @@
       document.addEventListener('DOMContentLoaded', function() {
       	 firebase.auth().onAuthStateChanged(function(user) {
          	  if (user) { //User is signed in
-           		location.href = "search.html";
+              var db = firebase.firestore();
+              var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+
+              // Valid options for source are 'server', 'cache', or
+              // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+              // for more information.
+              var getOptions = {
+                  source: 'default'
+              };
+
+              // Get a document, forcing the SDK to fetch from the offline cache.
+              docRef.get(getOptions).then(function(doc) {
+                  // Document was found in the cache. If no cached document exists,
+                  // an error will be returned to the 'catch' block below.
+                  console.log("Cached document data:", doc.data());
+              }).catch(function(error) {
+                  console.log("Error getting cached document:", error);
+              });
+           		// location.href = "search.html";
          	  } else {
          	    // No user is signed in.
          	  }

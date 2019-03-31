@@ -79,9 +79,11 @@
       document.getElementById("feedMeButton").onclick = function() {
         let query = document.getElementById("query").value;
         let numResults = document.getElementById("num-results").value;
+        let radius = document.getElementById("radius").value;
         if (numResults % 1 !== 0 || numResults < 1) return;
         if (query == "") return;
-        if (isNormalInteger(numResults)) {
+        if (radius % 1 !== 0 || radius < 1) return;
+        if (isNormalInteger(numResults) && isNormalInteger(radius)) {
           let smileIcon = document.getElementById("smileIcon");
           smileIcon.style.opacity = 1;
           smileIcon.style.transform = "rotate(45deg)";
@@ -90,7 +92,7 @@
           let feedMeText = document.getElementById("feedMeText");
           feedMeText.style.left = "30%";
           setTimeout(function() {
-            redirectToResults(query, numResults);
+            redirectToResults(query, numResults, radius);
           }, 1000);
         }
       };
@@ -100,7 +102,7 @@
           .auth()
           .signOut()
           .then(() => {
-            console.log("Logout");
+            logoutUser();
             location.href = "login.html";
           })
           .catch(() => {
@@ -108,16 +110,33 @@
           });
       });
 
-      function redirectToResults(query, numResults) {
+      function redirectToResults(query, numResults, radius) {
         sessionStorage.setItem("query", query);
         sessionStorage.setItem("numResults", numResults);
-        console.log("Feed Me", query, numResults);
+        sessionStorage.setItem("radius", radius);
+        console.log("Feed Me", query, numResults, radius);
         location.href = "results.html";
       }
 
       function isNormalInteger(str) {
         var n = Math.floor(Number(str));
         return n !== Infinity && String(n) === str && n >= 0;
+      }
+
+      function logoutUser() {
+        // Send UID to backend server
+        let xhttp = new XMLHttpRequest();
+        let params = "userUID=" + sessionStorage.getItem("userUID");
+        xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log("UID sent to server side");
+            }
+          }
+        };
+        xhttp.send();
       }
     </script>
     <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>

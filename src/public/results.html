@@ -88,7 +88,8 @@
     function processSearch() {
       let query = sessionStorage.getItem('query');
       let numResults = sessionStorage.getItem('numResults');
-      let parameters = "searchQuery=" + query + "&numResults=" + numResults;
+      let radius = sessionStorage.getItem("radius");
+      let parameters = "searchQuery=" + query + "&numResults=" + numResults  +  "&radius=" + radius;
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
       xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
