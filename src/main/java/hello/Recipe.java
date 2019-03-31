@@ -28,7 +28,6 @@ public class Recipe extends Result implements Comparable<Recipe> {
 	private ArrayList<String> instructions; // prep instructions
 	private String sourceURL; // source url for our own reference...
 	private String imageURL;
-	private String type;
 	private boolean isFavorite;
 	
 	public Recipe(String uniqueId) {

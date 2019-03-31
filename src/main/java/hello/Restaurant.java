@@ -19,13 +19,11 @@ public class Restaurant extends Result {
 	private String website;
 	private Integer priceLevel; // price range as expressed by Google Places API
 	private String placeId; // string pulled from Google Places API
-	private String type;
 
 	public Restaurant(String uniqueId) {
 		super(uniqueId);
 		type = "restaurant";
 	}
-	
 	
 	public String getType() {
 		return type;
