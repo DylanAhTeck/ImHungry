@@ -22,7 +22,7 @@ Andrew
 3. Nothing.
 
 Wayne
-1. Finish tests for register, addess edge cases for login page and sign out.
+1. Added cucumber tests for register, began data integration with firestore.
 2. Finish testing and implementation for access to recent seach queries.
 3. Waiting for backend to be finished.
 
