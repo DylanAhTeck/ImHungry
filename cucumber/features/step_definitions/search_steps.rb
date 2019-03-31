@@ -173,19 +173,19 @@ Then(/^I should see the name, address, star rating, minutes of driving, and pric
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
 	page.all(:css, '.restaurant-title').each do |el|
-		expect(el['innerText']).not_to eq ''
+		expect(el['innerHTML']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-address').each do |el|
-		expect(el['innerText']).not_to eq ''
+		expect(el['innerHTML']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-rating').each do |el|
-		expect(el['innerText']).not_to eq ''
+		expect(el['innerHTML']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-distance').each do |el|
-		expect(el['innerText']).not_to eq ''
+		expect(el['innerHTML']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-price').each do |el|
-		expect(el['innerText']).not_to eq ''
+		expect(el['innerHTML']).not_to eq ''
 	end
 end
 

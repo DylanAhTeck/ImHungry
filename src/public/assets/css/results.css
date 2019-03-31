@@ -22,6 +22,10 @@ body {
   max-height: 50vh;
 }
 
+#prior-search-div {
+  float: left;
+}
+
 .controls {
   display: inline-block;
   float: right;
@@ -31,11 +35,17 @@ body {
   flex-direction: column;
 }
 
-#list-select {
+#list-select,
+#search-select {
   width: 100%;
 }
 
 a button {
+  width: 100%;
+}
+
+#logout-btn,
+#search-again-btn {
   width: 100%;
 }
 

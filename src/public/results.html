@@ -17,9 +17,19 @@
       <div class="container">
         <div class="content-wrapper">
           <div class="header-wrapper">
-            <button type="button" class="btn btn-secondary" id="logout-btn">
-              Logout
-            </button>
+            <div class="controls" id="prior-search-div">
+              <div class="input-group">
+                <select class="custom-select" id="search-select">
+                  <option selected></option>
+                </select>
+                <button type="button" class="btn btn-secondary" id="search-again-btn">
+                  Search Again
+                </button>
+                <button type="button" class="btn btn-secondary" id="logout-btn">
+                  Logout
+                </button>
+              </div>
+            </div>
             <div id="collage"></div>
             <div class="controls">
               <div class="input-group">
@@ -73,6 +83,37 @@
     document.addEventListener('DOMContentLoaded', function() {
       let query = sessionStorage.getItem('query');
       document.getElementById('query').innerHTML = capitalizeFirstLetter(query);
+      firebase.auth().onAuthStateChanged(function(user) {
+         if (user) { //User is signed in
+           var db = firebase.firestore();
+           var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+
+           // Valid options for source are 'server', 'cache', or
+           // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+           // for more information.
+           var getOptions = {
+               source: 'default'
+           };
+
+           // Get a document, forcing the SDK to fetch from the offline cache.
+           docRef.get(getOptions).then(function(doc) {
+               // Document was found in the cache. If no cached document exists,
+               // an error will be returned to the 'catch' block below.
+               let queryData = doc.data().priorSearchQueries;
+               let searchSelect = document.getElementById('search-select');
+               for(let query of queryData) {
+                 let json = JSON.parse(query);
+                 let newOption = document.createElement('option');
+                 newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
+                 searchSelect.appendChild(newOption);
+               }
+           }).catch(function(error) {
+               console.log("Error getting cached document:", error);
+           });
+         } else {
+           // No user is signed in.
+         }
+       });
       processSearch();
     });
 
@@ -329,6 +370,28 @@
       };
       xhttp.send();
     }
+
+    document.getElementById('search-again-btn').onclick = function() {
+      let selectedSearch = document.getElementById('search-select').value;
+      let params = selectedSearch.split("/")
+
+      let query = params[0].trim();
+      let numResults = params[1].trim();
+      let radius = params[2].trim();
+
+      sessionStorage.setItem("query", query);
+      sessionStorage.setItem("numResults", numResults);
+      sessionStorage.setItem("radius", radius);
+
+      searchAgain();
+    }
+
+    function searchAgain() {
+
+      location.reload();
+    }
+
+
   </script>
   <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
 </html>
