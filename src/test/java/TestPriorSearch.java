@@ -17,9 +17,11 @@ public class TestPriorSearch {
 	
 	@Test
 	public void testGetters() {
+		Integer num = 5;
+		Integer radius = 100;
 		assertEquals("burgers", search.getTerm());
-		assertEquals(5, search.getNum());
-		assertEquals(100, search.getRadius());
+		assertEquals(search.getNum(), num);
+		assertEquals(radius, search.getRadius());
 	}
 
 }

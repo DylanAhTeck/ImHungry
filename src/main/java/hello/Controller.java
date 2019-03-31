@@ -226,7 +226,7 @@ public class Controller {
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
-	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
+	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5000") Integer radius) {
 
 		if (searchQuery == null) {
 			return "Thanks for searching!";
@@ -248,6 +248,11 @@ public class Controller {
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
+		
+		//add search to database
+		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
+		addSearchToDB("priorSearchQueries", recentQuery);
+		
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -979,7 +984,7 @@ public class Controller {
 			ApiFuture<WriteResult> arrayUnion = docRef.update(originListName,
 				    FieldValue.arrayUnion(gson.toJson(search)));
 			return true;
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}

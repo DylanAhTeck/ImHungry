@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hello.Controller;
+import hello.PriorSearch;
 import hello.Recipe;
 import hello.Restaurant;
 import hello.Result;
@@ -83,7 +84,7 @@ public class TestController {
 		assertEquals("uniqueId == null", controller.handleGetResult(null));
 		assertEquals("uniqueId is empty", controller.handleGetResult(""));
 		
-		controller.handleSearchRequest("burger", 1);
+		controller.handleSearchRequest("burger", 1, 5000);
 		// tests valid handleGetResult() call
 		String expectedJson = "{\"uniqueId\":\"449835\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"type\":\"Recipe\",\"isFavorite\":false}";
 		assertEquals(expectedJson, controller.handleGetResult("449835"));
@@ -92,10 +93,10 @@ public class TestController {
 	@Test 
 	public void testHandleSearchRequest() {
 		// valid input 
-		String jsonResponse = controller.handleSearchRequest("burger", 1);
+		String jsonResponse = controller.handleSearchRequest("burger", 1, 5000);
 		System.out.println(jsonResponse);
 		// if no input is provided 
-		assertEquals("Thanks for searching!", controller.handleSearchRequest(null, 1));
+		assertEquals("Thanks for searching!", controller.handleSearchRequest(null, 1, 5000));
 	}
 	
 	// CAN'T CAUSE UNSUPPORTED ENCODING EXCEPTION BECAUSE PARAM WILL ALWAYS BE UTF-8
@@ -114,7 +115,7 @@ public class TestController {
 	// NEED TO WRITE CODE FOR EXCEPTIONS 
 	@Test
 	public void testGetList() {
-		controller.handleSearchRequest("burger", 1);
+		controller.handleSearchRequest("burger", 1, 5000);
 		// list is null
 		assertEquals("Invalid list name", controller.getList(null));
 		// test retrieving lists 
@@ -136,7 +137,7 @@ public class TestController {
 		// tests empty listname
 		assertEquals("No targetListName provided", controller.handleAddToList("123456", ""));
 	
-		String json = controller.handleSearchRequest("burger", 1);
+		String json = controller.handleSearchRequest("burger", 1, 5000);
 		// tests add to list from recipes 
 		assertEquals("Added item: 449835 to list: favorites", controller.handleAddToList("449835", "favorites"));
 		// tests add to list from restaurants
@@ -153,7 +154,7 @@ public class TestController {
 		assertEquals("originListName == null", controller.handleRemoveFromList("123456", null));
 		assertEquals("originListName is empty", controller.handleRemoveFromList("123456", ""));
 		
-		controller.handleSearchRequest("burger", 1);
+		controller.handleSearchRequest("burger", 1, 5000);
 		controller.handleAddToList("449835", "favorites");
 		// tests valid removal 
 		assertEquals("Removed item: 449835 from list: favorites", controller.handleRemoveFromList("449835", "favorites"));
@@ -172,7 +173,7 @@ public class TestController {
 		assertEquals("targetListName is empty", controller.handleMoveLists("123456", "toExplore", ""));
 		
 		// populates lists
-		controller.handleSearchRequest("burger", 1);
+		controller.handleSearchRequest("burger", 1, 5000);
 		controller.handleAddToList("449835", "favorites");
 		// tests move 
 		assertEquals("Moved item: 449835 from list: favorites to list: toExplore", controller.handleMoveLists("449835", "favorites", "toExplore"));
