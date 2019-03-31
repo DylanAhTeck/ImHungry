@@ -512,7 +512,6 @@ public class Controller {
 
 			Map<String, Object> docData = new HashMap<>();
 			docData.put("userEmail", email);
-			docData.put("password", password);
 			docData.put("doNotShow", new ArrayList<Result>());
 			docData.put("favorites", new ArrayList<Result>());
 			docData.put("toExplore", new ArrayList<Result>());
