@@ -217,8 +217,8 @@ public class Controller {
 
 			//Added to store PriorSearch queries
 			PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
-			// priorSearchList.add(recentQuery);
-			
+			priorSearchList.add(recentQuery);
+			addSearchToDB(priorSearchQueries, recentQuery);
 
 			System.out.println("added searchQuery to PriorSearchList");
 
