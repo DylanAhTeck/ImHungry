@@ -173,19 +173,19 @@ Then(/^I should see the name, address, star rating, minutes of driving, and pric
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
 	page.all(:css, '.restaurant-title').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-address').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-rating').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-distance').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.restaurant-price').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 end
 
@@ -216,16 +216,16 @@ Then(/^I should see the name, star rating, prep time, and cook time of each reci
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
 	page.all(:css, '.recipe-title').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.recipe-rating').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.recipe-prep-time').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 	page.all(:css, '.recipe-cook-time').each do |el|
-		expect(el['innerHTML']).not_to eq ''
+		expect(el['innerText']).not_to eq ''
 	end
 end
 
@@ -245,7 +245,7 @@ end
 When(/^I add the recipe to the 'To Explore' list$/) do
 	select('To Explore', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#recipeTitle')['innerHTML']
+	$currentItemTitle = find('#recipeTitle')['innerText']
 end
 
 Then(/^I should see the item in the 'To Explore' List$/) do
@@ -255,13 +255,13 @@ end
 When(/^I add the restaurant to the 'To Explore' list$/) do
 	select('To Explore', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#restaurantName')['innerHTML']
+	$currentItemTitle = find('#restaurantName')['innerText']
 end
 
 When(/^I add the recipe to the 'Favorites' list$/) do
 	select('Favorites', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#recipeTitle')['innerHTML']
+	$currentItemTitle = find('#recipeTitle')['innerText']
 end
 
 Then(/^I should see the item in the 'Favorites' List$/) do
@@ -271,13 +271,13 @@ end
 When(/^I add the restaurant to the 'Favorites' list$/) do
 	select('Favorites', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#restaurantName')['innerHTML']
+	$currentItemTitle = find('#restaurantName')['innerText']
 end
 
 When(/^I add the recipe to the 'Do Not Show' list$/) do
 	select('Do Not Show', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#recipeTitle')['innerHTML']
+	$currentItemTitle = find('#recipeTitle')['innerText']
 end
 
 Then(/^I should see the item in the 'Do Not Show' List$/) do
@@ -287,7 +287,7 @@ end
 When(/^I add the restaurant to the 'Do Not Show' list$/) do
 	select('Do Not Show', from: 'listDropdown')
 	find('#addToListButton').click
-	$currentItemTitle = find('#restaurantName')['innerHTML']
+	$currentItemTitle = find('#restaurantName')['innerText']
 end
 
 When(/^I add the second search result to the 'Favorites' list$/) do
@@ -296,12 +296,12 @@ When(/^I add the second search result to the 'Favorites' list$/) do
 	find('#restaurant_1').click
 	select('Favorites', from: 'listDropdown')
 	find('#addToListButton').click
-	$secondResult = find('#restaurantName')['innerHTML']
+	$secondResult = find('#restaurantName')['innerText']
 end
 
 Then(/^I should see the order of the two results has switched$/) do
 	find('#restaurant_0').click
-	expect(find('#restaurantName')['innerHTML']).to eq $secondResult
+	expect(find('#restaurantName')['innerText']).to eq $secondResult
 end
 
 When(/^I click on the first restaurant$/) do
@@ -343,10 +343,10 @@ end
 
 Then(/^I should be presented with the correct information for 'The Habit Burger Grill'$/) do
 	expect(page).to have_current_path("#{Constants.file_path}restaurant.html")
-	expect(find('#restaurantName')['innerHTML']).to eq 'The Habit Burger Grill'
-	expect(find('#address')['innerHTML']).to eq '3607 Trousdale Pkwy, Los Angeles, CA 90089, USA'
-	expect(find('#phoneNumber')['innerHTML']).to eq '(213) 740-2311'
-	expect(find('#website')['innerHTML']).to eq 'https://www.habitburger.com/locations/echo-park/'
+	expect(find('#restaurantName')['innerText']).to eq 'The Habit Burger Grill'
+	expect(find('#address')['innerText']).to eq '3607 Trousdale Pkwy, Los Angeles, CA 90089, USA'
+	expect(find('#phoneNumber')['innerText']).to eq '(213) 740-2311'
+	expect(find('#website')['innerText']).to eq 'https://www.habitburger.com/locations/echo-park/'
 end
 
 Then(/^'Printable Version' button should exist$/) do
@@ -441,14 +441,14 @@ Then(/^I should be on the List Management Page$/) do
 end
 
 When(/^I click on the restaurant in the 'Favorites' list$/) do
-    $itemName = find('.restaurant-name')['innerHTML'];
+    $itemName = find('.restaurant-name')['innerText'];
     Capybara.match = :first
     find('.card').click
 end
 
 Then(/^I should be on the Restaurant page for the item$/) do
     expect(page).to have_current_path("#{Constants.file_path}restaurant.html")
-    expect(find('#restaurantName')['innerHTML']).to eq $itemName
+    expect(find('#restaurantName')['innerText']).to eq $itemName
 end
 
 Then(/^I should see rows with alternating shades of gray on the Search Page$/) do
