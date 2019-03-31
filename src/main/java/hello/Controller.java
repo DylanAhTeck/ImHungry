@@ -217,7 +217,9 @@ public class Controller {
 
 			//Added to store PriorSearch queries
 			PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
-			priorSearchList.add(recentQuery);
+			// priorSearchList.add(recentQuery);
+			
+
 			System.out.println("added searchQuery to PriorSearchList");
 
 
@@ -536,9 +538,9 @@ public class Controller {
 	    for(int i = 0 ; i < size && i < results.length(); i++) {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
 	    	String place_id;
-		
+
 			place_id = dataObj.getString("place_id");
-			
+
 	    	//check for do not show
 	    	if(doNotShow.contains(place_id)) {
 	    		size++;

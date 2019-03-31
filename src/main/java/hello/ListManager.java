@@ -7,12 +7,12 @@ public class ListManager {
 	private ArrayList<Result> favorites = new ArrayList<Result>();
 	private ArrayList<Result> doNotShow = new ArrayList<Result>();
 
-	private ArrayList<PriorSearch> priorSearch = new ArrayList<PriorSearch>();
+	// private ArrayList<PriorSearch> priorSearch = new ArrayList<PriorSearch>();
 
 
 
 	public ListManager() {
-		
+
 	}
 
 	public ArrayList<Result> getToExplore() {
@@ -27,9 +27,9 @@ public class ListManager {
 		return doNotShow;
 	}
 
-	public ArrayList<PriorSearch> getpriorSearch() {
-		return priorSearch;
-	}
+	// public ArrayList<PriorSearch> getpriorSearch() {
+	// 	return priorSearch;
+	// }
 
 	public void setFavorites(ArrayList<Result> list) {
 		this.favorites = list;
@@ -173,10 +173,10 @@ public class ListManager {
 
 //here is the function to add to Prior PriorSearch
 //keep in mind to check for duplicate searches
-public void addToPriorSearch(String priorSearchterm, Integer numberofResults, Integer radius) {
-	PriorSearch item = new PriorSearch(priorSearchterm,numberofResults,radius);
-
-	priorSearch.add(item);
-}
+// public void addToPriorSearch(String priorSearchterm, Integer numberofResults, Integer radius) {
+// 	PriorSearch item = new PriorSearch(priorSearchterm,numberofResults,radius);
+//
+// 	priorSearch.add(item);
+// }
 
 }
