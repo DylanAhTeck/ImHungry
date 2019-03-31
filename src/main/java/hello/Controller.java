@@ -362,7 +362,7 @@ public class Controller {
 			return "Couldn't find uniqueId";
 		}
 
-		Boolean added = listManager.addToList(toAdd, targetListName);
+		boolean added = listManager.addToList(toAdd, targetListName);
 		
 		if(added) addToDB(targetListName, toAdd);
 		
