@@ -24,6 +24,11 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/restaurant.css" />
   </head>
   <body onload="setData();">
+    <div class="header-wrapper">
+      <button type="button" class="btn btn-secondary" id="logout-btn">
+        Logout
+      </button>
+    </div>
     <div class="container mt-5">
       <div class="row">
         <div class="col-6">
@@ -71,7 +76,8 @@
       </div>
       <input type="hidden" name="hiddenAddress" id="hiddenAddress" value="" />
     </div>
-
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script src="./assets/js/firebase.js"></script>
     <script>
       var googleMapsAddress;
       var websiteAddress;
@@ -132,6 +138,35 @@
 
       function redirectToWebsite() {
         location.href = websiteAddress;
+      }
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            logoutUser();
+            location.href = "login.html";
+          })
+          .catch(() => {
+            console.log("Sign out failed.");
+          });
+      });
+
+      function logoutUser() {
+        // Send UID to backend server
+        let xhttp = new XMLHttpRequest();
+        let params = "userUID=" + sessionStorage.getItem("userUID");
+        xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log("UID sent to server side");
+            }
+          }
+        };
+        xhttp.send();
       }
     </script>
 

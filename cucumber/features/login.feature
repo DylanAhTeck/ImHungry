@@ -28,3 +28,22 @@ Scenario: S506 - Test that clicking on the register button redirects to the regi
 
   When I click on the register button
   Then I should be on the Register page
+
+Scenario: S507 - Test that login attempt in with wrong credentials displays error message
+
+  When I type in a correct email
+  And I type in a wrong password
+  And I click on the login button
+  Then I should see an error message displayed
+
+Scenario: S508 - Test that login attempt with correct credentials redirects to the Search page
+
+  When I type in a correct email
+  And I type in a correct password
+  And I click on the login button
+  Then I should be on the Search Page
+
+Scenario: S509 - Test that logout functionality works
+
+  When I click on the logout button
+  Then I should be on the Login page

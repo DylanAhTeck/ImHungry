@@ -471,7 +471,7 @@ When(/^I click on the second restaurant result$/) do
 end
 
 Then(/^I should see rows with alternating shades of gray on the List Management Page$/) do
-    Capybara.default_max_wait_time = 10
+  Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
 	expect(find('.card_0')['class']).to have_text('bg-secondary')
 	expect(find('.card_1')['class']).to have_text('bg-dark')
@@ -511,4 +511,32 @@ end
 
 Then(/^I should be on the Register page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}register.html")
+end
+
+Then(/^I should be on the Login page$/) do
+	expect(page).to have_current_path("#{Constants.file_path}login.html")
+end
+
+When(/^I type in a correct email$/) do
+	fill_in('email', with: "test_wayne@test.com")
+end
+
+When(/^I type in a wrong password$/) do
+	fill_in('password', with: "wrong_password")
+end
+
+When(/^I type in a correct password$/) do
+	fill_in('password', with: "password")
+end
+
+When(/^I click on the login button$/) do
+	find('#login-btn').click
+end
+
+Then(/^I should see an error message displayed$/) do
+	expect(page).to have_content("The password is invalid or the user does not have a password.")
+end
+
+When(/^I click on the logout button$/) do
+	find('#logout-btn').click
 end

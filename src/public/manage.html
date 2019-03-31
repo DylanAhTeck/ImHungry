@@ -17,6 +17,9 @@
       <div class="container">
         <div class="content-wrapper">
           <div class="header-wrapper">
+            <button type="button" class="btn btn-secondary" id="logout-btn">
+              Logout
+            </button>
             <div class="list-name text-center">
               <h1 id="list-name-title">List Name</h1>
             </div>
@@ -36,12 +39,20 @@
                   Manage List
                 </button>
                 <a href="results.html">
-                  <button type="button" class="btn btn-secondary" id="backToResultsButton">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="backToResultsButton"
+                  >
                     Back to Results
                   </button>
                 </a>
                 <a href="search.html">
-                  <button type="button" class="btn btn-secondary" id="backToSearchButton">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="backToSearchButton"
+                  >
                     Back to Search
                   </button>
                 </a>
@@ -53,6 +64,8 @@
       </div>
     </section>
   </body>
+  <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+  <script src="./assets/js/firebase.js"></script>
   <script type="text/javascript">
     let JSONObj = {};
     let currentIndex = 0;
@@ -126,7 +139,8 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
+      newRemoveIcon.className =
+        "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -216,9 +230,12 @@
       let newCard = document.createElement("div");
 
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3 restaurant-card card_" + currentIndex;
+        newCard.className =
+          "card text-white bg-secondary mb-3 restaurant-card card_" +
+          currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3 restaurant-card card_" + currentIndex;
+        newCard.className =
+          "card text-white bg-dark mb-3 restaurant-card card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
@@ -291,7 +308,8 @@
       let newRemoveCol = document.createElement("div");
       newRemoveCol.className = "col-2 icon-container";
       let newRemoveIcon = document.createElement("i");
-      newRemoveIcon.className = "fas fa-times-circle fa-3x remove_" + currentIndex;
+      newRemoveIcon.className =
+        "fas fa-times-circle fa-3x remove_" + currentIndex;
       newRemoveIcon.id = "remove-" + JSONObj[listNameParameter][idx].uniqueId;
       newRemoveIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
@@ -380,9 +398,11 @@
       let newCard = document.createElement("div");
       newCard.id = JSONObj[listNameParameter][idx].uniqueId;
       if (idx % 2 === 0) {
-        newCard.className = "card text-white bg-secondary mb-3 recipe-card card_" + currentIndex;
+        newCard.className =
+          "card text-white bg-secondary mb-3 recipe-card card_" + currentIndex;
       } else {
-        newCard.className = "card text-white bg-dark mb-3 recipe-card card_" + currentIndex;
+        newCard.className =
+          "card text-white bg-dark mb-3 recipe-card card_" + currentIndex;
       }
       let newCardBody = document.createElement("div");
       newCardBody.className = "card-body";
@@ -430,6 +450,35 @@
       newRow.append(newMoveCol);
 
       resultsList.append(newRow);
+    }
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          logoutUser();
+          location.href = "login.html";
+        })
+        .catch(() => {
+          console.log("Sign out failed.");
+        });
+    });
+
+    function logoutUser() {
+      // Send UID to backend server
+      let xhttp = new XMLHttpRequest();
+      let params = "userUID=" + sessionStorage.getItem("userUID");
+      xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+      xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          if (xhttp.responseText) {
+            console.log("UID sent to server side");
+          }
+        }
+      };
+      xhttp.send();
     }
   </script>
   <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
