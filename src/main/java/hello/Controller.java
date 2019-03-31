@@ -245,7 +245,9 @@ public class Controller {
 			System.out.println("ioexception retrieving restaurants");
 		}
 
+		System.out.println("about to retrieve recipes");
 		ArrayList<Recipe> recipes = retrieveRecipes(searchQuery, numResults);
+		System.out.println("recipes retrieved");
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
 		
@@ -768,7 +770,7 @@ public class Controller {
 		int numExtra = 0;
 
 		for(Result result: listManager.getdoNotShow()) {
-			if(result.getUniqueId().matches("[0-9]+")) {
+			if(result.getUniqueId().matches("[0-9]+") && result.getType() == "Recipe") {
 				doNotShow += result.getUniqueId();
 				numExtra += 1;
 			}
@@ -780,14 +782,16 @@ public class Controller {
 		}
 
 		try {
+			System.out.println("retrieving recipes...");
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
 					.header("X-RapidAPI-Key", "e2ddeee7bamsh69f202abaea3a79p12dc38jsnbe7d032a1782")
 					.queryString("query", searchQuery)
 					.queryString("number", numResults + numExtra)
 					.asJson();
 
-
+			
 			String allDataString = response.getBody().toString();
+			System.out.println("all data:" + allDataString);
 
 			// convert to a usable jackson JSONNode
     		JsonNode root = mapper.readTree(allDataString);
@@ -979,6 +983,7 @@ public class Controller {
 		if(this.userId == "") return false;
 		ObjectMapper mapper = new ObjectMapper();
 		Gson gson = new Gson();
+		System.out.println("current user id: " + userId);
 		DocumentReference docRef = db.collection("users").document(userId);
 		try {
 			ApiFuture<WriteResult> arrayUnion = docRef.update(originListName,
