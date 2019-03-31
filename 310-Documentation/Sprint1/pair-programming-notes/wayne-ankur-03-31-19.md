@@ -22,8 +22,8 @@ _Note: We accidentally squashed and merged when working on branches here and so 
 
 ### Link to test commits
 
-SHA for test commits: `TODO`
+SHA for test commits: `a45bec7418e5c94aabfe655cc05852496679e0d8`
 
 ### Link to code commits
 
-SHA for code commits: `TODO`
+SHA for code commits: `a45bec7418e5c94aabfe655cc05852496679e0d8`
