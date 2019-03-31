@@ -310,7 +310,6 @@ public class TestController {
 		assertEquals(false, controller.addSearchToDB(listName, search));
 		//Test valid remove with user logged in
 		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
-		listName = "favorites";
 		search = new PriorSearch("pizza", 2, 5000);
 		assertEquals(true, controller.addSearchToDB(listName, search));
 	}

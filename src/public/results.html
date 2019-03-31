@@ -17,6 +17,9 @@
       <div class="container">
         <div class="content-wrapper">
           <div class="header-wrapper">
+            <button type="button" class="btn btn-secondary" id="logout-btn">
+              Logout
+            </button>
             <div id="collage"></div>
             <div class="controls">
               <div class="input-group">
@@ -59,6 +62,8 @@
       </div>
     </section>
   </body>
+  <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+  <script src="./assets/js/firebase.js"></script>
   <script type="text/javascript">
 
     let JSONObj = {
@@ -88,7 +93,8 @@
     function processSearch() {
       let query = sessionStorage.getItem('query');
       let numResults = sessionStorage.getItem('numResults');
-      let parameters = "searchQuery=" + query + "&numResults=" + numResults;
+      let radius = sessionStorage.getItem("radius");
+      let parameters = "searchQuery=" + query + "&numResults=" + numResults  +  "&radius=" + radius;
       let xhttp = new XMLHttpRequest();
       xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
       xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
@@ -293,6 +299,35 @@
 
         recipesDiv.appendChild(newCard);
       }
+    }
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          logoutUser();
+          location.href = "login.html";
+        })
+        .catch(() => {
+          console.log("Sign out failed.");
+        });
+    });
+
+    function logoutUser() {
+      // Send UID to backend server
+      let xhttp = new XMLHttpRequest();
+      let params = "userUID=" + sessionStorage.getItem("userUID");
+      xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+      xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          if (xhttp.responseText) {
+            console.log("UID sent to server side");
+          }
+        }
+      };
+      xhttp.send();
     }
   </script>
   <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
