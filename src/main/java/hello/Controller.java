@@ -1,6 +1,8 @@
 package hello;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -11,7 +13,16 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
+
+import java.util.Map;
+import java.util.HashMap;
+
+
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldValue;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,9 +33,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.auth.oauth2.GoogleCredentials;
+
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Transaction;
+import com.google.firebase.cloud.FirestoreClient;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
+import com.google.firebase.auth.UserRecord.CreateRequest;
+import com.google.firebase.FirebaseApp;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -168,7 +199,7 @@ public class Controller {
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
-	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults) {
+	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="100000") Integer radius) {
 
 		if (searchQuery == null) {
 			return "Thanks for searching!";
@@ -184,10 +215,8 @@ public class Controller {
 			// saved list of restaurants returned from query in "cache"
 			mostRecentRestaurants = restaurants;
 
-
-			PriorSearch recentQuery = new PriorSearch();
-			recentQuery.term = searchQuery;
-			recentQuery.numberOfresults = numResults;
+			//Added to store PriorSearch queries
+			PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
 			priorSearchList.add(recentQuery);
 			System.out.println("added searchQuery to PriorSearchList");
 
@@ -434,7 +463,7 @@ public class Controller {
 	}
 
 	//Google distance matrix API
-	private String getDuration(String place_id) throws MalformedURLException, IOException {
+	private String getDuration(String place_id) throws MalformedURLException, IOException, JSONException {
 		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyB9ygmPGReQW95GCkHazFsVPZBDI3MJoc0";
 		String res = callAPI(distanceRequestURL);
 		JSONObject json = new JSONObject(res);
@@ -450,7 +479,7 @@ public class Controller {
 	}
 
 
-	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
+	private String[] placesDetail(String place_id) throws MalformedURLException, IOException, JSONException {
 		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyCFYK31wcgjv4tJAGInrnh52gZoryqQ-2Q";
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
@@ -472,7 +501,7 @@ public class Controller {
 		return new String[]{address, phone, website};
 	}
 
-	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
+	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException, JSONException{
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		JSONArray results = json.getJSONArray("results");
 
@@ -506,8 +535,10 @@ public class Controller {
 
 	    for(int i = 0 ; i < size && i < results.length(); i++) {
 	    	JSONObject dataObj = (JSONObject) results.get(i);
-	    	String place_id = dataObj.getString("place_id");
-
+	    	String place_id;
+		
+			place_id = dataObj.getString("place_id");
+			
 	    	//check for do not show
 	    	if(doNotShow.contains(place_id)) {
 	    		size++;
@@ -559,7 +590,7 @@ public class Controller {
 	}
 
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
-	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
+	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException, JSONException {
 		// TODO: Pull restaurants from external API and grab relevant information.
 
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");

@@ -1,4 +1,5 @@
 package hello;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -36,7 +37,7 @@ public class Restaurant extends Result {
 	}
 
 
-	public JSONObject writeToJSON() throws JsonProcessingException { 
+	public JSONObject writeToJSON() throws JsonProcessingException, JSONException { 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String jsonString = "empty";
 		try {
