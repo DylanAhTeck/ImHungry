@@ -980,7 +980,7 @@ public class Controller {
 	
 	//add result to db
 	public Boolean addSearchToDB(String originListName, PriorSearch search) {
-		if(this.userId == "") return false;
+		if(this.userId == "" || this.userId == null) return false;
 		ObjectMapper mapper = new ObjectMapper();
 		Gson gson = new Gson();
 		System.out.println("current user id: " + userId);
@@ -999,7 +999,7 @@ public class Controller {
 	
 	//add result to db
 	public Boolean addToDB(String originListName, Result result) {
-		if(this.userId == "") return false;
+		if(this.userId == "" || this.userId == null) return false;
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enableDefaultTyping();
 		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -1017,7 +1017,7 @@ public class Controller {
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
-		if(this.userId == "") return false;
+		if(this.userId == "" || this.userId == null) return false;
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.enableDefaultTyping();
 		// run an asynchronous transaction
