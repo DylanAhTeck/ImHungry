@@ -1,5 +1,6 @@
 hello/ListManager.class
 hello/Controller.class
+hello/PriorSearch.class
 hello/Result.class
 hello/Restaurant.class
 hello/Recipe.class

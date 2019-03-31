@@ -1,16 +1,18 @@
 *.class
 .DS_Store
 /target/
-target/* 
-/target/ 
-.metadata 
-tar.gz 
-.classpath 
-.project 
-*/.settings/ 
+target/*
+/target/
+.metadata
+tar.gz
+.classpath
+.project
+*/.settings/
 
 *.idea/
 .idea/
 
 .idea/*
 
+target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst

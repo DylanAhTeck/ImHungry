@@ -74,6 +74,34 @@
     <script type="text/javascript">
       document.addEventListener("DOMContentLoaded", function() {
         $('[data-toggle="tooltip"]').tooltip();
+        //If user has been signed in, send request to server
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            //User is signed in
+            console.log("User logged in, sending request to server side");
+            sessionStorage.setItem("userUID", user.uid);
+            let parameters = "id=" + user.uid;
+            let xhttp = new XMLHttpRequest();
+            xhttp.open(
+              "GET",
+              "http://localhost:8080/loginUser?" + parameters,
+              true
+            );
+            xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+            xhttp.onreadystatechange = function() {
+              if (xhttp.readyState == 4 && xhttp.status == 200) {
+                if (xhttp.responseText) {
+                  console.log(this.responseText);
+                }
+              }
+            };
+            xhttp.send();
+          } else {
+            // No user is signed in.
+            sessionStorage.clear();
+            location.href = "login.html";
+          }
+        });
       });
 
       document.getElementById("feedMeButton").onclick = function() {
