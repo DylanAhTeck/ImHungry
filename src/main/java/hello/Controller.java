@@ -507,7 +507,7 @@ public class Controller {
 			docData.put("doNotShow", new ArrayList<Result>());
 			docData.put("favorites", new ArrayList<Result>());
 			docData.put("toExplore", new ArrayList<Result>());
-			// docData.put("priorSearchQueries", new ArrayList<SearchQuery>()); // NOTE: this will depend on chris and dylan's work
+			docData.put("priorSearchQueries", new ArrayList<PriorSearch>()); // NOTE: this will depend on chris and dylan's work
 			this.userId = userRecord.getUid();
 			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
 
@@ -967,6 +967,24 @@ public class Controller {
 			return new ArrayList<String>();
 		}
 		return thumbnailLinks;
+	}
+	
+	//add result to db
+	public Boolean addSearchToDB(String originListName, PriorSearch search) {
+		if(this.userId == "") return false;
+		ObjectMapper mapper = new ObjectMapper();
+		Gson gson = new Gson();
+		DocumentReference docRef = db.collection("users").document(userId);
+		try {
+			ApiFuture<WriteResult> arrayUnion = docRef.update(originListName,
+				    FieldValue.arrayUnion(gson.toJson(search)));
+			return true;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+			
 	}
 	
 	//add result to db

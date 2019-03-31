@@ -298,6 +298,21 @@ public class TestController {
 		controller.addToDB(listName, result);
 		assertEquals(true, controller.removeFromDB(listName, result));
 	}
+	
+	//Test for adding prior searches to database
+	@Test
+	public void testAddSearchToDB() throws IOException {
+		//Test remove but user not logged in
+		controller.signUserOut();
+		String listName = "priorSearchQueries";
+		PriorSearch search = new PriorSearch("bugers", 5, 500);
+		assertEquals(false, controller.addSearchToDB(listName, search));
+		//Test valid remove with user logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "favorites";
+		search = new PriorSearch("pizza", 2, 5000);
+		assertEquals(true, controller.addSearchToDB(listName, search));
+	}
 
 
 
