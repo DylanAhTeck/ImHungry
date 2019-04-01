@@ -5,8 +5,8 @@
 - Time: 10:45am
 - Location: SGM 101
 - Participants: Ankur, Andrew, Wayne, Chris
-- Group Selfie Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum2.jpg`
-- Post-Meeting Task Chart Link: - Post-Meeting Task Chart Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum2.png`
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum2.jpg
+- Post-Meeting Task Chart Link: - Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum2.png
 
 
 ## Agile Questions Notes:

@@ -1,15 +1,15 @@
 # Scrum #1
 
 
-_Note: We initially had our Scrum 1 Notes in a Google doc separately and talked with Professor Halfond about how best to move them to our repo during class on 3/25/19. If you'd like to see the original Google doc for timestamps, you can find it here: `https://docs.google.com/document/d/1ASPCNxrlzhfeq3ymVWXgElM8lIvOvfmPzBwCBHy5dig/edit?usp=sharing`_
+_Note: We initially had our Scrum 1 Notes in a Google doc separately and talked with Professor Halfond about how best to move them to our repo during class on 3/25/19. If you'd like to see the original Google doc for timestamps, you can find it here: https://docs.google.com/document/d/1ASPCNxrlzhfeq3ymVWXgElM8lIvOvfmPzBwCBHy5dig/edit?usp=sharing_
 
 ## Logistics
 - Date: 24th March, 2019
 - Time: 3:30pm
 - Location: JFF 332
 - Participants: Ankur, Andrew, Wayne, Dylan
-- Group Selfie Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum1.jpg`
-- Post-Meeting Task Chart Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum1.png`
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum1.jpg
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum1.png
 
 ## Agile Questions Notes:
 
