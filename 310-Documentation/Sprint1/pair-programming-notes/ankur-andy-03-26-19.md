@@ -17,7 +17,7 @@ Andy and Ankur worked on setting up the tests for registering a user and updatin
 _Note: We accidentally squashed and merged when working on branches here and so teh test and code commits became one commit. We'll be careful not to do this in the future._
 
 ### Link to test commits
-SHA for test commits: `f372630080ee3348c972333c6e3dc75604ae84f8`
+SHA for test commits: f372630080ee3348c972333c6e3dc75604ae84f8
 
 ### Link to code commits
-SHA for code commits: `f372630080ee3348c972333c6e3dc75604ae84f8`
+SHA for code commits: f372630080ee3348c972333c6e3dc75604ae84f8
