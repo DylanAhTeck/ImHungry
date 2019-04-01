@@ -16,8 +16,5 @@ https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint
 
 _Note: We accidentally squashed and merged when working on branches here and so teh test and code commits became one commit. We'll be careful not to do this in the future._
 
-### Link to test commits
-SHA for test commits: 18bde4cd0d0d6e4c7436849cf4c8da34856a657b
-
-### Link to code commits
-SHA for code commits: 18bde4cd0d0d6e4c7436849cf4c8da34856a657b
+### Link to test and code commits
+https://github.com/weiyuyu/CSCI310-Project2/pull/2/commits/ba7d6473d7a520590889800eac7f2a350efdf3cd
