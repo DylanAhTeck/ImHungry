@@ -282,8 +282,31 @@ public class TestController {
 		listName = "favorites";
 		int randInt = rand.nextInt(1000);
 		Recipe recipe = new Recipe(Integer.toString(randInt));
+		Restaurant restaurant = new Restaurant(Integer.toString(randInt+10));
 		randInt = rand.nextInt(1000);
-		
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "doNotShow";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
+		listName = "toExplore";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "toExplore";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
 		
 	}
 
