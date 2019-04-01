@@ -12,12 +12,12 @@ Andy and Ankur worked on setting up the tests for registering a user and updatin
 
 ### Link to Pair Selfie
 
-`https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/ankur-andy-03-26-19.jpg`
+https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/ankur-andy-03-26-19.jpg
 
 _Note: We accidentally squashed and merged when working on branches here and so teh test and code commits became one commit. We'll be careful not to do this in the future._
 
 ### Link to test commits
-SHA for test commits: f372630080ee3348c972333c6e3dc75604ae84f8
+SHA for test commits: 18bde4cd0d0d6e4c7436849cf4c8da34856a657b
 
 ### Link to code commits
-SHA for code commits: f372630080ee3348c972333c6e3dc75604ae84f8
+SHA for code commits: 18bde4cd0d0d6e4c7436849cf4c8da34856a657b
