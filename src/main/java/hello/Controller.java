@@ -364,7 +364,10 @@ public class Controller {
 
 		boolean added = listManager.addToList(toAdd, targetListName);
 		
-		if(added) addToDB(targetListName, toAdd);
+		if(added) {
+			System.out.println("adding to list");
+			addToDB(targetListName, toAdd);
+		}
 		
 		
 		
@@ -1007,9 +1010,9 @@ public class Controller {
 		DocumentReference docRef = db.collection("users").document(userId);
 		try {
 			ApiFuture<WriteResult> arrayUnion = docRef.update(originListName,
-				    FieldValue.arrayUnion(mapper.writeValueAsString(result)));
+				    FieldValue.arrayUnion(new Gson().toJson(result)));
 			return true;
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -1018,16 +1021,19 @@ public class Controller {
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
+		System.out.println("user id is " + this.userId);
 		if(this.userId == "" || this.userId == null) return false;
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.enableDefaultTyping();
+		System.out.println("attempting to remove");
+		//ObjectMapper mapper = new ObjectMapper();
+		//mapper.enableDefaultTyping();
+		Gson gson = new Gson();
 		// run an asynchronous transaction
 		DocumentReference docRef = db.collection("users").document(userId);
 		try {
 			ApiFuture<WriteResult> arrayRm = docRef.update(originListName,
-				    FieldValue.arrayRemove(mapper.writeValueAsString(result)));
+				    FieldValue.arrayRemove(gson.toJson(result)));
 			return true;
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
