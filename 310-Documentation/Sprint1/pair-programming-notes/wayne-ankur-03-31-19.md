@@ -16,14 +16,14 @@ Wayne and Ankur worked on setting up the cucumber tests for registering a user o
 
 ### Link to Pair Selfie
 
-`https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/wayne-ankur-03-31-19.HEIC`
+https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/wayne-ankur-03-31-19.HEIC
 
 _Note: We accidentally squashed and merged when working on branches here and so teh test and code commits became one commit. We'll be careful not to do this in the future._
 
 ### Link to test commits
 
-SHA for test commits: `a45bec7418e5c94aabfe655cc05852496679e0d8`
+SHA for test commits: https://github.com/weiyuyu/CSCI310-Project2/commit/a45bec7418e5c94aabfe655cc05852496679e0d8
 
 ### Link to code commits
 
-SHA for code commits: `a45bec7418e5c94aabfe655cc05852496679e0d8`
+SHA for code commits: https://github.com/weiyuyu/CSCI310-Project2/commit/a45bec7418e5c94aabfe655cc05852496679e0d8
