@@ -10,7 +10,7 @@
   - Andy Yalung
   - Wayne Yu
 - Absent: Dylan Ah Teck, Chris Lam
-- SHA containing Sprint 2 Backlog: 
+- Link containing Sprint 2 Backlog: 
 
 ## Why did we chose the subset of the product backlog to work on?
 
