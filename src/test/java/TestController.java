@@ -15,6 +15,9 @@ import org.json.simple.parser.ParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import hello.Controller;
 import hello.PriorSearch;
 import hello.Recipe;
@@ -341,7 +344,36 @@ public class TestController {
 	}
 
 
-
+	//Test for moving a result up one in list
+	@Test
+	public void testMoveUpOne() throws IOException {
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		controller.handleAddToList("id1", "favorites");
+		controller.handleAddToList("id2", "favorites");
+		ArrayList<Result> favorites = new Gson().fromJson(controller.getList("favorites"), new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		controller.moveUpOne("id2", "favorites");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+	}
+	
+	//Test for moving a result down one in list
+	@Test
+	public void testMoveDownOne() throws IOException {
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		controller.handleAddToList("id1", "favorites");
+		controller.handleAddToList("id2", "favorites");
+		ArrayList<Result> favorites = new Gson().fromJson(controller.getList("favorites"), new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		controller.moveDownOne("id1", "favorites");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+	}
+	
+	//Test for conversion to meters
+	@Test
+	public void testToMeters() throws IOException {
+		assertEquals(controller.toMeters(1), 1609.34);
+		assertEquals(controller.toMeters(2), 3218.68);
+	}
 
 
 

@@ -531,6 +531,20 @@ public class Controller {
 		}
 		
 	}
+	
+	//Moving and item position up one in the array list
+	@RequestMapping("/moveUpOne")
+	@CrossOrigin
+	public boolean moveUpOne(@RequestParam String uniqueId, @RequestParam String listName) {
+		return true;
+	}
+	
+	//Moving and item position down one in the array list
+	@RequestMapping("/moveDownOne")
+	@CrossOrigin
+	public boolean moveDownOne(@RequestParam String uniqueId, @RequestParam String listName) {
+		return true;
+	}
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -1039,5 +1053,8 @@ public class Controller {
 		}
 	}
 	
+	public double toMeters(int miles) {
+		return 0.0;
+	}
 
 }
