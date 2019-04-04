@@ -14,4 +14,4 @@
 
 ## Why did we chose the subset of the product backlog to work on?
 
-We wanted to break the sprints into work sessions of 4 tasks for the first two and leave the last sprint for revisions and polishing. These 4 tasks (1, 2, 4, and 8) seemed like the most ambiguous, and therefore we chose them get the longest head start on future revisions. We also included 5 in Sprint 1 without making any changes to the front-end from Project 1 to see if the existing frontend appearance would satisfy the stakeholders' aesthetic needs.
+Our sprint backlog now includes all 8 features. We have separated the sprint into fixing features and new ones to be implemented. We decided to try to complete all 8 features by the end of Sprint 2 so that we can have all of Sprint 3 to fix any details that we have missed and make sure all requirements are satisifed. 
