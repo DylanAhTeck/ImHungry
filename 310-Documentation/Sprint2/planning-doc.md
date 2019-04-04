@@ -10,7 +10,7 @@
   - Andy Yalung
   - Wayne Yu
 - Absent: Dylan Ah Teck, Chris Lam
-- Link containing Sprint 2 Backlog: 
+- Link to commit containing Sprint 2 Backlog: https://github.com/weiyuyu/CSCI310-Project2/commit/17bc38a73449f72b5638406d21b1b96acf12e0a8
 
 ## Why did we chose the subset of the product backlog to work on?
 
