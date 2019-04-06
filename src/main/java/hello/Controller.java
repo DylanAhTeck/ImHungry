@@ -226,7 +226,7 @@ public class Controller {
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
-	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5000") Integer radius) {
+	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5") Integer radius) {
 
 		if (searchQuery == null) {
 			return "Thanks for searching!";
@@ -238,7 +238,7 @@ public class Controller {
 
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		try {
-			restaurants = retrieveRestaurants(searchQuery, numResults);
+			restaurants = retrieveRestaurants(searchQuery, numResults, radius);
 			// saved list of restaurants returned from query in "cache"
 			mostRecentRestaurants = restaurants;
 		} catch (IOException e) {
@@ -536,14 +536,80 @@ public class Controller {
 	@RequestMapping("/moveUpOne")
 	@CrossOrigin
 	public boolean moveUpOne(@RequestParam String uniqueId, @RequestParam String listName) {
-		return true;
+		listManager.moveUpOne(uniqueId, listName);
+		DocumentReference userDocRef = db.collection("users").document(userId);
+		if(listName == "favorites") {
+			ArrayList<Result> favorites = listManager.getFavorites();
+			ArrayList<String> jsonFavorites = new ArrayList<String>();
+			for(int i = 0; i < favorites.size(); i++) {
+				jsonFavorites.add(new Gson().toJson(favorites.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("favorites", jsonFavorites);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName == "toExplore") {
+			ArrayList<Result> toExplore = listManager.getToExplore();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < toExplore.size(); i++) {
+				json.add(new Gson().toJson(toExplore.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("toExplore", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName == "doNotShow") {
+			ArrayList<Result> doNotShow = listManager.getdoNotShow();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < doNotShow.size(); i++) {
+				json.add(new Gson().toJson(doNotShow.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("doNotShow", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		}
+		return false;
 	}
 	
 	//Moving and item position down one in the array list
 	@RequestMapping("/moveDownOne")
 	@CrossOrigin
 	public boolean moveDownOne(@RequestParam String uniqueId, @RequestParam String listName) {
-		return true;
+		listManager.moveDownOne(uniqueId, listName);
+		DocumentReference userDocRef = db.collection("users").document(userId);
+		if(listName == "favorites") {
+			ArrayList<Result> favorites = listManager.getFavorites();
+			ArrayList<String> jsonFavorites = new ArrayList<String>();
+			for(int i = 0; i < favorites.size(); i++) {
+				jsonFavorites.add(new Gson().toJson(favorites.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("favorites", jsonFavorites);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName == "toExplore") {
+			ArrayList<Result> toExplore = listManager.getToExplore();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < toExplore.size(); i++) {
+				json.add(new Gson().toJson(toExplore.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("toExplore", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName == "doNotShow") {
+			ArrayList<Result> doNotShow = listManager.getdoNotShow();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < doNotShow.size(); i++) {
+				json.add(new Gson().toJson(doNotShow.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("doNotShow", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		}
+		return false;
 	}
 
 	///////////////////////////////////////////////////
@@ -764,12 +830,12 @@ public class Controller {
 	}
 
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
-	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
+	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults, Integer radius) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-
+		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
 
 		String res = callAPI(placesRequestURL);
 
@@ -1054,7 +1120,11 @@ public class Controller {
 	}
 	
 	public double toMeters(int miles) {
-		return 0.0;
+		return miles * 1609.34;
+	}
+	
+	public ListManager getListManager() {
+		return listManager;
 	}
 
 }

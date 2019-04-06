@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import hello.Controller;
+import hello.ListManager;
 import hello.PriorSearch;
 import hello.Recipe;
 import hello.Restaurant;
@@ -57,9 +58,9 @@ public class TestController {
 		doNotShow.add(not);
 		controller.setDoNotShow(doNotShow);
 		controller.setFav(favorite);
-		controller.retrieveRestaurants("null", numResults);
-		controller.retrieveRestaurants(query, 1);
-		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults);
+		controller.retrieveRestaurants("null", numResults, 5);
+		controller.retrieveRestaurants(query, 1, 5);
+		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
 		assertEquals(16, result.size());
 	}
 	
@@ -348,11 +349,18 @@ public class TestController {
 	@Test
 	public void testMoveUpOne() throws IOException {
 		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
-		controller.handleAddToList("id1", "favorites");
-		controller.handleAddToList("id2", "favorites");
-		ArrayList<Result> favorites = new Gson().fromJson(controller.getList("favorites"), new TypeToken<ArrayList<Result>>(){}.getType());
+		ListManager listManager = controller.getListManager();
+		Result r1 = new Result("id1");
+		Result r2 = new Result("id2");
+		listManager.addToList(r1, "favorites");
+		listManager.addToList(r2, "favorites");
+		ArrayList<Result> favorites = listManager.getFavorites();
+		controller.addToDB("favorites", r1);
+		controller.addToDB("favorites", r2);
 		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
 		controller.moveUpOne("id2", "favorites");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
 		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
 	}
 	
@@ -360,19 +368,29 @@ public class TestController {
 	@Test
 	public void testMoveDownOne() throws IOException {
 		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
-		controller.handleAddToList("id1", "favorites");
-		controller.handleAddToList("id2", "favorites");
-		ArrayList<Result> favorites = new Gson().fromJson(controller.getList("favorites"), new TypeToken<ArrayList<Result>>(){}.getType());
+		ListManager listManager = controller.getListManager();
+		Result r1 = new Result("id1");
+		Result r2 = new Result("id2");
+		listManager.addToList(r1, "favorites");
+		listManager.addToList(r2, "favorites");
+		ArrayList<Result> favorites = listManager.getFavorites();
+		controller.addToDB("favorites", r1);
+		controller.addToDB("favorites", r2);
 		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
 		controller.moveDownOne("id1", "favorites");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
 		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+		controller.moveDownOne("id2", "favorites");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
 	}
 	
 	//Test for conversion to meters
 	@Test
 	public void testToMeters() throws IOException {
-		assertEquals(controller.toMeters(1), 1609.34);
-		assertEquals(controller.toMeters(2), 3218.68);
+		assertEquals(controller.toMeters(1) == 1609.34, true);
+		assertEquals(controller.toMeters(2) == 3218.68, true);
 	}
 
 
