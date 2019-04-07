@@ -12,4 +12,4 @@ Chris and Dylan began to draw out the implementation structure of the grocery li
 
 ### Link to Pair Selfie
 
-https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/andy-wayne-4-05.jpg
+https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/chris-dylan-4-07.jpg
