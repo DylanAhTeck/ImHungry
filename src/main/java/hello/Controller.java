@@ -225,7 +225,7 @@ public class Controller {
 //		return "failure";
 //	}
 
-	
+
 
 	@RequestMapping("/search")
 	@CrossOrigin
@@ -254,11 +254,11 @@ public class Controller {
 		System.out.println("recipes retrieved");
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		
+
 		//add search to database
 		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
 		addSearchToDB("priorSearchQueries", recentQuery);
-		
+
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -366,12 +366,12 @@ public class Controller {
 		}
 
 		boolean added = listManager.addToList(toAdd, targetListName);
-		
+
 		if(added) addToDB(targetListName, toAdd);
-		
-		
-		
-		
+
+
+
+
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -385,10 +385,10 @@ public class Controller {
 		else if (originListName.equals("")) return "originListName is empty";
 		// performs removal
 		Result toBeRemoved = listManager.removeFromList(itemToRemoveId, originListName);
-		
+
 		removeFromDB(originListName, toBeRemoved);
 
-		
+
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
@@ -404,10 +404,10 @@ public class Controller {
 		else if (targetListName.equals("")) return "targetListName is empty";
 
 		Result result = listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		
+
 		removeFromDB(originListName, result);
 		addToDB(targetListName, result);
-		
+
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
@@ -443,7 +443,7 @@ public class Controller {
 						} else {
 							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
 						}
-						
+
 					}
 					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
 					ArrayList<Result> favorites = new ArrayList<Result>();
@@ -487,7 +487,7 @@ public class Controller {
 		return "failed";
 	}
 
-	
+
 	//Signs a user out
 	@RequestMapping("/signUserOut")
 	@CrossOrigin
@@ -529,7 +529,7 @@ public class Controller {
 			e.printStackTrace();
 			return "failed";
 		}
-		
+
 	}
 
 	///////////////////////////////////////////////////
@@ -793,7 +793,7 @@ public class Controller {
 					.queryString("number", numResults + numExtra)
 					.asJson();
 
-			
+
 			String allDataString = response.getBody().toString();
 			System.out.println("all data:" + allDataString);
 
@@ -981,7 +981,7 @@ public class Controller {
 		}
 		return thumbnailLinks;
 	}
-	
+
 	//add result to db
 	public Boolean addSearchToDB(String originListName, PriorSearch search) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -997,10 +997,10 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
-	
+
 	//add result to db
 	public Boolean addToDB(String originListName, Result result) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1016,8 +1016,8 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
@@ -1035,22 +1035,22 @@ public class Controller {
 			return false;
 		}
 	}
-	
+
 	@RequestMapping("/addIngredient")
 	@CrossOrigin
 	//TODO: Ingredient string is added to database
-	public boolean addIngredient(@RequestParam(detfaultValue="null") String ingredient)
+	public boolean addIngredient(@RequestParam(defaultValue="null") String ingredient)
 	{
-		
+
 		if(this.userId == "") || this.userId == null || ingredient == "") return false;
 		Gson gson = new Gson();
 		DocumenReference docRef= db.collection("users").document(userId);
 			try{
-				ApiFuture<WriteResults> arrayUnion = docRef.update("groceryList", 
+				ApiFuture<WriteResults> arrayUnion = docRef.update("groceryList",
 						FieldValue.arrayUnion(gson.toJson(indredient)));
-						return true;			
+						return true;
 			}catch (Exception e)
-			{ 
+			{
 				e.printStackTrace();
 				return false;
 			}
@@ -1058,7 +1058,7 @@ public class Controller {
 
 	@RequestMapping("/removeIngredient")
 	@CrossOrigin
-public boolean addIngredient(@RequestParam(detfaultValue="null") String ingredient)
+public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
 	{
 		if(this.userId == "") || this.userId == null || ingredient == "") return false;
 		Gson gson = new Gson();
