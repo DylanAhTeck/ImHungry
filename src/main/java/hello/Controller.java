@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.swing.text.Document;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -223,6 +225,8 @@ public class Controller {
 //		return "failure";
 //	}
 
+	
+
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
@@ -315,7 +319,6 @@ public class Controller {
 //		String favoritesString = listManager.getFavorites().toString();
 //		return "favorites: " + favoritesString;
 //	}
-
 
 	@RequestMapping("/addToList")
 	@CrossOrigin
@@ -1033,5 +1036,45 @@ public class Controller {
 		}
 	}
 	
+	@RequestMapping("/addIngredient")
+	@CrossOrigin
+	//TODO: Ingredient string is added to database
+	public boolean addIngredient(@RequestParam(detfaultValue="null") String ingredient)
+	{
+		
+		if(this.userId == "") || this.userId == null || ingredient == "") return false;
+		Gson gson = new Gson();
+		DocumenReference docRef= db.collection("users").document(userId);
+			try{
+				ApiFuture<WriteResults> arrayUnion = docRef.update("groceryList", 
+						FieldValue.arrayUnion(gson.toJson(indredient)));
+						return true;			
+			}catch (Exception e)
+			{ 
+				e.printStackTrace();
+				return false;
+			}
+	}
+
+	@RequestMapping("/removeIngredient")
+	@CrossOrigin
+public boolean addIngredient(@RequestParam(detfaultValue="null") String ingredient)
+	{
+		if(this.userId == "") || this.userId == null || ingredient == "") return false;
+		Gson gson = new Gson();
+		DocumentReference docRef = db.collection("users").document(userId);
+			try{
+				ApiFuture<WriteResult> arrayRm = docRef.update("groceryList",
+					FieldValue.arrayRemove(gson.toJson(ingredient)));
+					return true;
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+	}
+
+
+
 
 }
