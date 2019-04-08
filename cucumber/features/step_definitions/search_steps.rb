@@ -100,6 +100,7 @@ end
 When(/^I perform a search for 'Burgers'$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5000")
 	find('#feedMeButton').click
 end
 
@@ -160,6 +161,7 @@ end
 When(/^I perform a search for 'Burgers' and input two search results$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "2")
+	fill_in('radius', with: "5000")
 	find('#feedMeButton').click
 end
 
@@ -192,6 +194,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first restaurant result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5000")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -232,6 +235,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first recipe result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5000")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -539,4 +543,12 @@ end
 
 When(/^I click on the logout button$/) do
 	find('#logout-btn').click
+end
+
+And(/^I click on the Move Up button for the first item$/) do
+	find('.moveDown_0').click
+end
+
+Then(/^the first item should be in second from the top$/) do
+	expect('Wahlburgers').to appear_before('The Habit Burger Grill')
 end
