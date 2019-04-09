@@ -613,6 +613,44 @@ public class Controller {
 		}
 		return false;
 	}
+	
+	@RequestMapping("/addIngredient")
+	@CrossOrigin
+	//TODO: Ingredient string is added to database
+	public boolean addIngredient(@RequestParam(defaultValue="null") String ingredient)
+	{
+
+		if(this.userId == "" || this.userId == null || ingredient == "") return false;
+		Gson gson = new Gson();
+		DocumentReference docRef= db.collection("users").document(userId);
+			try{
+				ApiFuture<WriteResult> arrayUnion = docRef.update("groceryList",
+						FieldValue.arrayUnion(ingredient));
+						return true;
+			}catch (Exception e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+	}
+
+	@RequestMapping("/removeIngredient")
+	@CrossOrigin
+	public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
+		{
+			if(this.userId == "" || this.userId == null || ingredient == "") return false;
+			Gson gson = new Gson();
+			DocumentReference docRef = db.collection("users").document(userId);
+				try{
+					ApiFuture<WriteResult> arrayRm = docRef.update("groceryList",
+						FieldValue.arrayRemove(ingredient));
+						return true;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+					return false;
+				}
+		}
 
 	///////////////////////////////////////////////////
 	// 												 //

@@ -394,6 +394,23 @@ public class TestController {
 	}
 
 
+	@Test
+	public void testAddIngredient() throws IOException {
+		//Test remove but user not logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		assertEquals(controller.addIngredient(""), false);
+		assertEquals(controller.addIngredient("apple"), true);
+	}
+
+	@Test
+	public void testRemoveIngredient() throws IOException {
+		//Test remove but user not logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		controller.addIngredient("banana");
+		assertEquals(controller.removeIngredient(""), false);
+		assertEquals(controller.removeIngredient("banana"), true);
+	}
+
 
 
 
