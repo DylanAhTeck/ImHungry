@@ -536,9 +536,10 @@ public class Controller {
 	@RequestMapping("/moveUpOne")
 	@CrossOrigin
 	public boolean moveUpOne(@RequestParam String uniqueId, @RequestParam String listName) {
+		System.out.println("Attempting to move on " + listName);
 		listManager.moveUpOne(uniqueId, listName);
 		DocumentReference userDocRef = db.collection("users").document(userId);
-		if(listName == "favorites") {
+		if(listName.equals("favorites")) {
 			ArrayList<Result> favorites = listManager.getFavorites();
 			ArrayList<String> jsonFavorites = new ArrayList<String>();
 			for(int i = 0; i < favorites.size(); i++) {
@@ -548,7 +549,8 @@ public class Controller {
 			updates.put("favorites", jsonFavorites);
 			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
 			return true;
-		} else if(listName == "toExplore") {
+		} else if(listName.equals("toExplore")) {
+			System.out.println("Attempting to move up on explore list");
 			ArrayList<Result> toExplore = listManager.getToExplore();
 			ArrayList<String> json = new ArrayList<String>();
 			for(int i = 0; i < toExplore.size(); i++) {
@@ -558,7 +560,7 @@ public class Controller {
 			updates.put("toExplore", json);
 			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
 			return true;
-		} else if(listName == "doNotShow") {
+		} else if(listName.equals("doNotShow")) {
 			ArrayList<Result> doNotShow = listManager.getdoNotShow();
 			ArrayList<String> json = new ArrayList<String>();
 			for(int i = 0; i < doNotShow.size(); i++) {
@@ -578,7 +580,7 @@ public class Controller {
 	public boolean moveDownOne(@RequestParam String uniqueId, @RequestParam String listName) {
 		listManager.moveDownOne(uniqueId, listName);
 		DocumentReference userDocRef = db.collection("users").document(userId);
-		if(listName == "favorites") {
+		if(listName.equals("favorites")) {
 			ArrayList<Result> favorites = listManager.getFavorites();
 			ArrayList<String> jsonFavorites = new ArrayList<String>();
 			for(int i = 0; i < favorites.size(); i++) {
@@ -588,7 +590,7 @@ public class Controller {
 			updates.put("favorites", jsonFavorites);
 			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
 			return true;
-		} else if(listName == "toExplore") {
+		} else if(listName.equals("toExplore")) {
 			ArrayList<Result> toExplore = listManager.getToExplore();
 			ArrayList<String> json = new ArrayList<String>();
 			for(int i = 0; i < toExplore.size(); i++) {
@@ -598,7 +600,7 @@ public class Controller {
 			updates.put("toExplore", json);
 			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
 			return true;
-		} else if(listName == "doNotShow") {
+		} else if(listName.equals("doNotShow")) {
 			ArrayList<Result> doNotShow = listManager.getdoNotShow();
 			ArrayList<String> json = new ArrayList<String>();
 			for(int i = 0; i < doNotShow.size(); i++) {
