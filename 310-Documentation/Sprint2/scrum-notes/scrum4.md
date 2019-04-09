@@ -27,16 +27,16 @@ Ankur
 3. Nothing.
 
 Wayne
-1. Working on testing for list reordering.
-2. Wrapping up testing for list reordering.
-3. Collage storage / refactor for generation
+1. Finished testing for reordering predefined lists.
+2. Finish testing for prior searches rendering with collage.
+3. Collage storage.
 
 Dylan
-1. Coded two endpoints to add and remove ingredient to database
-2. Fix bugs and complete both functions
-3. Waiting on tests and issues with importing Maven depencies
+1. Make UI components more aesthetic.
+2. Make UI components more aesthetic and modern.
+3. Persisting compilation errors with dependencies.
 
 Chris
-1. Began planning for implementation of feature #6.
+1. Still working on feature #6 implementation.
 2. Still working on feature #6 implementation.
 3. Scheduling.
