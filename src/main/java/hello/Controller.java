@@ -250,11 +250,11 @@ public class Controller {
 		System.out.println("recipes retrieved");
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		
+
 		//add search to database
 		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
 		addSearchToDB("priorSearchQueries", recentQuery);
-		
+
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -363,15 +363,15 @@ public class Controller {
 		}
 
 		boolean added = listManager.addToList(toAdd, targetListName);
-		
+
 		if(added) {
 			System.out.println("adding to list");
 			addToDB(targetListName, toAdd);
 		}
-		
-		
-		
-		
+
+
+
+
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -385,10 +385,10 @@ public class Controller {
 		else if (originListName.equals("")) return "originListName is empty";
 		// performs removal
 		Result toBeRemoved = listManager.removeFromList(itemToRemoveId, originListName);
-		
+
 		removeFromDB(originListName, toBeRemoved);
 
-		
+
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
@@ -404,10 +404,10 @@ public class Controller {
 		else if (targetListName.equals("")) return "targetListName is empty";
 
 		Result result = listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		
+
 		removeFromDB(originListName, result);
 		addToDB(targetListName, result);
-		
+
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
@@ -443,7 +443,7 @@ public class Controller {
 						} else {
 							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
 						}
-						
+
 					}
 					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
 					ArrayList<Result> favorites = new ArrayList<Result>();
@@ -487,7 +487,7 @@ public class Controller {
 		return "failed";
 	}
 
-	
+
 	//Signs a user out
 	@RequestMapping("/signUserOut")
 	@CrossOrigin
@@ -529,9 +529,9 @@ public class Controller {
 			e.printStackTrace();
 			return "failed";
 		}
-		
+
 	}
-	
+
 	//Moving and item position up one in the array list
 	@RequestMapping("/moveUpOne")
 	@CrossOrigin
@@ -573,7 +573,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	//Moving and item position down one in the array list
 	@RequestMapping("/moveDownOne")
 	@CrossOrigin
@@ -613,7 +613,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	@RequestMapping("/addIngredient")
 	@CrossOrigin
 	//TODO: Ingredient string is added to database
@@ -762,7 +762,7 @@ public class Controller {
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
@@ -875,7 +875,7 @@ public class Controller {
 		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 
 		String res = callAPI(placesRequestURL);
 
@@ -913,7 +913,7 @@ public class Controller {
 					.queryString("number", numResults + numExtra)
 					.asJson();
 
-			
+
 			String allDataString = response.getBody().toString();
 			System.out.println("all data:" + allDataString);
 
@@ -1101,7 +1101,7 @@ public class Controller {
 		}
 		return thumbnailLinks;
 	}
-	
+
 	//add result to db
 	public Boolean addSearchToDB(String originListName, PriorSearch search) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1117,10 +1117,10 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
-	
+
 	//add result to db
 	public Boolean addToDB(String originListName, Result result) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1136,8 +1136,8 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
@@ -1158,11 +1158,11 @@ public class Controller {
 			return false;
 		}
 	}
-	
+
 	public double toMeters(int miles) {
 		return miles * 1609.34;
 	}
-	
+
 	public ListManager getListManager() {
 		return listManager;
 	}

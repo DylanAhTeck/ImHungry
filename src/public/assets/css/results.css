@@ -55,6 +55,10 @@ a button {
   margin-top: 10px;
 }
 
+#collage-loading {
+  margin-top: 100px;
+}
+
 .card {
   cursor: pointer;
 }
@@ -71,7 +75,6 @@ a button {
 }
 
 .prior-search-cards {
-  width: 9999999px;
 }
 
 .prior-search-card {
