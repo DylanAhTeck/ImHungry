@@ -1,5 +1,5 @@
 import static org.junit.Assert.assertEquals;
-import java.util.Random; 
+import java.util.Random;
 
 
 import java.io.BufferedReader;
@@ -26,30 +26,30 @@ import hello.Restaurant;
 import hello.Result;
 
 public class TestController {
-	
+
 	private static Controller controller;
 
 	@BeforeClass
 	public static void setup() {
 		controller = new Controller();
 	}
-	
-//	@Test 
+
+//	@Test
 //	public void testGetResult() {
 //		// result doesn't exist
 //		assertEquals(null, controller.getResult("123"));
-//		
+//
 //		// testing getResult from past query
 //		controller.handleSearchRequest("burger", 1);
 //		Result r = controller.getResult("ChIJk2uXa-PHwoARFOHSKjqYyFo");
 //		assertEquals("ChIJk2uXa-PHwoARFOHSKjqYyFo", r.getUniqueId());
 //	}
-	
+
 	@Test
 	public void testRetrieveRestaurants() throws IOException {
 		String query = "burger"; // do not change the query
 		int numResults = 20;
-		
+
 		Result fav = new Result("ChIJLyzMquXHwoAR0RpYK9bAM3M");
 		ArrayList<Result> favorite = new ArrayList<Result>();
 		favorite.add(fav);
@@ -63,12 +63,12 @@ public class TestController {
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
 		assertEquals(16, result.size());
 	}
-	
+
 	@Test
 	public void testRetrieveRecipes() {
 		String query = "burger"; // do not change the query
 		int numResults = 20;
-		
+
 		Result fav = new Result("449835");
 		ArrayList<Result> favorite = new ArrayList<Result>();
 		favorite.add(fav);
@@ -81,13 +81,13 @@ public class TestController {
 		controller.retrieveRecipes(query, 1);
 		controller.retrieveRecipes(query, numResults);
 	}
-	
-	@Test 
+
+	@Test
 	public void testHandleGetResult() {
-		// test for invalid parameters 
+		// test for invalid parameters
 		assertEquals("uniqueId == null", controller.handleGetResult(null));
 		assertEquals("uniqueId is empty", controller.handleGetResult(""));
-		
+
 		controller.handleSearchRequest("burger", 1, 5000);
 		// tests valid handleGetResult() call
 		String expectedJson = "{\"uniqueId\":\"449835\",\"type\":\"Recipe\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"isFavorite\":false}";
@@ -96,16 +96,16 @@ public class TestController {
 		System.out.println(actualJson);
 		assertEquals(expectedJson, actualJson);
 	}
-	
-	@Test 
+
+	@Test
 	public void testHandleSearchRequest() {
-		// valid input 
+		// valid input
 		String jsonResponse = controller.handleSearchRequest("burger", 1, 5000);
 		System.out.println(jsonResponse);
-		// if no input is provided 
+		// if no input is provided
 		assertEquals("Thanks for searching!", controller.handleSearchRequest(null, 1, 5000));
 	}
-	
+
 	// CAN'T CAUSE UNSUPPORTED ENCODING EXCEPTION BECAUSE PARAM WILL ALWAYS BE UTF-8
 	@Test
 	public void testCreateCollage() throws IOException {
@@ -118,80 +118,80 @@ public class TestController {
 			line = reader.readLine();
 		}
 	}
-	
-	// NEED TO WRITE CODE FOR EXCEPTIONS 
+
+	// NEED TO WRITE CODE FOR EXCEPTIONS
 	@Test
 	public void testGetList() {
 		controller.handleSearchRequest("burger", 1, 5000);
 		// list is null
 		assertEquals("Invalid list name", controller.getList(null));
-		// test retrieving lists 
+		// test retrieving lists
 		assertEquals("{\"favorites\":[]}", controller.getList("favorites"));
 		assertEquals("{\"toExplore\":[]}", controller.getList("toExplore"));
 		assertEquals("{\"doNotShow\":[]}", controller.getList("doNotShow"));
-		// test invalid list 
-		assertEquals("Invalid list name", controller.getList("invalidList"));	
+		// test invalid list
+		assertEquals("Invalid list name", controller.getList("invalidList"));
 	}
-	
+
 	@Test
 	public void testHandleAddToList() {
 		// tests null id
 		assertEquals("uniqueId == null", controller.handleAddToList(null, "favorites"));
-		// tests empty id 
+		// tests empty id
 		assertEquals("No uniqueId provided", controller.handleAddToList("", "favorites"));
-		// tests null listname 
+		// tests null listname
 		assertEquals("targetListName == null", controller.handleAddToList("123456", null));
 		// tests empty listname
 		assertEquals("No targetListName provided", controller.handleAddToList("123456", ""));
-	
+
 		String json = controller.handleSearchRequest("burger", 1, 5000);
-		// tests add to list from recipes 
+		// tests add to list from recipes
 		assertEquals("Added item: 449835 to list: favorites", controller.handleAddToList("449835", "favorites"));
 		// tests add to list from restaurants
 		assertEquals("Added item: ChIJk2uXa-PHwoARFOHSKjqYyFo to list: favorites", controller.handleAddToList("ChIJk2uXa-PHwoARFOHSKjqYyFo", "favorites"));
-		// tests nonexistent id 
+		// tests nonexistent id
 		assertEquals("Couldn't find uniqueId", controller.handleAddToList("123456", "favorites"));
 	}
-	
-	@Test 
+
+	@Test
 	public void testHandleRemoveFromList() {
-		// tests for invalid parameters 
+		// tests for invalid parameters
 		assertEquals("itemToRemoveId == null", controller.handleRemoveFromList(null, "favorites"));
 		assertEquals("itemToRemoveId is empty", controller.handleRemoveFromList("", "favorites"));
 		assertEquals("originListName == null", controller.handleRemoveFromList("123456", null));
 		assertEquals("originListName is empty", controller.handleRemoveFromList("123456", ""));
-		
+
 		controller.handleSearchRequest("burger", 1, 5000);
 		controller.handleAddToList("449835", "favorites");
-		// tests valid removal 
+		// tests valid removal
 		assertEquals("Removed item: 449835 from list: favorites", controller.handleRemoveFromList("449835", "favorites"));
 		//assertEquals(0, controller.getList("favorites"));
 		System.out.println(controller.getList("favorites"));
 	}
-	
-	@Test 
+
+	@Test
 	public void testHandleMoveBetweenLists() {
-		// tests for invalid parameters 
+		// tests for invalid parameters
 		assertEquals("itemToMoveId == null", controller.handleMoveLists(null, "favorites", "toExplore"));
 		assertEquals("itemToMoveId is empty", controller.handleMoveLists("", "favorites", "toExplore"));
 		assertEquals("originListName == null", controller.handleMoveLists("123456", null, "toExplore"));
 		assertEquals("originListName is empty", controller.handleMoveLists("123456", "", "toExplore"));
 		assertEquals("targetListName == null", controller.handleMoveLists("123456", "toExplore", null));
 		assertEquals("targetListName is empty", controller.handleMoveLists("123456", "toExplore", ""));
-		
+
 		// populates lists
 		controller.handleSearchRequest("burger", 1, 5000);
 		controller.handleAddToList("449835", "favorites");
-		// tests move 
+		// tests move
 		assertEquals("Moved item: 449835 from list: favorites to list: toExplore", controller.handleMoveLists("449835", "favorites", "toExplore"));
 	}
-	
+
 	// CAN'T TEST VALID JSON BECAUSE RESPONSE TIME WILL ALWAYS BE DIFFERENT
 	@Test
 	public void testGetImagesJson() throws IOException, ParseException {
 		// tests IOException
 		assertEquals("IOException", controller.getImagesJson("badUrl"));
-		
+
 		// tests an invalid GET request
 		String invalidRequestUrl = controller.constructRequest(controller.GET_URL, "burger", controller.cx, controller.searchType, "invalidKey");
 		String invalidFunctionJson = controller.getImagesJson(invalidRequestUrl);
@@ -203,9 +203,9 @@ public class TestController {
 		System.out.println("burger");
 		System.out.println(controller.searchType);
 		System.out.println(controller.key);
-		
+
 		String functionJson = controller.getImagesJson(validRequestUrl);
-		// used to parse JSON 
+		// used to parse JSON
 		JSONParser parser = new JSONParser();
 //		Object obj = parser.parse(functionJson);
 //		org.json.simple.JSONObject jsonObject = (org.json.simple.JSONObject) obj;
@@ -214,19 +214,19 @@ public class TestController {
 //		org.json.simple.JSONArray request = (org.json.simple.JSONArray) queries.get("request");
 //		org.json.simple.JSONObject title = (org.json.simple.JSONObject) request.get(0);
 //		String titleString = (String) title.get("title");
-//		// checks that the search made matches the request 
+//		// checks that the search made matches the request
 //		assertEquals("Google Custom Search - burger", titleString);
 	}
 
-	@Test 
+	@Test
 	public void testGetThumbnailLinks() throws IOException {
 		// tests getThumbnailLinks with no results
-		String noResultsJson = new String(Files.readAllBytes(Paths.get("NoResultsQuery.txt"))); 
+		String noResultsJson = new String(Files.readAllBytes(Paths.get("NoResultsQuery.txt")));
 		assertEquals("Search returned no results", controller.getThumbnailLinks(noResultsJson).get(0));
-		
+
 		// tests "GET request not worked"
 		assertEquals(null, controller.getThumbnailLinks("GET request not worked"));
-			
+
 		// tests getThumbnailLinks with results
 		String resultsJson = new String(Files.readAllBytes(Paths.get("ExampleQuery.txt")));
 		ArrayList<String> functionLinks = controller.getThumbnailLinks(resultsJson);
@@ -240,7 +240,7 @@ public class TestController {
 			assertEquals(expectedLink, functionLink);
 		}
 		expectedLinks.close();
-		
+
 		ArrayList<String> temp = new ArrayList<String>();
 		// tests org.json.simple.parser.ParseException
 		assertEquals(temp, controller.getThumbnailLinks("(Invalid JSON)"));
@@ -260,22 +260,22 @@ public class TestController {
 	// test to ensure successful login of user at to-be-written "registerUser" endpoint
 	@Test
 	public void testRegisterUser() throws IOException {
-	        Random rand = new Random(); 
+	        Random rand = new Random();
             int randInt = rand.nextInt(1000);
             String userEmail = "test" + randInt + "@test.com";
             String password = "test" + randInt;
-            assertEquals("success", controller.registerUser(userEmail, password)); 
+            assertEquals("success", controller.registerUser(userEmail, password));
 	}
 	//test to ensure successful signout
 	@Test
 	public void testSignUserOut() throws IOException {
 		assertEquals("success",controller.signUserOut());
 	}
-	
+
 	//Test to ensure successful add of result to the database for to-be-written function addToDB
 	@Test
 	public void testAddToDB() throws IOException {
-		 Random rand = new Random(); 
+		 Random rand = new Random();
 		//Test valid add but user not logged in
 		controller.signUserOut();
 		String listName = "favorites";
@@ -288,6 +288,7 @@ public class TestController {
 		Recipe recipe = new Recipe(Integer.toString(randInt));
 		Restaurant restaurant = new Restaurant(Integer.toString(randInt+10));
 		randInt = rand.nextInt(1000);
+
 		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
 		listName = "doNotShow";
 		randInt = rand.nextInt(1000);
@@ -311,8 +312,7 @@ public class TestController {
 		randInt = rand.nextInt(1000);
 		assertEquals(true, controller.addToDB(listName, recipe));
 		assertEquals(true, controller.addToDB(listName, restaurant));
-		
-	}
+			}
 
 	//Test to ensure successful add of result to the database for to-be-written function addToDB
 	@Test
@@ -329,7 +329,7 @@ public class TestController {
 		controller.addToDB(listName, result);
 		assertEquals(true, controller.removeFromDB(listName, result));
 	}
-	
+
 	//Test for adding prior searches to database
 	@Test
 	public void testAddSearchToDB() throws IOException {
@@ -342,6 +342,14 @@ public class TestController {
 		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
 		search = new PriorSearch("pizza", 2, 5000);
 		assertEquals(true, controller.addSearchToDB(listName, search));
+	}
+
+	@Test
+	public void testAddIngredient() throws IOException {
+		//Test remove but user not logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		assertEquals(controller.addIngredient(""), false);
+		assertEquals(controller.addIngredient("apple"), true);
 	}
 
 

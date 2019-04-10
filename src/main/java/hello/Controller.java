@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.swing.text.Document;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -223,6 +225,8 @@ public class Controller {
 //		return "failure";
 //	}
 
+
+
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
@@ -250,11 +254,11 @@ public class Controller {
 		System.out.println("recipes retrieved");
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
-		
+
 		//add search to database
 		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
 		addSearchToDB("priorSearchQueries", recentQuery);
-		
+
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -316,7 +320,6 @@ public class Controller {
 //		return "favorites: " + favoritesString;
 //	}
 
-
 	@RequestMapping("/addToList")
 	@CrossOrigin
 	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String targetListName) {
@@ -363,15 +366,11 @@ public class Controller {
 		}
 
 		boolean added = listManager.addToList(toAdd, targetListName);
-		
+
 		if(added) {
 			System.out.println("adding to list");
 			addToDB(targetListName, toAdd);
 		}
-		
-		
-		
-		
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -385,10 +384,10 @@ public class Controller {
 		else if (originListName.equals("")) return "originListName is empty";
 		// performs removal
 		Result toBeRemoved = listManager.removeFromList(itemToRemoveId, originListName);
-		
+
 		removeFromDB(originListName, toBeRemoved);
 
-		
+
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
@@ -404,10 +403,10 @@ public class Controller {
 		else if (targetListName.equals("")) return "targetListName is empty";
 
 		Result result = listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		
+
 		removeFromDB(originListName, result);
 		addToDB(targetListName, result);
-		
+
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
@@ -443,7 +442,7 @@ public class Controller {
 						} else {
 							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
 						}
-						
+
 					}
 					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
 					ArrayList<Result> favorites = new ArrayList<Result>();
@@ -487,7 +486,7 @@ public class Controller {
 		return "failed";
 	}
 
-	
+
 	//Signs a user out
 	@RequestMapping("/signUserOut")
 	@CrossOrigin
@@ -529,9 +528,9 @@ public class Controller {
 			e.printStackTrace();
 			return "failed";
 		}
-		
+
 	}
-	
+
 	//Moving and item position up one in the array list
 	@RequestMapping("/moveUpOne")
 	@CrossOrigin
@@ -573,7 +572,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	//Moving and item position down one in the array list
 	@RequestMapping("/moveDownOne")
 	@CrossOrigin
@@ -613,7 +612,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	@RequestMapping("/addIngredient")
 	@CrossOrigin
 	//TODO: Ingredient string is added to database
@@ -913,7 +912,7 @@ public class Controller {
 					.queryString("number", numResults + numExtra)
 					.asJson();
 
-			
+
 			String allDataString = response.getBody().toString();
 			System.out.println("all data:" + allDataString);
 
@@ -1101,7 +1100,7 @@ public class Controller {
 		}
 		return thumbnailLinks;
 	}
-	
+
 	//add result to db
 	public Boolean addSearchToDB(String originListName, PriorSearch search) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1117,10 +1116,10 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
-	
+
 	//add result to db
 	public Boolean addToDB(String originListName, Result result) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1136,8 +1135,8 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
@@ -1158,13 +1157,14 @@ public class Controller {
 			return false;
 		}
 	}
-	
+
 	public double toMeters(int miles) {
 		return miles * 1609.34;
 	}
-	
+
 	public ListManager getListManager() {
 		return listManager;
 	}
+
 
 }
