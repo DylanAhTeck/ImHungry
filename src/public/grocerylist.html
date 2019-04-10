@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./assets/css/results.css" />
+    <link rel="stylesheet" href="./assets/css/groceryList.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <title>I'm Hungry</title>
+  </head>
+  <body>
+    <section>
+      <div class="container">
+        <div class="content-wrapper">
+          <div class="header-wrapper">
+          	<h1>Grocery List</h1>
+            <!-- <div class="controls" id="prior-search-div">
+              <div class="input-group">
+                <select class="custom-select" id="search-select">
+                  <option selected></option>
+                </select>
+                <button type="button" class="btn btn-secondary" id="search-again-btn">
+                  Search Again
+                </button>
+              </div>
+            </div> -->
+            <div class="controls">
+              <div class="input-group">
+                <a href="results.html">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="backToResultsButton"
+                  >
+                    Back to Results
+                  </button>
+                </a>
+                <a href="search.html">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="backToSearchButton"
+                  >
+                    Back to Search
+                  </button>
+                </a>
+                <button type="button" class="btn btn-secondary" id="logout-btn">
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="list-container" style="width: 40vw">
+          	<ul class="list-group" id="ingredients-list">
+          	</ul>
+          </div>   
+        </div>
+      </div>
+    </section>
+  </body>
+  <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+  <script src="./assets/js/firebase.js"></script>
+  <script type="text/javascript">
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+      firebase.auth().onAuthStateChanged(function(user) {
+         if (user) { //User is signed in
+           var db = firebase.firestore();
+           var docRef = db.collection("users").doc(user.uid);
+
+           // Valid options for source are 'server', 'cache', or
+           // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+           // for more information.
+           var getOptions = {
+               source: 'default'
+           };
+
+           // Get a document, forcing the SDK to fetch from the offline cache.
+           docRef.get(getOptions).then(function(doc) {
+               // Document was found in the cache. If no cached document exists,
+               // an error will be returned to the 'catch' block below.
+               let queryData = doc.data().groceryList;
+              console.log(queryData);
+              displayList(queryData);
+           }).catch(function(error) {
+               console.log("Error getting cached document:", error);
+           });
+         } else {
+           // No user is signed in.
+         }
+       });
+    });
+    
+    function displayList(ingredients) {
+    	let list = document.getElementById("ingredients-list");
+    	ingredients.forEach(function(ingredient, i){
+    		let listItem = document.createElement("li");
+    		listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+    		listItem.id = "ingredient_" + i;
+    		listItem.appendChild(document.createTextNode(ingredient));
+    		let removeBadge = document.createElement("span");
+    		removeBadge.className="badge badge-danger badge-pill";
+    		let removeIcon = document.createElement("i");
+    		removeIcon.className = "fas fa-trash-alt";
+    		removeBadge.appendChild(removeIcon);
+    		removeBadge.onclick = function() {
+                let xhttp = new XMLHttpRequest();
+                let parameters =
+                  "ingredient=" + ingredient;
+                xhttp.open(
+                  "GET",
+                  "http://localhost:8080/removeIngredient?" + parameters,
+                  true
+                );
+                xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+                xhttp.onreadystatechange = function() {
+                  if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    if (xhttp.responseText) {
+                      console.log(this.responseText);
+                      if(this.responseText == "true") location.reload();
+                    }
+                  }
+                };
+                xhttp.send();
+            };
+ 			listItem.appendChild(removeBadge);
+    		list.appendChild(listItem);
+    	})
+    }
+
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          logoutUser();
+          location.href = "login.html";
+        })
+        .catch(() => {
+          console.log("Sign out failed.");
+        });
+    });
+
+    function logoutUser() {
+      // Send UID to backend server
+      let xhttp = new XMLHttpRequest();
+      let params = "userUID=" + sessionStorage.getItem("userUID");
+      xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+      xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          if (xhttp.responseText) {
+            console.log("UID sent to server side");
+          }
+        }
+      };
+      xhttp.send();
+    }
+
+
+  </script>
+  <script src="./assets/js/bootstrap.min.js" charset="utf-8"></script>
+</html>

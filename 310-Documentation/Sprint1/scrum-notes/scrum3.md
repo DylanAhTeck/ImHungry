@@ -5,8 +5,8 @@
 - Time: 12:15pm
 - Location: ANN 3rd Floor
 - Participants: Ankur, Andrew, Chris, Dylan
-- Group Selfie Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum3.jpg`
-- Post-Meeting Task Chart Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum3.png`
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum3.jpg
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum3.png
 
 
 ## Agile Questions Notes:

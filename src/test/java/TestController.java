@@ -15,7 +15,11 @@ import org.json.simple.parser.ParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import hello.Controller;
+import hello.ListManager;
 import hello.PriorSearch;
 import hello.Recipe;
 import hello.Restaurant;
@@ -54,9 +58,9 @@ public class TestController {
 		doNotShow.add(not);
 		controller.setDoNotShow(doNotShow);
 		controller.setFav(favorite);
-		controller.retrieveRestaurants("null", numResults);
-		controller.retrieveRestaurants(query, 1);
-		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults);
+		controller.retrieveRestaurants("null", numResults, 5);
+		controller.retrieveRestaurants(query, 1, 5);
+		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
 		assertEquals(16, result.size());
 	}
 
@@ -86,8 +90,11 @@ public class TestController {
 
 		controller.handleSearchRequest("burger", 1, 5000);
 		// tests valid handleGetResult() call
-		String expectedJson = "{\"uniqueId\":\"449835\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"type\":\"Recipe\",\"isFavorite\":false}";
-		assertEquals(expectedJson, controller.handleGetResult("449835"));
+		String expectedJson = "{\"uniqueId\":\"449835\",\"type\":\"Recipe\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"isFavorite\":false}";
+		String actualJson = controller.handleGetResult("449835");
+		System.out.println(expectedJson);
+		System.out.println(actualJson);
+		assertEquals(expectedJson, actualJson);
 	}
 
 	@Test
@@ -279,10 +286,33 @@ public class TestController {
 		listName = "favorites";
 		int randInt = rand.nextInt(1000);
 		Recipe recipe = new Recipe(Integer.toString(randInt));
+		Restaurant restaurant = new Restaurant(Integer.toString(randInt+10));
 		randInt = rand.nextInt(1000);
 
-
-	}
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "doNotShow";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
+		listName = "toExplore";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		listName = "toExplore";
+		randInt = rand.nextInt(1000);
+		recipe = new Recipe(Integer.toString(randInt));
+		restaurant = new Restaurant(Integer.toString(randInt+10));
+		randInt = rand.nextInt(1000);
+		assertEquals(true, controller.addToDB(listName, recipe));
+		assertEquals(true, controller.addToDB(listName, restaurant));
+			}
 
 	//Test to ensure successful add of result to the database for to-be-written function addToDB
 	@Test
@@ -322,15 +352,72 @@ public class TestController {
 		assertEquals(controller.addIngredient("apple"), true);
 	}
 
+
+	//Test for moving a result up one in list
+	@Test
+	public void testMoveUpOne() throws IOException {
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		ListManager listManager = controller.getListManager();
+		Result r1 = new Result("id1");
+		Result r2 = new Result("id2");
+		listManager.addToList(r1, "favorites");
+		listManager.addToList(r2, "favorites");
+		ArrayList<Result> favorites = listManager.getFavorites();
+		controller.addToDB("favorites", r1);
+		controller.addToDB("favorites", r2);
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+		controller.moveUpOne("id2", "favorites");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+	}
+	
+	//Test for moving a result down one in list
+	@Test
+	public void testMoveDownOne() throws IOException {
+		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		ListManager listManager = controller.getListManager();
+		Result r1 = new Result("id1");
+		Result r2 = new Result("id2");
+		listManager.addToList(r1, "favorites");
+		listManager.addToList(r2, "favorites");
+		ArrayList<Result> favorites = listManager.getFavorites();
+		controller.addToDB("favorites", r1);
+		controller.addToDB("favorites", r2);
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+		controller.moveDownOne("id1", "favorites");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+		controller.moveDownOne("id2", "favorites");
+		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
+		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+	}
+	
+	//Test for conversion to meters
+	@Test
+	public void testToMeters() throws IOException {
+		assertEquals(controller.toMeters(1) == 1609.34, true);
+		assertEquals(controller.toMeters(2) == 3218.68, true);
+	}
+
+
+	@Test
+	public void testAddIngredient() throws IOException {
+		//Test remove but user not logged in
+		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		assertEquals(controller.addIngredient(""), false);
+		assertEquals(controller.addIngredient("apple"), true);
+	}
+
 	@Test
 	public void testRemoveIngredient() throws IOException {
 		//Test remove but user not logged in
 		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		controller.addIngredient("banana");
 		assertEquals(controller.removeIngredient(""), false);
-		assertEquals(controller.removeIngredient("apple"), true);
+		assertEquals(controller.removeIngredient("banana"), true);
 	}
-
-
 
 
 

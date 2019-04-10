@@ -5,7 +5,7 @@ Background:
 	Given I am on the Search page
 
 Scenario: S401 - Test that clicking on an item takes the user to the corresponding restaurant or recipe page
- 	
+
  	Given I am on the Search page
     When I perform a search for 'Burgers' and click on the first restaurant result
     And I add the restaurant to the 'Favorites' list
@@ -13,9 +13,9 @@ Scenario: S401 - Test that clicking on an item takes the user to the correspondi
     And I select the 'Favorites' option from the 'list management' dropdown box
     And I click on the 'Manage List' button
     And I click on the restaurant in the 'Favorites' list
- 	Then I should be on the Restaurant page for the item
+ 		Then I should be on the Restaurant page for the item
 
-Scenario: S402 - Test that an item may be removed from a list 
+Scenario: S402 - Test that an item may be removed from a list
 
 	Given I am on the Search page
 	When I perform a search for 'Burgers' and click on the first recipe result
@@ -26,7 +26,7 @@ Scenario: S402 - Test that an item may be removed from a list
 	And I click on the Remove button for the first item
 	Then I should not see the item in the 'To Explore' List
 
-Scenario: S403 - Test that an item may be moved to another list 
+Scenario: S403 - Test that an item may be moved to another list
 
 	Given I am on the Search page
 	When I perform a search for 'Burgers' and click on the first recipe result
@@ -107,3 +107,12 @@ Scenario: S412 - Test that rows in the lists alternate their background color be
 	And I select the 'To Explore' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
 	Then I should see rows with alternating shades of gray on the List Management Page
+
+# Scenario: S413 - Test that reordering of lists work properly
+#
+# 	Given I am on the List Mnaagement page
+# 	When I perform a search for 'Burgers' and input two search results
+# 	And I select the 'To Explore' option from the 'list management' dropdown box
+# 	And I click on the 'Manage List' button
+# 	And I click on the Move Down button for the first item
+# 	Then the first item should be in second from the top

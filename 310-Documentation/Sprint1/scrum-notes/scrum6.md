@@ -5,8 +5,8 @@
 - Time: 2pm
 - Location: JFF 423
 - Participants: Ankur, Andrew, Wayne, Dylan, Chris
-- Group Selfie Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum6.jpg`
-- Post-Meeting Task Chart Link: `https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum6.png`
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/scrum6.jpg
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint1/images/tasks-post-scrum6.png
 
 ## Agile Questions Notes:
 
