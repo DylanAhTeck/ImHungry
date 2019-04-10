@@ -55,6 +55,10 @@ a button {
   margin-top: 10px;
 }
 
+#collage-loading {
+  margin-top: 100px;
+}
+
 .card {
   cursor: pointer;
 }
@@ -66,11 +70,11 @@ a button {
   overflow-x: scroll;
   overflow-y: hidden;
   width: 100%;
-  height: 200px;
+  height: 250px;
+  margin-bottom: 50px;
 }
 
 .prior-search-cards {
-  width: 9999999px;
 }
 
 .prior-search-card {
@@ -79,9 +83,18 @@ a button {
   float: left;
 }
 
+.prior-search-card:not(:first-of-type) {
+  margin-left: 10px;
+}
+
+.prior-search-card:not(:last-of-type) {
+  margin-right: 10px;
+}
+
 .card-body p {
   text-align: center;
   font-weight: 700;
+  font-size: 30px;
   position: absolute;
   top: 50%;
   left: 50%;

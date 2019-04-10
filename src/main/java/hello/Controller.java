@@ -366,12 +366,11 @@ public class Controller {
 		}
 
 		boolean added = listManager.addToList(toAdd, targetListName);
-		
+
 		if(added) {
 			System.out.println("adding to list");
 			addToDB(targetListName, toAdd);
 		}
-		
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -531,7 +530,7 @@ public class Controller {
 		}
 
 	}
-	
+
 	//Moving and item position up one in the array list
 	@RequestMapping("/moveUpOne")
 	@CrossOrigin
@@ -573,7 +572,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	//Moving and item position down one in the array list
 	@RequestMapping("/moveDownOne")
 	@CrossOrigin
@@ -613,7 +612,7 @@ public class Controller {
 		}
 		return false;
 	}
-	
+
 	@RequestMapping("/addIngredient")
 	@CrossOrigin
 	//TODO: Ingredient string is added to database
@@ -762,7 +761,7 @@ public class Controller {
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
@@ -875,7 +874,7 @@ public class Controller {
 		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 
 		String res = callAPI(placesRequestURL);
 
@@ -1159,11 +1158,10 @@ public class Controller {
 		}
 	}
 
-	
 	public double toMeters(int miles) {
 		return miles * 1609.34;
 	}
-	
+
 	public ListManager getListManager() {
 		return listManager;
 	}

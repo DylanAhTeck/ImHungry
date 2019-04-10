@@ -27,7 +27,7 @@
                 </button>
               </div>
             </div> -->
-            <div id="collage"></div>
+            <div id="collage"> <h3 id="collage-loading"> Loading Collage... </h3> </div>
             <div class="controls">
               <div class="input-group">
                 <select class="custom-select" id="list-select">
@@ -76,32 +76,7 @@
             </div>
           </div>
           <div class="prior-search-wrapper">
-            <div class="prior-search-cards">
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
+            <div id="search-cards-container" class="prior-search-cards">
             </div>
           </div>
         </div>
@@ -181,15 +156,77 @@
         if (xhttp.readyState == 4 && xhttp.status == 200) {
           if (xhttp.responseText) {
             JSONObj = JSON.parse(this.responseText);
-            // sortJSON(JSONObj);
             hideSpinner();
             loadCollage();
             loadRestaurants();
             loadRecipes();
+            loadPriorSearches();
           }
         }
       }
       xhttp.send();
+    }
+
+    function loadPriorSearches() {
+      var db = firebase.firestore();
+      var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+
+      // Valid options for source are 'server', 'cache', or
+      // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+      // for more information.
+      var getOptions = {
+          source: 'default'
+      };
+
+      // Get a document, forcing the SDK to fetch from the offline cache.
+      docRef.get(getOptions).then(function(doc) {
+          // Document was found in the cache. If no cached document exists,
+          // an error will be returned to the 'catch' block below.
+          let priorSearchData = doc.data().priorSearchQueries;
+          let priorSearchContainer = document.getElementById("search-cards-container");
+          priorSearchContainer.style.width = 320*priorSearchData.length + "px";
+          for (let priorSearch of priorSearchData.reverse()) {
+            let json = JSON.parse(priorSearch);
+            let query = json.term;
+            let numResults = json.numberOfresults;
+            let radius = json.radius;
+            let collageURL = json.collageURL;
+
+            let newCard = document.createElement('div');
+            newCard.className = "card prior-search-card";
+            let newCardBody = document.createElement('div');
+            newCardBody.className = "card-body";
+            let newCardText = document.createElement('p');
+            newCardText.innerHTML = query;
+            newCardText.className = "card-text";
+            newCardBody.appendChild(newCardText);
+            if(collageURL) {
+              newCard.style.backgroundImage = "url('" + collageURL  + "')";
+            } else {
+              // newCard.style.backgroundImage = "url(https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg)";
+              // newCard.style.backgroundSize = "cover";
+              let img = document.createElement('img');
+              img.src = "https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg";
+              img.style.width = "100%";
+              img.style.height = "auto";
+              img.style.position = "absolute";
+              img.style.opacity = 0.5;
+              newCard.appendChild(img);
+            }
+            newCard.appendChild(newCardBody);
+            newCard.onclick = function() {
+              sessionStorage.setItem("query", query);
+              sessionStorage.setItem("numResults", numResults);
+              sessionStorage.setItem("radius", radius);
+              searchAgain();
+            }
+
+            priorSearchContainer.appendChild(newCard);
+          }
+
+      }).catch(function(error) {
+          console.log("Error getting cached document:", error);
+      });
     }
 
     function sortJSON(jsonObj) {
@@ -227,6 +264,7 @@
         for(let imageURL of imageUrls) {
           let img = new Image();
           let div = document.getElementById("collage");
+          div.innerHTML = "";
           let rotation = 90*Math.random() - 45;
 
           img.style.maxWidth = 0.2*0.6*viewportWidth+'px';
@@ -409,23 +447,7 @@
       xhttp.send();
     }
 
-    document.getElementById('search-again-btn').onclick = function() {
-      let selectedSearch = document.getElementById('search-select').value;
-      let params = selectedSearch.split("/")
-
-      let query = params[0].trim();
-      let numResults = params[1].trim();
-      let radius = params[2].trim();
-
-      sessionStorage.setItem("query", query);
-      sessionStorage.setItem("numResults", numResults);
-      sessionStorage.setItem("radius", radius);
-
-      searchAgain();
-    }
-
     function searchAgain() {
-
       location.reload();
     }
 
