@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.swing.text.Document;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -223,6 +225,8 @@ public class Controller {
 //		return "failure";
 //	}
 
+
+
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
@@ -316,7 +320,6 @@ public class Controller {
 //		return "favorites: " + favoritesString;
 //	}
 
-
 	@RequestMapping("/addToList")
 	@CrossOrigin
 	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String targetListName) {
@@ -368,10 +371,6 @@ public class Controller {
 			System.out.println("adding to list");
 			addToDB(targetListName, toAdd);
 		}
-
-
-
-
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -1166,5 +1165,6 @@ public class Controller {
 	public ListManager getListManager() {
 		return listManager;
 	}
+
 
 }
