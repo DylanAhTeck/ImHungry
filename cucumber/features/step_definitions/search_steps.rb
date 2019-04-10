@@ -555,11 +555,10 @@ end
 When(/^I click on the first ingredient$/) do
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
-	find('#ingredient_0').click
+	find('#ingredient-0').click
 	$currentIngredientTitle = find('#ingredient-0')['innerText']
 end
 
-
-Then(/^I should see the item in the 'To Explore' List$/) do
+Then(/^I should see the ingredient on the Grocery List page$/) do
 	expect(page).to have_content $currentIngredientTitle
 end
