@@ -44,6 +44,11 @@
                     Return to Search Page
                   </button>
                 </a>
+                <a href="grocerylist.html">
+                  <button type="button" class="btn btn-secondary" id="groceryListButton">
+                    Grocery List
+                  </button>
+                </a>
                 <button type="button" class="btn btn-secondary" id="logout-btn">
                   Logout
                 </button>
@@ -110,39 +115,41 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+	   	firebase.auth().onAuthStateChanged(function(user) {
+	     	  console.log(user);
+	          if (user) { //User is signed in
+	            var db = firebase.firestore();
+	            var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+	
+	            // Valid options for source are 'server', 'cache', or
+	            // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+	            // for more information.
+	            var getOptions = {
+	                source: 'default'
+	            };
+	
+	            // Get a document, forcing the SDK to fetch from the offline cache.
+	            docRef.get(getOptions).then(function(doc) {
+	                // Document was found in the cache. If no cached document exists,
+	                // an error will be returned to the 'catch' block below.
+	                let queryData = doc.data().priorSearchQueries;
+	                let searchSelect = document.getElementById('search-select');
+	                for(let query of queryData) {
+	                  let json = JSON.parse(query);
+	                  let newOption = document.createElement('option');
+	                  newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
+	                  searchSelect.appendChild(newOption);
+	                }
+	            }).catch(function(error) {
+	                console.log("Error getting cached document:", error);
+	            });
+	          } else {
+	            // No user is signed in.location.href = "login.html";
+	            location.href = "login.html";
+	          }
+	        });
       let query = sessionStorage.getItem('query');
       document.getElementById('query').innerHTML = capitalizeFirstLetter(query);
-      firebase.auth().onAuthStateChanged(function(user) {
-         if (user) { //User is signed in
-           var db = firebase.firestore();
-           var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
-
-           // Valid options for source are 'server', 'cache', or
-           // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
-           // for more information.
-           var getOptions = {
-               source: 'default'
-           };
-
-           // Get a document, forcing the SDK to fetch from the offline cache.
-           docRef.get(getOptions).then(function(doc) {
-               // Document was found in the cache. If no cached document exists,
-               // an error will be returned to the 'catch' block below.
-               let queryData = doc.data().priorSearchQueries;
-               let searchSelect = document.getElementById('search-select');
-               for(let query of queryData) {
-                 let json = JSON.parse(query);
-                 let newOption = document.createElement('option');
-                 newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
-                 searchSelect.appendChild(newOption);
-               }
-           }).catch(function(error) {
-               console.log("Error getting cached document:", error);
-           });
-         } else {
-           // No user is signed in.
-         }
-       });
       processSearch();
     });
 
