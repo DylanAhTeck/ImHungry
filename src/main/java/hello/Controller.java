@@ -1042,12 +1042,12 @@ public class Controller {
 	public boolean addIngredient(@RequestParam(defaultValue="null") String ingredient)
 	{
 
-		if(this.userId == "") || this.userId == null || ingredient == "") return false;
+		if(this.userId == "" || this.userId == null || ingredient == "") return false;
 		Gson gson = new Gson();
-		DocumenReference docRef= db.collection("users").document(userId);
+		DocumentReference docRef= db.collection("users").document(userId);
 			try{
 				ApiFuture<WriteResults> arrayUnion = docRef.update("groceryList",
-						FieldValue.arrayUnion(gson.toJson(indredient)));
+						FieldValue.arrayUnion(ingredient);
 						return true;
 			}catch (Exception e)
 			{
@@ -1060,7 +1060,7 @@ public class Controller {
 	@CrossOrigin
 public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
 	{
-		if(this.userId == "") || this.userId == null || ingredient == "") return false;
+		if(this.userId == "" || this.userId == null || ingredient == "") return false;
 		Gson gson = new Gson();
 		DocumentReference docRef = db.collection("users").document(userId);
 			try{
