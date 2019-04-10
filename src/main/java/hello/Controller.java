@@ -746,7 +746,7 @@ public class Controller {
 
 	//Google distance matrix API
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
-		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(distanceRequestURL);
 		JSONObject json = new JSONObject(res);
 		JSONArray rows = json.getJSONArray("rows");
@@ -762,7 +762,7 @@ public class Controller {
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(placesDetailURL);
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
@@ -875,12 +875,12 @@ public class Controller {
 		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 
 		String res = callAPI(placesRequestURL);
 
 		JSONObject json = new JSONObject(res);
-
+		System.out.println("Restaurants: " + json.toString());
 		return parseJSON(json, numResults);
 	}
 
