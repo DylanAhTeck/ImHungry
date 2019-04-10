@@ -73,6 +73,10 @@ When(/^I click on the 'Feed Me!' button$/) do
 	find('#feedMeButton').click
 end
 
+When(/^I click on the 'Feed Me!' button$/) do
+	find('#groceryListButton').click
+end
+
 Then(/^I should be on the Results Page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}results.html")
 end
@@ -80,6 +84,13 @@ end
 Then(/^I should be on the Search Page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}search.html")
 end
+
+Then(/^I should be on the Grocery List Page$/) do
+	expect(page).to have_current_path("#{Constants.file_path}grocery.html")
+end
+
+
+
 
 Then(/^The 'Feed Me!' button should be an image with non-black text$/) do
 	expect(find('#frownIcon')['class']).to have_content 'fas fa-frown'
@@ -539,4 +550,16 @@ end
 
 When(/^I click on the logout button$/) do
 	find('#logout-btn').click
+end
+
+When(/^I click on the first ingredient$/) do
+	Capybara.default_max_wait_time = 10
+	expect(page).to have_css('.card')
+	find('#ingredient_0').click
+	$currentIngredientTitle = find('#ingredient-0')['innerText']
+end
+
+
+Then(/^I should see the item in the 'To Explore' List$/) do
+	expect(page).to have_content $currentIngredientTitle
 end

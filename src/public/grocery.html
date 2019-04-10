@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Restaurant Page</title>
+
+    <meta
+      name="viewport"
+      charset="UTF-8"
+      content="width=device-width, initial-scale=1"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+      integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" type="text/css" href="./assets/css/restaurant.css" />
+  </head>
+  <body onload="setData();">
+    <div class="header-wrapper">
+      <button type="button" class="btn btn-secondary" id="logout-btn">
+        Logout
+      </button>
+    </div>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-6">
+          <h1 class="mb-3" id="restaurantName">Name of Restaurant</h1>
+          <a id="address" onclick="redirectToGoogleMaps();">Address</a>
+          <p></p>
+          <p id="phoneNumber">Phone Number</p>
+          <a id="website" onclick="redirectToWebsite();">Website</a>
+        </div>
+        <div class="col-6">
+          <button
+            id="printable-version"
+            type="button"
+            class="btn btn-secondary mb-4"
+            onclick="window.print();"
+          >
+            Printable Version
+          </button>
+          <br />
+          <button
+            id="back-to-results"
+            type="button"
+            class="btn btn-secondary mb-4"
+            onclick="location.href='results.html'"
+          >
+            Back to Results
+          </button>
+          <br />
+          <select class="form-control mb-4" id="listDropdown">
+            <option value=""></option>
+            <option value="toExplore">To Explore</option>
+            <option value="favorites">Favorites</option>
+            <option value="doNotShow">Do Not Show</option>
+          </select>
+          <button
+            id="addToListButton"
+            type="button"
+            class="btn btn-secondary mb-4"
+            id="addToListButton"
+            onclick="addToList();"
+          >
+            Add to list
+          </button>
+        </div>
+      </div>
+      <input type="hidden" name="hiddenAddress" id="hiddenAddress" value="" />
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+    <script src="./assets/js/firebase.js"></script>
+    <script>
+      var googleMapsAddress;
+      var websiteAddress;
+      var uniqueId;
+
+      function setData() {
+        let currentItem = JSON.parse(sessionStorage.getItem("currentItem"));
+        uniqueId = currentItem.uniqueId;
+
+        // Set the restaurant name
+        let restaurantName = currentItem.name;
+        document.getElementById("restaurantName").innerHTML = restaurantName;
+
+        // Set the restaurant address
+        let address = currentItem.address;
+        document.getElementById("address").innerHTML = address;
+        let googleMapsDestination = address.split(" ").join("+");
+        googleMapsAddress =
+          "https://www.google.com/maps/dir/Tommy+Trojan/" +
+          googleMapsDestination;
+        document.getElementById("hiddenAddress").value = googleMapsAddress;
+
+        // Set the phone number
+        let phoneNumber = currentItem.phoneNumber;
+        document.getElementById("phoneNumber").innerHTML = phoneNumber;
+
+        // Set the website
+        let website = currentItem.website;
+        document.getElementById("website").innerHTML = website;
+        websiteAddress = website;
+      }
+
+      function addToList() {
+        let parameters =
+          "targetListName=" +
+          document.getElementById("listDropdown").value +
+          "&itemToAddId=" +
+          uniqueId;
+        var xhttp = new XMLHttpRequest();
+        xhttp.open(
+          "GET",
+          "http://localhost:8080/addToList?" + parameters,
+          true
+        );
+        xhttp.onreadystatechange = function() {
+          console.log("Success!"); // Replace this with whatever confirmation feature we agree on TODO
+        };
+        xhttp.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhttp.send();
+      }
+
+      function redirectToGoogleMaps() {
+        location.href = googleMapsAddress;
+      }
+
+      function redirectToWebsite() {
+        location.href = websiteAddress;
+      }
+
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => {
+            logoutUser();
+            location.href = "login.html";
+          })
+          .catch(() => {
+            console.log("Sign out failed.");
+          });
+      });
+
+      function logoutUser() {
+        // Send UID to backend server
+        let xhttp = new XMLHttpRequest();
+        let params = "userUID=" + sessionStorage.getItem("userUID");
+        xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log("UID sent to server side");
+            }
+          }
+        };
+        xhttp.send();
+      }
+    </script>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
