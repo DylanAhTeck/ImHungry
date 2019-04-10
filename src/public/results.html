@@ -69,32 +69,7 @@
             </div>
           </div>
           <div class="prior-search-wrapper">
-            <div class="prior-search-cards">
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
+            <div id="search-cards-container" class="prior-search-cards">
             </div>
           </div>
         </div>
@@ -128,14 +103,41 @@
            docRef.get(getOptions).then(function(doc) {
                // Document was found in the cache. If no cached document exists,
                // an error will be returned to the 'catch' block below.
-               let queryData = doc.data().priorSearchQueries;
-               let searchSelect = document.getElementById('search-select');
-               for(let query of queryData) {
-                 let json = JSON.parse(query);
-                 let newOption = document.createElement('option');
-                 newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
-                 searchSelect.appendChild(newOption);
+               let priorSearchData = doc.data().priorSearchQueries;
+               let priorSearchContainer = document.getElementById("search-cards-container");
+               for (let priorSearch of priorSearchData) {
+                 let json = JSON.parse(priorSearch);
+                 let query = json.term;
+                 let numResults = json.numberOfresults;
+                 let radius = json.radius;
+                 let collageURL = json.collageURL;
+
+                 let newCard = document.createElement('div');
+                 newCard.className = "card prior-search-card";
+                 let newCardBody = document.createElement('div');
+                 newCardBody.className = "card-body";
+                 let newCardText = document.createElement('p');
+                 newCardText.innerHTML = query;
+                 newCardText.className = "card-text";
+                 newCardBody.appendChild(newCardText);
+                 if(collageURL) {
+                   newCard.style.backgroundImage = "url('" + collageURL  + "')";
+                 } else {
+                   // newCard.style.backgroundImage = "url(https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg)";
+                   // newCard.style.backgroundSize = "cover";
+                   let img = document.createElement('img');
+                   img.src = "https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg";
+                   img.style.width = "100%";
+                   img.style.height = "auto";
+                   img.style.position = "absolute";
+                   img.style.opacity = 0.5;
+                   newCard.appendChild(img);
+                 }
+                 newCard.appendChild(newCardBody);
+
+                 priorSearchContainer.appendChild(newCard);
                }
+
            }).catch(function(error) {
                console.log("Error getting cached document:", error);
            });
@@ -400,20 +402,20 @@
       xhttp.send();
     }
 
-    document.getElementById('search-again-btn').onclick = function() {
-      let selectedSearch = document.getElementById('search-select').value;
-      let params = selectedSearch.split("/")
-
-      let query = params[0].trim();
-      let numResults = params[1].trim();
-      let radius = params[2].trim();
-
-      sessionStorage.setItem("query", query);
-      sessionStorage.setItem("numResults", numResults);
-      sessionStorage.setItem("radius", radius);
-
-      searchAgain();
-    }
+    // document.getElementById('search-again-btn').onclick = function() {
+    //   let selectedSearch = document.getElementById('search-select').value;
+    //   let params = selectedSearch.split("/")
+    //
+    //   let query = params[0].trim();
+    //   let numResults = params[1].trim();
+    //   let radius = params[2].trim();
+    //
+    //   sessionStorage.setItem("query", query);
+    //   sessionStorage.setItem("numResults", numResults);
+    //   sessionStorage.setItem("radius", radius);
+    //
+    //   searchAgain();
+    // }
 
     function searchAgain() {
 
