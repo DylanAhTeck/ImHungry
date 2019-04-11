@@ -574,3 +574,41 @@ end
 Then(/^I should see the ingredient on the Grocery List page$/) do
 	expect(page).to have_content $currentIngredientTitle
 end
+
+When(/^I perform a search for 'Curry' and input 10 search results$/) do
+	fill_in('query', with: "Curry")
+	fill_in('num-results', with: "10")
+	fill_in('radius', with: "5")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+
+end
+
+Then(/^I should see a pagination section$/) do
+	expect(page).to have_css('#pagination-container')
+	expect(page).to have_css('#pagination-list')
+end
+
+When(/^I click on the 'page 2' button$/) do
+	find('#page-1').click
+end
+
+Then(/^I should see new results loaded$/) do
+	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I click on the 'Prev' button$/) do
+	find('#prev-btn').click
+end
+
+Then(/^I should see previous results loaded$/) do
+	expect(page).to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I click on the 'Next' button$/) do
+	find('#next-btn').click
+end
+
+Then(/^I should see next results loaded$/) do
+	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
+end
