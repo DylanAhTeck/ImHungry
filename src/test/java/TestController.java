@@ -344,14 +344,6 @@ public class TestController {
 		assertEquals(true, controller.addSearchToDB(listName, search));
 	}
 
-	@Test
-	public void testAddIngredient() throws IOException {
-		//Test remove but user not logged in
-		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
-		assertEquals(controller.addIngredient(""), false);
-		assertEquals(controller.addIngredient("apple"), true);
-	}
-
 
 	//Test for moving a result up one in list
 	@Test

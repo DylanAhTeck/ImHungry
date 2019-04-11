@@ -747,6 +747,7 @@ public class Controller {
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
 		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(distanceRequestURL);
+		try {
 		JSONObject json = new JSONObject(res);
 		JSONArray rows = json.getJSONArray("rows");
 		JSONObject temp = (JSONObject) rows.get(0);
@@ -755,14 +756,20 @@ public class Controller {
 		JSONObject elements = (JSONObject) element.get(0);
 
 		JSONObject duration = elements.getJSONObject("duration");
+		
 
 		return duration.getString("text");
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
 		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(placesDetailURL);
+		try {
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
 		String address = result.getString("formatted_address");
@@ -780,10 +787,15 @@ public class Controller {
 			website = result.getString("website");
 		}
 		return new String[]{address, phone, website};
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+		try {
 		JSONArray results = json.getJSONArray("results");
 
 		//it takes too long for the API to response
@@ -856,6 +868,9 @@ public class Controller {
 	    	}
 	    }
 		return restaurants;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	//only for testing purposes
@@ -877,10 +892,14 @@ public class Controller {
 		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 
 		String res = callAPI(placesRequestURL);
-
+		try {
 		JSONObject json = new JSONObject(res);
 		System.out.println("Restaurants: " + json.toString());
 		return parseJSON(json, numResults);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	// Retrieves the first "numResult" number of REcipes from the Spoonacular API and returns them as an ArrayList
