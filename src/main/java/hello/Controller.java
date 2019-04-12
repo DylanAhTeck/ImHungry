@@ -255,6 +255,10 @@ public class Controller {
 		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
 		addSearchToDB("priorSearchQueries", recentQuery);
 		
+		
+		ArrayList<ImageData> collageImageData = retrieveImageData(searchQuery, numResults);
+
+
 		ArrayList<String> collageURLs = createCollage(searchQuery);
 
 
@@ -531,6 +535,24 @@ public class Controller {
 		}
 		
 	}
+
+
+	@RequestMapping("/testRetrieveImages")
+	@CrossOrigin
+	public String handleTestRecipeRestaurant() {
+		ArrayList<ImageData> allImageData = retrieveImageData("burger", 10);
+		ArrayList<String> imageURLs = new ArrayList<String>();
+		if (allImageData.isEmpty()) {
+			return "";
+		}
+		
+		for (ImageData image : allImageData) {
+			imageURLs.add(image.thumbnailUrl);
+		}
+		return imageURLs.toString();
+	}
+
+
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -892,6 +914,80 @@ public class Controller {
 		return null;
 
 	}
+
+
+
+	public ArrayList<ImageData> retrieveImageData(String searchQuery, Integer numResults) {
+		ArrayList<ImageData> allImageData = new ArrayList<ImageData>();
+
+		if (searchQuery == null || searchQuery.equals("")) {
+			return allImageData;
+		}
+
+		try {
+			System.out.println("Retrieving image URLs...");
+			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://api.cognitive.microsoft.com/bing/v7.0/images/search")
+					.header("Ocp-Apim-Subscription-Key", "8aa5d7ae8be04b1ca0b6bab3df69cbd1")
+					.queryString("q", searchQuery)
+					.queryString("count", 10)
+					.asJson();
+
+			
+			String allDataString = response.getBody().toString();
+			// System.out.println(allDataString);
+
+			// convert to a usable jackson JSONNode
+			ObjectMapper mapper = new ObjectMapper();
+    		JsonNode root = mapper.readTree(allDataString);
+
+    		JsonNode resultsNode = root.path("value");
+
+    		for (JsonNode result : resultsNode) {
+    			
+    			ImageData image = new ImageData();
+    			
+				if (result.get("name") != null) {
+					image.setName(result.get("name").toString());
+				}
+
+				if (result.get("thumbnailUrl") != null) {
+					image.setThumbnailUrl(result.get("thumbnailUrl").toString());
+				}
+
+				if (result.get("contentUrl") != null) {
+					image.setContentUrl(result.get("contentUrl").toString());
+				}
+
+				if (result.get("height") != null) {
+					image.setHeight(Integer.parseInt(result.get("height").toString()));
+				}
+
+				if (result.get("width") != null) {
+					image.setWidth(Integer.parseInt(result.get("width").toString()));
+				}
+
+				if (image.thumbnailUrl != null || image.contentUrl != null) {
+					allImageData.add(image);
+				}
+
+    		}
+    		return allImageData;
+
+		} catch (UnirestException e) {
+			System.out.println(e);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
+
+
+
+
+
+
+
 
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
 	public ArrayList<String> createCollage(String searchQuery) {
