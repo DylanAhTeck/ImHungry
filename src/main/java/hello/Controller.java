@@ -60,6 +60,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+System.setProperty("file.encoding", "UTF-8");
+
 @RestController
 public class Controller {
 
@@ -251,15 +253,23 @@ public class Controller {
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
 		
+		// pull the images from the bing image search API 
+		ArrayList<ImageData> collageImageData = retrieveImageData(searchQuery, numResults);
+		ArrayList<String> collageURLs = new ArrayList<String>();
+		for (ImageData i : collageImageData) {
+			collageURLs.add(i.getThumbnailUrl());
+		}
+
 		//add search to database
-		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
+		
+		// TODO: once collage has been created and its URL posted to Firebase, set it here before adding the search to the db.
+		// TODO: note that right now we're putting in the first image url as the collageURL -- will need to change this to the
+			// actual collage URL when we have it
+		
+		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius, collageURLs.get(0));
 		addSearchToDB("priorSearchQueries", recentQuery);
 		
-		
-		ArrayList<ImageData> collageImageData = retrieveImageData(searchQuery, numResults);
-
-
-		ArrayList<String> collageURLs = createCollage(searchQuery);
+		ArrayList<String> oldCollageURLs = createCollage(searchQuery);
 
 
 		try {
@@ -951,11 +961,13 @@ public class Controller {
 				}
 
 				if (result.get("thumbnailUrl") != null) {
-					image.setThumbnailUrl(result.get("thumbnailUrl").toString());
+					image.setThumbnailUrl(result.get("thumbnailUrl").toString().replaceAll("\"", ""));
+					// NOTE: for logging
+					System.out.println(result.get("thumbnailUrl").toString().replaceAll("\"", ""));
 				}
 
 				if (result.get("contentUrl") != null) {
-					image.setContentUrl(result.get("contentUrl").toString());
+					image.setContentUrl(result.get("contentUrl").toString().replaceAll("\"", ""));
 				}
 
 				if (result.get("height") != null) {
