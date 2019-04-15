@@ -123,6 +123,10 @@
                 <groupId>io.opencensus</groupId>
                 <artifactId>opencensus-api</artifactId>
             </exclusion>
+            <exclusion>
+                <groupId>com.google.api</groupId>
+                <artifactId>gax</artifactId>
+            </exclusion>
           </exclusions>
         </dependency>
 

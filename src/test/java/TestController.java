@@ -347,7 +347,9 @@ public class TestController {
 	//Test for moving a result up one in list
 	@Test
 	public void testMoveUpOne() throws IOException {
-		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		Random rand = new Random();
+        int randInt = rand.nextInt(1000);
+		controller.registerUser("test"+randInt+"@test.com", "password");
 		ListManager listManager = controller.getListManager();
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
@@ -356,17 +358,19 @@ public class TestController {
 		ArrayList<Result> favorites = listManager.getFavorites();
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
-		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
-		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
+		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
 		controller.moveUpOne("id2", "favorites");
-		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
-		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
+		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
 	}
 
 	//Test for moving a result down one in list
 	@Test
 	public void testMoveDownOne() throws IOException {
-		controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		Random rand = new Random();
+        int randInt = rand.nextInt(1000);
+		controller.registerUser("test"+randInt+"@test.com", "password");;
 		ListManager listManager = controller.getListManager();
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
@@ -375,14 +379,14 @@ public class TestController {
 		ArrayList<Result> favorites = listManager.getFavorites();
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
-		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
-		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
+		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
 		controller.moveDownOne("id1", "favorites");
-		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
-		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
+		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
+		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
 		controller.moveDownOne("id2", "favorites");
-		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
-		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
+		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
+		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
 	}
 
 	//Test for conversion to meters
