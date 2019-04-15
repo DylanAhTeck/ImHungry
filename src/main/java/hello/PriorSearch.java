@@ -10,7 +10,7 @@ public class PriorSearch {
 		this.term = term;
 		this.numberOfresults = numberOfresults;
 		this.radius = radius;
-		this.collageURL = "";
+		this.collageURL = null;
 	}
 
 	// NOTE: second constructor to be used if we know the collageURL and object generation time
@@ -35,6 +35,10 @@ public class PriorSearch {
 
 	public void setCollageURL(String collageURL) {
 		this.collageURL = collageURL;
+	}
+
+	public String getCollageURL() {
+		return this.collageURL;
 	}
 
 }
