@@ -124,6 +124,7 @@
                 <artifactId>opencensus-api</artifactId>
             </exclusion>
             <exclusion>
+                <!-- NOTE: Ignored gax to resolve conflict with older version in Firestore - might need to revisit this -->
                 <groupId>com.google.api</groupId>
                 <artifactId>gax</artifactId>
             </exclusion>
