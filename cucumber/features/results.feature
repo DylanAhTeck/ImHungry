@@ -194,6 +194,25 @@ Scenario: S127 - Test that the page displays a collage of photos of the query
 	When I perform a search for 'Burgers' and input two search results
 	Then I should see the collage
 
+Scenario: S128 - Test that there exists a pagination section below results
 
+	Given I am on the Search page
+	When I perform a search for 'Curry' and input 10 search results
+	Then I should see a pagination section
 
+Scenario: S129 - Test that clicking on the button for page 2 correctly loads new results
 
+	Given I am on the Search page
+	When I perform a search for 'Curry' and input 10 search results
+	And I click on the 'page 2' button
+	Then I should see new results loaded
+
+Scenario: S130 - Test that clicking on the Prev button correctly shows the previous results
+
+	When I click on the 'Prev' button
+	Then I should see previous results loaded
+
+Scenario: S131 - Test that clicking on the Next button correctly shows the previous results
+
+	When I click on the 'Next' button
+	Then I should see next results loaded

@@ -344,7 +344,6 @@ public class TestController {
 		assertEquals(true, controller.addSearchToDB(listName, search));
 	}
 
-
 	//Test for moving a result up one in list
 	@Test
 	public void testMoveUpOne() throws IOException {
@@ -363,7 +362,7 @@ public class TestController {
 		assertEquals(true, favorites.get(1).getUniqueId() == "id1");
 		assertEquals(true, favorites.get(0).getUniqueId() == "id2");
 	}
-	
+
 	//Test for moving a result down one in list
 	@Test
 	public void testMoveDownOne() throws IOException {
@@ -385,7 +384,7 @@ public class TestController {
 		assertEquals(true, favorites.get(0).getUniqueId() == "id1");
 		assertEquals(true, favorites.get(1).getUniqueId() == "id2");
 	}
-	
+
 	//Test for conversion to meters
 	@Test
 	public void testToMeters() throws IOException {
