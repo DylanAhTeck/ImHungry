@@ -299,6 +299,7 @@ public class Controller {
 			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
 			((ObjectNode) rootNode).set("restaurants", mapper.readTree(mapper.writeValueAsString(restaurants)));
 			((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
+			((ObjectNode) rootNode).set("collageURL", collagePublicURL);
 
 			return mapper.writeValueAsString(rootNode);
 
