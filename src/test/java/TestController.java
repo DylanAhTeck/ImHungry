@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -33,6 +34,7 @@ public class TestController {
 	public static void setup() {
 		controller = new Controller();
 	}
+	
 
 //	@Test
 //	public void testGetResult() {
@@ -353,14 +355,35 @@ public class TestController {
 		ListManager listManager = controller.getListManager();
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
+		Result r3 = new Result("id3");
+		Result r4 = new Result("id4");
+		Result r5 = new Result("id5");
+		Result r6 = new Result("id6");
 		listManager.addToList(r1, "favorites");
 		listManager.addToList(r2, "favorites");
+		listManager.addToList(r3, "toExplore");
+		listManager.addToList(r4, "toExplore");
+		listManager.addToList(r5, "doNotShow");
+		listManager.addToList(r6, "doNotShow");
 		ArrayList<Result> favorites = listManager.getFavorites();
+		ArrayList<Result> toExplore = listManager.getToExplore();
+		ArrayList<Result> doNotShow = listManager.getdoNotShow();
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
+		controller.addToDB("toExplore", r3);
+		controller.addToDB("toExplore", r4);
+		controller.addToDB("doNotShow", r5);
+		controller.addToDB("doNotShow", r6);
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
+		assertEquals(true, toExplore.get(0).getUniqueId().equals("id3"));
+		assertEquals(true, toExplore.get(1).getUniqueId().equals("id4"));
+		assertEquals(true, doNotShow.get(0).getUniqueId().equals("id5"));
+		assertEquals(true, doNotShow.get(1).getUniqueId().equals("id6"));
 		controller.moveUpOne("id2", "favorites");
+		controller.moveUpOne("id4", "toExplore");
+		controller.moveUpOne("id6", "doNotShow");
+		assertEquals(false, controller.moveUpOne("id2", "advasdf"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
 	}
@@ -374,14 +397,35 @@ public class TestController {
 		ListManager listManager = controller.getListManager();
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
+		Result r3 = new Result("id3");
+		Result r4 = new Result("id4");
+		Result r5 = new Result("id5");
+		Result r6 = new Result("id6");
 		listManager.addToList(r1, "favorites");
 		listManager.addToList(r2, "favorites");
+		listManager.addToList(r3, "toExplore");
+		listManager.addToList(r4, "toExplore");
+		listManager.addToList(r5, "doNotShow");
+		listManager.addToList(r6, "doNotShow");
 		ArrayList<Result> favorites = listManager.getFavorites();
+		ArrayList<Result> toExplore = listManager.getToExplore();
+		ArrayList<Result> doNotShow = listManager.getdoNotShow();
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
+		controller.addToDB("toExplore", r3);
+		controller.addToDB("toExplore", r4);
+		controller.addToDB("doNotShow", r5);
+		controller.addToDB("doNotShow", r6);
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
+		assertEquals(true, toExplore.get(0).getUniqueId().equals("id3"));
+		assertEquals(true, toExplore.get(1).getUniqueId().equals("id4"));
+		assertEquals(true, doNotShow.get(0).getUniqueId().equals("id5"));
+		assertEquals(true, doNotShow.get(1).getUniqueId().equals("id6"));
 		controller.moveDownOne("id1", "favorites");
+		controller.moveDownOne("id3", "toExplore");
+		controller.moveDownOne("id5", "doNotShow");
+		assertEquals(false, controller.moveDownOne("id2", "advasdf"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
 		controller.moveDownOne("id2", "favorites");
