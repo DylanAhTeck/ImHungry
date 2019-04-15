@@ -66,6 +66,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+
+import io.github.cdimascio.dotenv.Dotenv;
+
 // Imports the Google Cloud client library
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -77,6 +80,7 @@ import com.google.cloud.storage.StorageOptions;
 
 
 
+
 @RestController
 public class Controller {
 
@@ -84,14 +88,18 @@ public class Controller {
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
 	private Firestore db = null;
+
+	Dotenv dotenv = Dotenv.load();
+
 	private String imagePathBaseURL = "https://storage.googleapis.com/csci-310-images/";
+
 
 
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
 	public final String cx = "000316813068596776800:nkwqoquwebi";
 	public final String searchType = "image";
-	public final String key = "AIzaSyBQNiCgpE0gGKEu9lDStS04HEfZzY_7H6o";
+	public final String key = dotenv.get("GOOGLE_IMAGE_API_KEY");
 
 	// NOTE: We'll use this to track our most recent results prior to returning to Wayne
 	private ArrayList<Recipe> mostRecentRecipes = new ArrayList<Recipe>();
@@ -793,7 +801,7 @@ public class Controller {
 
 	//Google distance matrix API
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
-		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=" + dotenv.get("GOOGLE_API_KEY");
 		String res = callAPI(distanceRequestURL);
 		try {
 		JSONObject json = new JSONObject(res);
@@ -815,7 +823,7 @@ public class Controller {
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=" + dotenv.get("GOOGLE_API_KEY");
 		String res = callAPI(placesDetailURL);
 		try {
 		JSONObject json = new JSONObject(res);
@@ -1086,7 +1094,7 @@ public class Controller {
 		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=" + dotenv.get("GOOGLE_API_KEY");
 
 		String res = callAPI(placesRequestURL);
 		try {
@@ -1123,7 +1131,7 @@ public class Controller {
 		try {
 			System.out.println("retrieving recipes...");
 			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search")
-					.header("X-RapidAPI-Key", "e2ddeee7bamsh69f202abaea3a79p12dc38jsnbe7d032a1782")
+					.header("X-RapidAPI-Key", dotenv.get("SPOONACULAR_API_KEY"))
 					.queryString("query", searchQuery)
 					.queryString("number", numResults + numExtra)
 					.asJson();
@@ -1160,7 +1168,7 @@ public class Controller {
     		for (Recipe recipe : recipes) {
 //    			System.out.println("retrieving information for recipe id: " + recipe.getUniqueId());
     			response = Unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/{recipeID}/information")
-					.header("X-RapidAPI-Key", "e2ddeee7bamsh69f202abaea3a79p12dc38jsnbe7d032a1782")
+					.header("X-RapidAPI-Key", dotenv.get("SPOONACULAR_API_KEY"))
 					.routeParam("recipeID", recipe.getUniqueId())
 					.asJson();
 
