@@ -5,31 +5,31 @@ Background:
 	Given I am on the Login page
 And I login with valid credentials
 
-Scenario: S1 - Test that the color of the search page is white smoke
+Scenario: S1 - Test that the color of the search page is 466D9F
 
-	Then The background color of the page should be white smoke
+	Then The background color of the page should be 466D9F
 
-Scenario: S2 - Test that the color of the results page is white smoke
+Scenario: S2 - Test that the color of the results page is 466D9F
 
 	Given I am on the Login page
 And I login with valid credentials
 When I perform a search for 'Burgers'
-	Then The background color of the page should be white smoke
+	Then The background color of the page should be 466D9F
 
-Scenario: S3 - Test that the color of the recipe page is white smoke
+Scenario: S3 - Test that the color of the recipe page is 466D9F
 
 	Given I am on the Recipe page
-	Then The background color of the page should be white smoke
+	Then The background color of the page should be 466D9F
 
-Scenario: S4 - Test that the color of the restaurant page is white smoke
+Scenario: S4 - Test that the color of the restaurant page is 466D9F
 
 	Given I am on the Restaurant page
-	Then The background color of the page should be white smoke
+	Then The background color of the page should be 466D9F
 
-Scenario: S5 - Test that the color of the list management page is white smoke
+Scenario: S5 - Test that the color of the list management page is 466D9F
 
 	Given I am on the List Management page
-	Then The background color of the page should be white smoke
+	Then The background color of the page should be 466D9F
 
 Scenario: S6 - Test that a text box with a prompt of 'Enter Food' exists
 

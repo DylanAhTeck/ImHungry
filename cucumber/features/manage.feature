@@ -65,38 +65,62 @@ Scenario: S405 - Test that the 'Return to Search Page' button takes the user bac
 
 Scenario: S406 - Test that the 'list management' dropdown box exists and is empty by default
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	Then I should see a 'list management' dropdown box which is empty by default
 
 Scenario: S407 - Test that the 'list management' dropdown box exists and contains selectable options for the predefined lists
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	Then The 'list management' dropdown box should contain selectable options for the predefined lists
 
 Scenario: S408 - Test that the 'Manage List' button exists and causes a transition to the 'To Explore' list page when clicked
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	When I select the 'To Explore' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
 	Then I should be on the 'To Explore' list management page
 
 Scenario: S409 - Test that the 'Manage List' button causes a transition to the 'Favorites' list page when clicked
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	When I select the 'Favorites' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
 	Then I should be on the 'Favorites' list management page
 
 Scenario: S410 - Test that the 'Manage List' button causes a transition to the 'Do Not Show' list page when clicked
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	When I select the 'Do Not Show' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
 	Then I should be on the 'Do Not Show' list management page
 
 Scenario: S411 - Test that the 'Manage List' button does not cause a transition to the list management page
 
-	Given I am on the List Management page
+	Given I am on the Login page
+And I login with valid credentials
+When I perform a search for 'Burgers'
+And I select the 'Favorites' option from the 'list management' dropdown box
+And I click on the 'Manage List' button
 	When I click on the 'Manage List' button
 	Then I should be on the List Management Page
 

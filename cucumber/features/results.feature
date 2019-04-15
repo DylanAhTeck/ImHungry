@@ -3,7 +3,6 @@ Feature: Test the Results page
 Background:
 
 	Given I am on the Login page
-And I login with valid credentials
 
 Scenario: S101 - Test that the collage is displayed
 
