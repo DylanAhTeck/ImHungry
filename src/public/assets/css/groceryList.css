@@ -3,3 +3,7 @@
 span:hover {
 	cursor: pointer;
 }
+
+body {
+	background-color: #466D9F;
+}

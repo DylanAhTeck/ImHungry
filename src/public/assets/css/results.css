@@ -2,7 +2,11 @@ html,
 body {
   width: 100%;
   height: 100%;
-  background: #f5f5f5;
+  background: #466D9F;
+}
+
+h1 {
+	color: #F5F7F7;
 }
 
 .header-wrapper {
@@ -61,6 +65,7 @@ a button {
 
 .card {
   cursor: pointer;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .prior-search-wrapper {
@@ -99,4 +104,28 @@ a button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+#pagination-container {
+	width: fit-content;
+	margin: 0 auto;
+}
+.bg-secondary {
+	background-color: #F5F7F7 !important;
+	color: #466D9F !important;
+}
+
+.bg-dark {
+	background-color: #786D80 !important;
+	color: #F5F7F7 !important;
+}
+
+.btn-secondary {
+	background-color: #F5F7F7 !important;
+	color: #466D9F !important;
+}
+
+.page-item.active .page-link {
+	background-color: #95AFD0 !important;
+	border-color: #95AFD0 !important;
 }

@@ -44,8 +44,13 @@ public class Restaurant extends Result {
 			System.out.println(exception);
 		}
 		System.out.println(jsonString);
+		try {
 		JSONObject json = new JSONObject(jsonString);
 		return json;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 
 	}
 	
