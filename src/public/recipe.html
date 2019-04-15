@@ -150,6 +150,36 @@
           let listElement = document.createElement("li");
           listElement.className = "mb-2";
           listElement.appendChild(document.createTextNode(ingredients[i]));
+          let addButton = document.createElement("button");
+          addButton.className= "btn btn-primary";
+          addButton.style.padding = "1px 6px";
+          addButton.style.borderRadius = "50%";
+          addButton.style.marginLeft = "5px";
+          let addIcon = document.createElement("i");
+          addIcon.className="fas fa-plus";
+          addButton.appendChild(addIcon);
+          addButton.onclick = function() {
+              let xhttp = new XMLHttpRequest();
+              let parameters =
+                "ingredient=" + ingredients[i];
+              xhttp.open(
+                "GET",
+                "http://localhost:8080/addIngredient?" + parameters,
+                true
+              );
+              xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+              xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                  if (xhttp.responseText) {
+                    console.log(this.responseText);
+                    if(this.responseText == "true") alert("Added ingredient to grocery list!")
+                    //location.reload();
+                  }
+                }
+              };
+              xhttp.send();
+            };
+          listElement.appendChild(addButton);
           firstIngredientsList.appendChild(listElement);
         }
 
@@ -160,6 +190,36 @@
           let listElement = document.createElement("li");
           listElement.className = "mb-2";
           listElement.appendChild(document.createTextNode(ingredients[i]));
+          let addButton = document.createElement("button");
+          addButton.className= "btn btn-primary";
+          addButton.style.padding = "1px 6px";
+          addButton.style.borderRadius = "50%";
+          addButton.style.marginLeft = "5px";
+          let addIcon = document.createElement("i");
+          addIcon.className="fas fa-plus";
+          addButton.appendChild(addIcon);
+          addButton.onclick = function() {
+              let xhttp = new XMLHttpRequest();
+              let parameters =
+                "ingredient=" + ingredients[i];
+              xhttp.open(
+                "GET",
+                "http://localhost:8080/addIngredient?" + parameters,
+                true
+              );
+              xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+              xhttp.onreadystatechange = function() {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                  if (xhttp.responseText) {
+                    console.log(this.responseText);
+                    if(this.responseText == "true") alert("Added ingredient to grocery list!")
+                    //location.reload();
+                  }
+                }
+              };
+              xhttp.send();
+            };
+          listElement.appendChild(addButton);
           secondIngredientsList.appendChild(listElement);
         }
 

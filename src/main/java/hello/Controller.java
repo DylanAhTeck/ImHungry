@@ -9,6 +9,12 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+
+import javax.swing.text.Document;
+
+import java.util.Map;
+import java.util.HashMap;
+
 // for image manipulation
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
@@ -236,10 +242,12 @@ public class Controller {
 //		return "failure";
 //	}
 
+
+
 	@RequestMapping("/search")
 	@CrossOrigin
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
-	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5000") Integer radius) {
+	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5") Integer radius) {
 
 		if (searchQuery == null) {
 			return "Thanks for searching!";
@@ -251,7 +259,7 @@ public class Controller {
 
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
 		try {
-			restaurants = retrieveRestaurants(searchQuery, numResults);
+			restaurants = retrieveRestaurants(searchQuery, numResults, radius);
 			// saved list of restaurants returned from query in "cache"
 			mostRecentRestaurants = restaurants;
 		} catch (IOException e) {
@@ -285,7 +293,7 @@ public class Controller {
 		addSearchToDB("priorSearchQueries", recentQuery);
 		
 		ArrayList<String> oldCollageURLs = fetchImageURLs(searchQuery);
-
+    
 		try {
 			// using readtree to set these as json nodes
 			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
@@ -344,7 +352,6 @@ public class Controller {
 //		return "favorites: " + favoritesString;
 //	}
 
-
 	@RequestMapping("/addToList")
 	@CrossOrigin
 	public String handleAddToList(@RequestParam String itemToAddId, @RequestParam String targetListName) {
@@ -391,15 +398,11 @@ public class Controller {
 		}
 
 		boolean added = listManager.addToList(toAdd, targetListName);
-		
+
 		if(added) {
 			System.out.println("adding to list");
 			addToDB(targetListName, toAdd);
 		}
-		
-		
-		
-		
 		return "Added item: " + toAdd.getUniqueId() + " to list: " + targetListName;
 	}
 
@@ -413,10 +416,10 @@ public class Controller {
 		else if (originListName.equals("")) return "originListName is empty";
 		// performs removal
 		Result toBeRemoved = listManager.removeFromList(itemToRemoveId, originListName);
-		
+
 		removeFromDB(originListName, toBeRemoved);
 
-		
+
 		return "Removed item: " + itemToRemoveId + " from list: " + originListName;
 	}
 
@@ -432,10 +435,10 @@ public class Controller {
 		else if (targetListName.equals("")) return "targetListName is empty";
 
 		Result result = listManager.moveBetweenLists(itemToMoveId, originListName, targetListName);
-		
+
 		removeFromDB(originListName, result);
 		addToDB(targetListName, result);
-		
+
 		return "Moved item: " + itemToMoveId + " from list: " + originListName + " to list: " + targetListName;
 	}
 
@@ -471,7 +474,7 @@ public class Controller {
 						} else {
 							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
 						}
-						
+
 					}
 					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
 					ArrayList<Result> favorites = new ArrayList<Result>();
@@ -515,7 +518,7 @@ public class Controller {
 		return "failed";
 	}
 
-	
+
 	//Signs a user out
 	@RequestMapping("/signUserOut")
 	@CrossOrigin
@@ -557,10 +560,129 @@ public class Controller {
 			e.printStackTrace();
 			return "failed";
 		}
-		
+
 	}
 
+	//Moving and item position up one in the array list
+	@RequestMapping("/moveUpOne")
+	@CrossOrigin
+	public boolean moveUpOne(@RequestParam String uniqueId, @RequestParam String listName) {
+		System.out.println("Attempting to move on " + listName);
+		listManager.moveUpOne(uniqueId, listName);
+		DocumentReference userDocRef = db.collection("users").document(userId);
+		if(listName.equals("favorites")) {
+			ArrayList<Result> favorites = listManager.getFavorites();
+			ArrayList<String> jsonFavorites = new ArrayList<String>();
+			for(int i = 0; i < favorites.size(); i++) {
+				jsonFavorites.add(new Gson().toJson(favorites.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("favorites", jsonFavorites);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName.equals("toExplore")) {
+			System.out.println("Attempting to move up on explore list");
+			ArrayList<Result> toExplore = listManager.getToExplore();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < toExplore.size(); i++) {
+				json.add(new Gson().toJson(toExplore.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("toExplore", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName.equals("doNotShow")) {
+			ArrayList<Result> doNotShow = listManager.getdoNotShow();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < doNotShow.size(); i++) {
+				json.add(new Gson().toJson(doNotShow.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("doNotShow", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		}
+		return false;
+	}
 
+	//Moving and item position down one in the array list
+	@RequestMapping("/moveDownOne")
+	@CrossOrigin
+	public boolean moveDownOne(@RequestParam String uniqueId, @RequestParam String listName) {
+		listManager.moveDownOne(uniqueId, listName);
+		DocumentReference userDocRef = db.collection("users").document(userId);
+		if(listName.equals("favorites")) {
+			ArrayList<Result> favorites = listManager.getFavorites();
+			ArrayList<String> jsonFavorites = new ArrayList<String>();
+			for(int i = 0; i < favorites.size(); i++) {
+				jsonFavorites.add(new Gson().toJson(favorites.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("favorites", jsonFavorites);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName.equals("toExplore")) {
+			ArrayList<Result> toExplore = listManager.getToExplore();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < toExplore.size(); i++) {
+				json.add(new Gson().toJson(toExplore.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("toExplore", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		} else if(listName.equals("doNotShow")) {
+			ArrayList<Result> doNotShow = listManager.getdoNotShow();
+			ArrayList<String> json = new ArrayList<String>();
+			for(int i = 0; i < doNotShow.size(); i++) {
+				json.add(new Gson().toJson(doNotShow.get(i)));
+			}
+			Map<String, Object> updates = new HashMap<>();
+			updates.put("doNotShow", json);
+			ApiFuture<WriteResult> writeResult = userDocRef.update(updates);
+			return true;
+		}
+		return false;
+	}
+
+	@RequestMapping("/addIngredient")
+	@CrossOrigin
+	//TODO: Ingredient string is added to database
+	public boolean addIngredient(@RequestParam(defaultValue="null") String ingredient)
+	{
+
+		if(this.userId == "" || this.userId == null || ingredient == "") return false;
+		Gson gson = new Gson();
+		DocumentReference docRef= db.collection("users").document(userId);
+			try{
+				ApiFuture<WriteResult> arrayUnion = docRef.update("groceryList",
+						FieldValue.arrayUnion(ingredient));
+						return true;
+			}catch (Exception e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+	}
+
+	@RequestMapping("/removeIngredient")
+	@CrossOrigin
+	public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
+		{
+			if(this.userId == "" || this.userId == null || ingredient == "") return false;
+			Gson gson = new Gson();
+			DocumentReference docRef = db.collection("users").document(userId);
+				try{
+					ApiFuture<WriteResult> arrayRm = docRef.update("groceryList",
+						FieldValue.arrayRemove(ingredient));
+						return true;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+					return false;
+				}
+		}
+  
 	@RequestMapping("/testRetrieveImages")
 	@CrossOrigin
 	public String handleTestRecipeRestaurant() {
@@ -575,8 +697,6 @@ public class Controller {
 		}
 		return imageURLs.toString();
 	}
-
-
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -672,8 +792,9 @@ public class Controller {
 
 	//Google distance matrix API
 	private String getDuration(String place_id) throws MalformedURLException, IOException {
-		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String distanceRequestURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=34.021240,-118.287209&destinations=place_id:" + place_id + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(distanceRequestURL);
+		try {
 		JSONObject json = new JSONObject(res);
 		JSONArray rows = json.getJSONArray("rows");
 		JSONObject temp = (JSONObject) rows.get(0);
@@ -682,14 +803,20 @@ public class Controller {
 		JSONObject elements = (JSONObject) element.get(0);
 
 		JSONObject duration = elements.getJSONObject("duration");
+		
 
 		return duration.getString("text");
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
 	private String[] placesDetail(String place_id) throws MalformedURLException, IOException {
-		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesDetailURL = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + place_id + "&fields=formatted_phone_number,formatted_address,website&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 		String res = callAPI(placesDetailURL);
+		try {
 		JSONObject json = new JSONObject(res);
 		JSONObject result = json.getJSONObject("result");
 		String address = result.getString("formatted_address");
@@ -707,6 +834,10 @@ public class Controller {
 			website = result.getString("website");
 		}
 		return new String[]{address, phone, website};
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
@@ -860,6 +991,7 @@ public class Controller {
 
 	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
 		ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+		try {
 		JSONArray results = json.getJSONArray("results");
 
 		//it takes too long for the API to response
@@ -932,6 +1064,9 @@ public class Controller {
 	    	}
 	    }
 		return restaurants;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	//only for testing purposes
@@ -945,18 +1080,22 @@ public class Controller {
 	}
 
 	// Retrieves the first "numResult" number of Restaurants from the Google Places API and returns them as an ArrayList
-	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults) throws IOException {
+	public ArrayList<Restaurant> retrieveRestaurants(String searchQuery, Integer numResults, Integer radius) throws IOException {
 		// TODO: Pull restaurants from external API and grab relevant information.
-
+		double meters = toMeters(radius);
 		String encodeQuery = URLEncoder.encode(searchQuery, "UTF-8");
 
-		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&rankby=distance&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyBv9IdeNWobivG8KQr4wXdvbz5QHFFg2ds";
+		String placesRequestURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=34.021240,-118.287209&radius="+meters+"&type=restaurant&keyword=" + encodeQuery + "&key=AIzaSyC0Lf-K1XgWTM-oUIb35uffLgeRf1oBT-k";
 
 		String res = callAPI(placesRequestURL);
-
+		try {
 		JSONObject json = new JSONObject(res);
-
+		System.out.println("Restaurants: " + json.toString());
 		return parseJSON(json, numResults);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	// Retrieves the first "numResult" number of REcipes from the Spoonacular API and returns them as an ArrayList
@@ -988,7 +1127,7 @@ public class Controller {
 					.queryString("number", numResults + numExtra)
 					.asJson();
 
-			
+
 			String allDataString = response.getBody().toString();
 			System.out.println("all data:" + allDataString);
 
@@ -1252,7 +1391,7 @@ public class Controller {
 		}
 		return thumbnailLinks;
 	}
-	
+
 	//add result to db
 	public Boolean addSearchToDB(String originListName, PriorSearch search) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1268,10 +1407,10 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
-	
+
 	//add result to db
 	public Boolean addToDB(String originListName, Result result) {
 		if(this.userId == "" || this.userId == null) return false;
@@ -1287,8 +1426,8 @@ public class Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
-			
+
+
 	}
 	//remove result from db
 	public Boolean removeFromDB(String originListName, Result result) {
@@ -1309,6 +1448,14 @@ public class Controller {
 			return false;
 		}
 	}
-	
+
+	public double toMeters(int miles) {
+		return miles * 1609.34;
+	}
+
+	public ListManager getListManager() {
+		return listManager;
+	}
+
 
 }

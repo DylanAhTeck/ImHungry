@@ -27,7 +27,7 @@
                 </button>
               </div>
             </div> -->
-            <div id="collage"></div>
+            <div id="collage"> <h3 id="collage-loading"> Loading Collage... </h3> </div>
             <div class="controls">
               <div class="input-group">
                 <select class="custom-select" id="list-select">
@@ -44,9 +44,16 @@
                     Return to Search Page
                   </button>
                 </a>
+
+                <a href="grocerylist.html">
+                  <button type="button" class="btn btn-secondary" id="groceryListButton">
+                    Grocery List
+                  </button>
+                </a>
                 <button type="button" class="btn btn-secondary" id="logout-btn">
                   Logout
                 </button>
+
               </div>
             </div>
           </div>
@@ -68,33 +75,13 @@
               </div>
             </div>
           </div>
+          <nav aria-label="Page navigation" id="pagination-container">
+			  <ul class="pagination" id="pagination-list">
+			    
+			  </ul>
+			</nav>
           <div class="prior-search-wrapper">
-            <div class="prior-search-cards">
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
-              <div class="card prior-search-card">
-                <div class="card-body">
-                  <p class="card-text">Burger</p>
-                </div>
-              </div>
+            <div id="search-cards-container" class="prior-search-cards">
             </div>
           </div>
         </div>
@@ -108,42 +95,49 @@
     let JSONObj = {
       "recipes": []
     }
+    
+    let currentPage = 1;
+    
+    let activeButton = null;
 
     document.addEventListener('DOMContentLoaded', function() {
+	   	firebase.auth().onAuthStateChanged(function(user) {
+	     	  console.log(user);
+	          if (user) { //User is signed in
+	            var db = firebase.firestore();
+	            var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+
+	            // Valid options for source are 'server', 'cache', or
+	            // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+	            // for more information.
+	            var getOptions = {
+	                source: 'default'
+	            };
+
+	            // Get a document, forcing the SDK to fetch from the offline cache.
+	            docRef.get(getOptions).then(function(doc) {
+	                // Document was found in the cache. If no cached document exists,
+	                // an error will be returned to the 'catch' block below.
+	                let queryData = doc.data().priorSearchQueries;
+	                let searchSelect = document.getElementById('search-select');
+	                for(let query of queryData) {
+	                  let json = JSON.parse(query);
+	                  let newOption = document.createElement('option');
+	                  newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
+	                  searchSelect.appendChild(newOption);
+	                }
+	            }).catch(function(error) {
+	                console.log("Error getting cached document:", error);
+	            });
+	          } else {
+	            // No user is signed in.location.href = "login.html";
+	            location.href = "login.html";
+	          }
+	        });
       let query = sessionStorage.getItem('query');
       document.getElementById('query').innerHTML = capitalizeFirstLetter(query);
-      firebase.auth().onAuthStateChanged(function(user) {
-         if (user) { //User is signed in
-           var db = firebase.firestore();
-           var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
-
-           // Valid options for source are 'server', 'cache', or
-           // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
-           // for more information.
-           var getOptions = {
-               source: 'default'
-           };
-
-           // Get a document, forcing the SDK to fetch from the offline cache.
-           docRef.get(getOptions).then(function(doc) {
-               // Document was found in the cache. If no cached document exists,
-               // an error will be returned to the 'catch' block below.
-               let queryData = doc.data().priorSearchQueries;
-               let searchSelect = document.getElementById('search-select');
-               for(let query of queryData) {
-                 let json = JSON.parse(query);
-                 let newOption = document.createElement('option');
-                 newOption.innerHTML = json.term + " / " + json.numberOfresults + " / " + json.radius;
-                 searchSelect.appendChild(newOption);
-               }
-           }).catch(function(error) {
-               console.log("Error getting cached document:", error);
-           });
-         } else {
-           // No user is signed in.
-         }
-       });
       processSearch();
+      setupPagination();
     });
 
     document.getElementById('manage-list').onclick = function() {
@@ -159,6 +153,116 @@
     function capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
+    
+    function setupPagination() {
+    	let numResults = sessionStorage.getItem('numResults');
+    	let numPages = Math.ceil(numResults/5);
+    	var numArray = [];
+    	for(var i = 1; i <= numPages; i++) {
+    		numArray.push(i);
+    	}
+    	let paginationList = document.getElementById("pagination-list");
+    	var leftArrow = document.createElement("li");
+    	leftArrow.className = "page-item";
+    	var leftArrowAnchor = document.createElement("a");
+    	leftArrowAnchor.className = "page-link";
+    	leftArrowAnchor.setAttribute('aria-label', 'Previous');
+    	var span1 = document.createElement("span");
+    	span1.setAttribute('aria-hidden', 'true');
+    	span1.appendChild(document.createTextNode("Prev"));
+    	leftArrowAnchor.appendChild(span1);
+    	var span2 = document.createElement("span");
+    	span2.className="sr-only";
+    	span2.appendChild(document.createTextNode("Previous"));
+    	leftArrowAnchor.appendChild(span2);
+    	leftArrowAnchor.id = "prev-btn";
+    	leftArrow.appendChild(leftArrowAnchor);
+    	leftArrow.onclick = function() {
+    		if(currentPage != 1) {
+    			currentPage--;
+    			var ul = document.getElementById("pagination-list");
+    			var items = ul.getElementsByTagName("li");
+    			for (var i = 0; i < items.length; ++i) {
+    			  console.log(items[i].id)
+    			  if(items[i].id == "page-" + (currentPage-1)) {
+    				  items[i].classList.add("active");
+    				  activeButton.classList.remove("active");
+    				  activeButton = items[i];
+    			  }
+    			 
+    			}
+    			loadRestaurants(currentPage);
+    			loadRecipes(currentPage);
+    		}
+    	}
+    	paginationList.appendChild(leftArrow);
+    	
+    	for(let i in numArray){
+    		var listItem = document.createElement("li");
+    		listItem.className = "page-item";
+    		if(i == 0) {
+    			listItem.classList.add("active");
+    			activeButton = listItem;
+    		}
+    		listItem.id = "page-" + i;
+    		var link = document.createElement("a");
+    		link.className = "page-link";
+    		link.appendChild(document.createTextNode(numArray[i]));
+    		//link.href="results.html?page="+numArray[i];
+    		
+    		
+    		//listItem.innerHTML += "<a class='page-link'>"+i+"</a>";
+    		listItem.appendChild(link);
+    		listItem.onclick = function() {
+    			this.classList.add("active");
+    			if(activeButton != null) {
+    				activeButton.classList.remove("active");
+    			}
+    			activeButton = this;
+    			loadRestaurants(numArray[i]);
+    			loadRecipes(numArray[i]);
+    			currentPage = numArray[i];
+    			
+    		}
+    		paginationList.appendChild(listItem);
+    		
+    	}
+    	var rightArrow = document.createElement("li");
+    	rightArrow.className = "page-item";
+    	var rightArrowAnchor = document.createElement("a");
+    	rightArrowAnchor.className = "page-link";
+    	rightArrowAnchor.setAttribute('aria-label', 'Next');
+    	var span3 = document.createElement("span");
+    	span3.setAttribute('aria-hidden', 'true');
+    	span3.appendChild(document.createTextNode("Next"));
+    	rightArrowAnchor.appendChild(span3);
+    	var span4 = document.createElement("span");
+    	span4.className="sr-only";
+    	span4.appendChild(document.createTextNode("Next"));
+    	rightArrowAnchor.appendChild(span4);
+    	rightArrowAnchor.id = "next-btn";
+    	rightArrow.appendChild(rightArrowAnchor);
+    	rightArrow.onclick = function() {
+    		if(currentPage != numPages) {
+    			currentPage++;
+    			var ul = document.getElementById("pagination-list");
+    			var items = ul.getElementsByTagName("li");
+    			for (var i = 0; i < items.length; ++i) {
+    			  console.log(items[i].id)
+    			  if(items[i].id == "page-" + (currentPage-1)) {
+    				  items[i].classList.add("active");
+    				  activeButton.classList.remove("active");
+    				  activeButton = items[i];
+    			  }
+    			 
+    			}
+    			loadRestaurants(currentPage);
+    			loadRecipes(currentPage);
+    		}
+    	}
+    	paginationList.appendChild(rightArrow);
+    	
+    }
 
     function processSearch() {
       let query = sessionStorage.getItem('query');
@@ -172,15 +276,78 @@
         if (xhttp.readyState == 4 && xhttp.status == 200) {
           if (xhttp.responseText) {
             JSONObj = JSON.parse(this.responseText);
-            // sortJSON(JSONObj);
             hideSpinner();
             loadCollage();
-            loadRestaurants();
-            loadRecipes();
+            
+            loadRestaurants(1);
+            loadRecipes(1);
+            loadPriorSearches();
           }
         }
       }
       xhttp.send();
+    }
+
+    function loadPriorSearches() {
+      var db = firebase.firestore();
+      var docRef = db.collection("users").doc(sessionStorage.getItem("userUID"));
+
+      // Valid options for source are 'server', 'cache', or
+      // 'default'. See https://firebase.google.com/docs/reference/js/firebase.firestore.GetOptions
+      // for more information.
+      var getOptions = {
+          source: 'default'
+      };
+
+      // Get a document, forcing the SDK to fetch from the offline cache.
+      docRef.get(getOptions).then(function(doc) {
+          // Document was found in the cache. If no cached document exists,
+          // an error will be returned to the 'catch' block below.
+          let priorSearchData = doc.data().priorSearchQueries;
+          let priorSearchContainer = document.getElementById("search-cards-container");
+          priorSearchContainer.style.width = 320*priorSearchData.length + "px";
+          for (let priorSearch of priorSearchData.reverse()) {
+            let json = JSON.parse(priorSearch);
+            let query = json.term;
+            let numResults = json.numberOfresults;
+            let radius = json.radius;
+            let collageURL = json.collageURL;
+
+            let newCard = document.createElement('div');
+            newCard.className = "card prior-search-card";
+            let newCardBody = document.createElement('div');
+            newCardBody.className = "card-body";
+            let newCardText = document.createElement('p');
+            newCardText.innerHTML = query;
+            newCardText.className = "card-text";
+            newCardBody.appendChild(newCardText);
+            if(collageURL) {
+              newCard.style.backgroundImage = "url('" + collageURL  + "')";
+            } else {
+              // newCard.style.backgroundImage = "url(https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg)";
+              // newCard.style.backgroundSize = "cover";
+              let img = document.createElement('img');
+              img.src = "https://upload.wikimedia.org/wikipedia/commons/6/6d/Good_Food_Display_-_NCI_Visuals_Online.jpg";
+              img.style.width = "100%";
+              img.style.height = "auto";
+              img.style.position = "absolute";
+              img.style.opacity = 0.5;
+              newCard.appendChild(img);
+            }
+            newCard.appendChild(newCardBody);
+            newCard.onclick = function() {
+              sessionStorage.setItem("query", query);
+              sessionStorage.setItem("numResults", numResults);
+              sessionStorage.setItem("radius", radius);
+              searchAgain();
+            }
+
+            priorSearchContainer.appendChild(newCard);
+          }
+
+      }).catch(function(error) {
+          console.log("Error getting cached document:", error);
+      });
     }
 
     function sortJSON(jsonObj) {
@@ -218,6 +385,7 @@
         for(let imageURL of imageUrls) {
           let img = new Image();
           let div = document.getElementById("collage");
+          div.innerHTML = "";
           let rotation = 90*Math.random() - 45;
 
           img.style.maxWidth = 0.2*0.6*viewportWidth+'px';
@@ -235,10 +403,15 @@
       }
     }
 
-    function loadRestaurants() {
+    function loadRestaurants(page) {
+   	   let endIndex = page * 5;
+       let startIndex = endIndex - 5;
+       if(endIndex > JSONObj.restaurants.length) endIndex = JSONObj.recipes.length;
+       var restaurants = JSONObj.restaurants.slice(startIndex, endIndex)
       let restaurantsDiv = document.getElementById('restaurants');
+       restaurantsDiv.innerHTML = "";
       let currentIndex = 0;
-      for (let idx in JSONObj.restaurants) {
+      for (let idx in restaurants) {
         let newCard = document.createElement('div');
         newCard.id = "restaurant_" + currentIndex;
         currentIndex++;
@@ -261,8 +434,8 @@
         let restaurantName = document.createElement('h5');
         let restaurantDistance = document.createElement('h6');
         restaurantName.className = "card-title restaurant-title";
-        restaurantName.innerHTML = JSONObj.restaurants[idx]['name'];
-        restaurantDistance.innerHTML = "Driving Time: " + JSONObj.restaurants[idx]['drivingTime'];
+        restaurantName.innerHTML = restaurants[idx]['name'];
+        restaurantDistance.innerHTML = "Driving Time: " + restaurants[idx]['drivingTime'];
         restaurantDistance.className = "restaurant-distance";
         newNameCol.appendChild(restaurantName);
         newNameCol.appendChild(restaurantDistance);
@@ -270,17 +443,17 @@
         let restaurantRating = document.createElement('h5');
         let restaurantAddress = document.createElement('h6');
         restaurantRating.clasName = "card-title";
-        let restaurantRatingValue = JSONObj.restaurants[idx]['rating'];
+        let restaurantRatingValue = restaurants[idx]['rating'];
         restaurantRating.innerHTML = restaurantRatingValue + `<i class="fas fa-star"></i>`;
         restaurantRating.className = "restaurant-rating";
-        restaurantAddress.innerHTML = JSONObj.restaurants[idx]['address'];
+        restaurantAddress.innerHTML = restaurants[idx]['address'];
         restaurantAddress.className = "restaurant-address";
         newRatingCol.appendChild(restaurantRating);
         newRatingCol.appendChild(restaurantAddress);
 
         let restaurantPrice = document.createElement('h6');
         restaurantPrice.className = "card-title";
-        let restaurantPriceLevel = JSONObj.restaurants[idx]['priceLevel'];
+        let restaurantPriceLevel = restaurants[idx]['priceLevel'];
         let priceString = "";
         for (let i = 0; i < restaurantPriceLevel; i++) {
           priceString += `<i class="fas fa-dollar-sign"></i>`;
@@ -289,11 +462,11 @@
         restaurantPrice.className = "restaurant-price"
         // For scraping purposes only
         let restaurantPhone = document.createElement('h6');
-        restaurantPhone.innerHTML = JSONObj.restaurants[idx]['phoneNumber'];
+        restaurantPhone.innerHTML = restaurants[idx]['phoneNumber'];
         restaurantPhone.className = "restaurant-phone";
         restaurantPhone.style.display = "none";
         let restaurantWebsite = document.createElement('h6');
-        restaurantWebsite.innerHTML = JSONObj.restaurants[idx]['website'];
+        restaurantWebsite.innerHTML = restaurants[idx]['website'];
         restaurantWebsite.className = "restaurant-website";
         restaurantWebsite.style.display = "none";
         newPriceCol.appendChild(restaurantPrice);
@@ -307,7 +480,7 @@
         newCardBody.appendChild(newRow);
         newCard.appendChild(newCardBody);
         newCard.onclick = function() {
-          let currentItem = JSONObj.restaurants[idx];
+          let currentItem = restaurants[idx];
           sessionStorage.setItem('currentItem', JSON.stringify(currentItem));
           location.href = "restaurant.html";
         }
@@ -316,10 +489,15 @@
       }
     }
 
-    function loadRecipes() {
+    function loadRecipes(page) {
+      let endIndex = page * 5;
+      let startIndex = endIndex - 5;
+      if(endIndex > JSONObj.recipes.length) endIndex = JSONObj.recipes.length;
+      var recipes = JSONObj.recipes.slice(startIndex, endIndex);
       let recipesDiv = document.getElementById('recipes');
+      recipesDiv.innerHTML = "";
       let currentIndex = 0;
-      for (let idx in JSONObj.recipes) {
+      for (let idx in recipes) {
         let newCard = document.createElement('div');
         newCard.id = "recipe_" + currentIndex;
         currentIndex++;
@@ -340,8 +518,8 @@
         let recipeName = document.createElement('h5');
         let recipePrepTime = document.createElement('h6');
         recipeName.className = "card-title recipe-title";
-        recipeName.innerHTML = JSONObj.recipes[idx]['name'];
-        recipePrepTime.innerHTML = "Prep Time: " + JSONObj.recipes[idx]['prepTime'] + " mins";
+        recipeName.innerHTML = recipes[idx]['name'];
+        recipePrepTime.innerHTML = "Prep Time: " + recipes[idx]['prepTime'] + " mins";
         recipePrepTime.className = "recipe-prep-time"
         newNameCol.appendChild(recipeName);
         newNameCol.appendChild(recipePrepTime);
@@ -349,9 +527,9 @@
         let recipeRating = document.createElement('h5');
         let recipeCookTime = document.createElement('h6');
         recipeRating.className = "card-title recipe-rating";
-        let recipeRatingValue = (JSONObj.recipes[idx]['rating']/100)*5;
+        let recipeRatingValue = (recipes[idx]['rating']/100)*5;
         recipeRating.innerHTML = recipeRatingValue.toFixed(2) + `<i class="fas fa-star"></i>`;
-        recipeCookTime.innerHTML = "Cook Time: " + JSONObj.recipes[idx]['cookTime'] + " mins";
+        recipeCookTime.innerHTML = "Cook Time: " + recipes[idx]['cookTime'] + " mins";
         recipeCookTime.className = "recipe-cook-time"
         newRatingCol.appendChild(recipeRating);
         newRatingCol.appendChild(recipeCookTime);
@@ -362,7 +540,7 @@
         newCardBody.appendChild(newRow);
         newCard.appendChild(newCardBody);
         newCard.onclick = function() {
-          let currentItem = JSONObj.recipes[idx];
+          let currentItem = recipes[idx];
           sessionStorage.setItem('currentItem', JSON.stringify(currentItem));
           location.href = "recipe.html";
         }
@@ -400,23 +578,7 @@
       xhttp.send();
     }
 
-    document.getElementById('search-again-btn').onclick = function() {
-      let selectedSearch = document.getElementById('search-select').value;
-      let params = selectedSearch.split("/")
-
-      let query = params[0].trim();
-      let numResults = params[1].trim();
-      let radius = params[2].trim();
-
-      sessionStorage.setItem("query", query);
-      sessionStorage.setItem("numResults", numResults);
-      sessionStorage.setItem("radius", radius);
-
-      searchAgain();
-    }
-
     function searchAgain() {
-
       location.reload();
     }
 

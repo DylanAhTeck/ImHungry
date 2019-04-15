@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+span:hover {
+	cursor: pointer;
+}
+
+body {
+	background-color: #466D9F;
+}

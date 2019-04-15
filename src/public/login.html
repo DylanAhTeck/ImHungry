@@ -95,21 +95,35 @@
       document.getElementById('register-btn').addEventListener('click', (e) => {
         e.preventDefault();
         location.href = "register.html";
-      })
+      });
 
       function handleFirebaseAuth(email, password) {
-        firebase.auth().signInWithEmailAndPassword(email, password)
-          .then((res) => {
-            console.log(res);
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+          .then(function() {
+            // Existing and future Auth states are now persisted in the current
+            // session only. Closing the window would clear any existing state even
+            // if a user forgets to sign out.
+            // ...
+            // New sign-in will be persisted with session persistence.
+            return firebase.auth().signInWithEmailAndPassword(email, password);
           })
-          .catch((error) => {
-        	  // Handle Errors here. Such as wrong password and stuff
-        	  var errorCode = error.code;
-        	  var errorMessage = error.message;
-            console.log("Error Code: " + errorCode);
-        	  document.getElementById('error-msg').innerHTML = errorMessage;
-        	  // ...
+          .catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
           });
+        // firebase.auth().signInWithEmailAndPassword(email, password)
+        //   .then((res) => {
+        //     console.log(res);
+        //   })
+        //   .catch((error) => {
+        // 	  // Handle Errors here. Such as wrong password and stuff
+        // 	  var errorCode = error.code;
+        // 	  var errorMessage = error.message;
+        //     console.log("Error Code: " + errorCode);
+        // 	  document.getElementById('error-msg').innerHTML = errorMessage;
+        // 	  // ...
+        //   });
         //If user has been signed in, send request to server
         firebase.auth().onAuthStateChanged(function(user) {
           if (user) { //User is signed in

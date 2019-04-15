@@ -1,6 +1,7 @@
 package hello;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ListManager {
 	private ArrayList<Result> toExplore = new ArrayList<Result>();
@@ -165,5 +166,65 @@ public class ListManager {
 		}
 		return itemToRemove;
 	}
+	
+	//move an item up one index
+	public boolean moveUpOne(String uniqueId, String originListName) {
+		if(originListName.contentEquals("favorites")) {
+			for(int i = 0; i < favorites.size(); i++) {
+				if(favorites.get(i).uniqueId.equals(uniqueId)){
+					if(i == 0) return false;
+					Collections.swap(favorites, i, i-1);
+					return true;
+				}
+			}
+		} else if(originListName.equals("toExplore")) {
+			for(int i = 0; i < toExplore.size(); i++) {
+				if(toExplore.get(i).uniqueId.equals(uniqueId)){
+					if(i == 0) return false;
+					Collections.swap(toExplore, i, i-1);
+					return true;
+				}
+			}
+		} else if(originListName.equals("doNotShow")) {
+			for(int i = 0; i < toExplore.size(); i++) {
+				if(doNotShow.get(i).uniqueId.equals(uniqueId)){
+					if(i == 0) return false;
+					Collections.swap(toExplore, i, i-1);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	//move an item up one index
+		public boolean moveDownOne(String uniqueId, String originListName) {
+			if(originListName.contentEquals("favorites")) {
+				for(int i = 0; i < favorites.size(); i++) {
+					if(favorites.get(i).uniqueId.equals(uniqueId)){
+						if(i == favorites.size()-1) return false;
+						Collections.swap(favorites, i, i+1);
+						return true;
+					}
+				}
+			} else if(originListName.equals("toExplore")) {
+				for(int i = 0; i < toExplore.size(); i++) {
+					if(toExplore.get(i).uniqueId.equals(uniqueId)){
+						if(i == toExplore.size()-1) return false;
+						Collections.swap(toExplore, i, i+1);
+						return true;
+					}
+				}
+			} else if(originListName.equals("doNotShow")) {
+				for(int i = 0; i < toExplore.size(); i++) {
+					if(doNotShow.get(i).uniqueId.equals(uniqueId)){
+						if(i == doNotShow.size()-1) return false;
+						Collections.swap(toExplore, i, i+1);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 
 }

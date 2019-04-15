@@ -26,9 +26,9 @@ Given(/^I am on the Register page$/) do
 	visit "#{Constants.file_path}login.html"
 end
 
-Then(/^The background color of the page should be white smoke$/) do
+Then(/^The background color of the page should be 466D9F$/) do
 	color = find('body').native.css_value('background-color')
-   	expect(color).to eq('rgba(245, 245, 245, 1)')
+   	expect(color).to eq('rgba(70, 109, 159, 1)')
 end
 
 Then(/^There should be a text box with a prompt of 'Enter Food'$/) do
@@ -73,6 +73,10 @@ When(/^I click on the 'Feed Me!' button$/) do
 	find('#feedMeButton').click
 end
 
+When(/^I click on the 'Feed Me!' button$/) do
+	find('#groceryListButton').click
+end
+
 Then(/^I should be on the Results Page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}results.html")
 end
@@ -80,6 +84,13 @@ end
 Then(/^I should be on the Search Page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}search.html")
 end
+
+Then(/^I should be on the Grocery List Page$/) do
+	expect(page).to have_current_path("#{Constants.file_path}grocery.html")
+end
+
+
+
 
 Then(/^The 'Feed Me!' button should be an image with non-black text$/) do
 	expect(find('#frownIcon')['class']).to have_content 'fas fa-frown'
@@ -100,6 +111,7 @@ end
 When(/^I perform a search for 'Burgers'$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 end
 
@@ -160,6 +172,7 @@ end
 When(/^I perform a search for 'Burgers' and input two search results$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "2")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 end
 
@@ -192,6 +205,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first restaurant result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -232,6 +246,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first recipe result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -539,4 +554,67 @@ end
 
 When(/^I click on the logout button$/) do
 	find('#logout-btn').click
+end
+
+And(/^I click on the Move Up button for the first item$/) do
+	find('.moveDown_0').click
+end
+
+Then(/^the first item should be in second from the top$/) do
+	expect('Wahlburgers').to appear_before('The Habit Burger Grill')
+end
+
+When(/^I click on the first ingredient$/) do
+	Capybara.default_max_wait_time = 10
+	expect(page).to have_css('.card')
+	find('#ingredient-0').click
+	$currentIngredientTitle = find('#ingredient-0')['innerText']
+end
+
+Then(/^I should see the ingredient on the Grocery List page$/) do
+	expect(page).to have_content $currentIngredientTitle
+end
+
+When(/^I perform a search for 'Curry' and input 10 search results$/) do
+	fill_in('query', with: "Curry")
+	fill_in('num-results', with: "10")
+	fill_in('radius', with: "5")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+
+end
+
+Then(/^I should see a pagination section$/) do
+	expect(page).to have_css('#pagination-container')
+	expect(page).to have_css('#pagination-list')
+end
+
+When(/^I click on the 'page 2' button$/) do
+	find('#page-1').click
+end
+
+Then(/^I should see new results loaded$/) do
+	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I click on the 'Prev' button$/) do
+	find('#prev-btn').click
+end
+
+Then(/^I should see previous results loaded$/) do
+	expect(page).to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I click on the 'Next' button$/) do
+	find('#next-btn').click
+end
+
+Then(/^I should see next results loaded$/) do
+	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I login with valid credentials$/) do
+	fill_in("email", with: "test_wayne@test.com")
+	fill_in("password", with: "password")
+	find('#login-btn').click
 end
