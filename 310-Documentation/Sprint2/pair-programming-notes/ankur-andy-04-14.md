@@ -18,4 +18,4 @@ https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint
 _Note: Since this was a code refactoring and not a new feature implementation, the existing tests will be used with minor changes. These tests will be updated when the new search api is incorporated into the existing search endpoint flow._
 
 ### Link to test/code commits
-https://github.com/weiyuyu/CSCI310-Project2/commit/eb6bf56da8193a2af08add4f800157d36b9740af
+https://github.com/weiyuyu/CSCI310-Project2/commit/abb4c16e0f2bb550bd755894993c318eaa9a30f2
