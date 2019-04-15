@@ -26,9 +26,9 @@ Given(/^I am on the Register page$/) do
 	visit "#{Constants.file_path}login.html"
 end
 
-Then(/^The background color of the page should be white smoke$/) do
+Then(/^The background color of the page should be 466D9F$/) do
 	color = find('body').native.css_value('background-color')
-   	expect(color).to eq('rgba(245, 245, 245, 1)')
+   	expect(color).to eq('rgba(70, 109, 159, 1)')
 end
 
 Then(/^There should be a text box with a prompt of 'Enter Food'$/) do
@@ -111,7 +111,7 @@ end
 When(/^I perform a search for 'Burgers'$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
-	fill_in('radius', with: "5000")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 end
 
@@ -172,7 +172,7 @@ end
 When(/^I perform a search for 'Burgers' and input two search results$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "2")
-	fill_in('radius', with: "5000")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 end
 
@@ -205,7 +205,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first restaurant result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
-	fill_in('radius', with: "5000")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -246,7 +246,7 @@ end
 When(/^I perform a search for 'Burgers' and click on the first recipe result$/) do
 	fill_in('query', with: "Burgers")
 	fill_in('num-results', with: "1")
-	fill_in('radius', with: "5000")
+	fill_in('radius', with: "5")
 	find('#feedMeButton').click
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
@@ -611,4 +611,10 @@ end
 
 Then(/^I should see next results loaded$/) do
 	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
+end
+
+When(/^I login with valid credentials$/) do
+	fill_in("email", with: "test_wayne@test.com")
+	fill_in("password", with: "password")
+	find('#login-btn').click
 end

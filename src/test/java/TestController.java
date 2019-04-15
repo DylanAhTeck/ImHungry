@@ -108,8 +108,8 @@ public class TestController {
 
 	// CAN'T CAUSE UNSUPPORTED ENCODING EXCEPTION BECAUSE PARAM WILL ALWAYS BE UTF-8
 	@Test
-	public void testCreateCollage() throws IOException {
-		ArrayList<String> thumbnailLinks = controller.createCollage("burger");
+	public void testFetchImageURLs() throws IOException {
+		ArrayList<String> thumbnailLinks = controller.fetchImageURLs("burger");
 		ArrayList<String> expectedLinks = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new FileReader("ExpectedLinks.txt"));
 		String line = reader.readLine();

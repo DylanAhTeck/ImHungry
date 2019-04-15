@@ -1,31 +1,34 @@
 package hello;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.awt.*;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+
 
 import javax.swing.text.Document;
 
 import java.util.Map;
 import java.util.HashMap;
 
+// for image manipulation
+import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
+import java.net.URL;
+
 
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.FieldValue;
 
+// import com.google.cloud.storage.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -58,11 +61,25 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.FirebaseApp;
 
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+
 import io.github.cdimascio.dotenv.Dotenv;
+
+// Imports the Google Cloud client library
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.BucketInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
+
+
+
 
 @RestController
 public class Controller {
@@ -71,7 +88,12 @@ public class Controller {
 	private final AtomicLong counter = new AtomicLong(0);
 	private ListManager listManager = new ListManager();
 	private Firestore db = null;
+
 	Dotenv dotenv = Dotenv.load();
+
+	private String imagePathBaseURL = "https://storage.googleapis.com/csci-310-images/";
+
+
 
 	// used for Google Images Searching
 	public final String GET_URL = "https://www.googleapis.com/customsearch/v1?";
@@ -126,7 +148,7 @@ public class Controller {
 //	@RequestMapping("/testCollage")
 //	@CrossOrigin
 //    public String handleTestCollage(@RequestParam(defaultValue="null") String searchQuery) {
-//        ArrayList<String> imageURLs = createCollage(searchQuery);
+//        ArrayList<String> imageURLs = fetchImageURLs(searchQuery);
 //        return imageURLs.toString();
 //    }
 //
@@ -257,19 +279,35 @@ public class Controller {
 		System.out.println("recipes retrieved");
 		// saved list of recipes returned from query in "cache"
 		mostRecentRecipes = recipes;
+		
+		// pull the images from the bing image search API 
+		ArrayList<ImageData> collageImageData = retrieveImageData(searchQuery, numResults);
+		ArrayList<String> collageURLs = new ArrayList<String>();
+		for (ImageData i : collageImageData) {
+			collageURLs.add(i.getThumbnailUrl());
+		}
 
-		//add search to database
-		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius);
+
+		// TODO: Generate the collage from the 10 image urls we retrieved...
+		String collagePublicURL = generateCollage(collageURLs);
+		System.out.println("public collage URL: " + collagePublicURL);
+		
+		// TODO: once collage has been created and its URL posted to Cloud Stoarge, set it here before adding the search to the db.
+		// TODO: note that right now we're putting in the first image url as the collageURL -- will need to change this to the
+		// actual collage URL when we have it
+		
+		// TODO: once generateCollage() is done, swap out collageURLs.get(0) with combinedCollageURL
+		PriorSearch recentQuery = new PriorSearch(searchQuery, numResults, radius, collagePublicURL);
 		addSearchToDB("priorSearchQueries", recentQuery);
-
-		ArrayList<String> collageURLs = createCollage(searchQuery);
-
-
+		
+		ArrayList<String> oldCollageURLs = fetchImageURLs(searchQuery);
+    
 		try {
 			// using readtree to set these as json nodes
 			((ObjectNode) rootNode).set("recipes", mapper.readTree(mapper.writeValueAsString(recipes)));
 			((ObjectNode) rootNode).set("restaurants", mapper.readTree(mapper.writeValueAsString(restaurants)));
 			((ObjectNode) rootNode).set("imageUrls", mapper.readTree(mapper.writeValueAsString(collageURLs)));
+			((ObjectNode) rootNode).set("collageURL", mapper.readTree(mapper.writeValueAsString(collagePublicURL)));
 
 			return mapper.writeValueAsString(rootNode);
 
@@ -653,6 +691,21 @@ public class Controller {
 					return false;
 				}
 		}
+  
+	@RequestMapping("/testRetrieveImages")
+	@CrossOrigin
+	public String handleTestRecipeRestaurant() {
+		ArrayList<ImageData> allImageData = retrieveImageData("burger", 10);
+		ArrayList<String> imageURLs = new ArrayList<String>();
+		if (allImageData.isEmpty()) {
+			return "";
+		}
+		
+		for (ImageData image : allImageData) {
+			imageURLs.add(image.thumbnailUrl);
+		}
+		return imageURLs.toString();
+	}
 
 	///////////////////////////////////////////////////
 	// 												 //
@@ -794,6 +847,155 @@ public class Controller {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+
+	private String generateCollage(ArrayList<String> imageURLs) {
+		System.out.println("attempting to generte collage");
+		/* load the images into memory
+		// take the middle 100 x 100 pixels of each tumbnail
+		// combine them in a 2x5 grid into a new image
+		// write the new image to firebase and get the URL
+		*/
+
+		// ArrayList<URL> actualCollageURLs = new ArrayList<URL>();
+		ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+		ArrayList<BufferedImage> croppedImages = new ArrayList<BufferedImage>();
+
+		URL url;
+		// This will limit the size of the crop that we can use...
+		int minWidth = 1000000;
+		int minHeight = 1000000;
+		
+		for (String imageURL : imageURLs) {
+
+			try {
+				// actualCollageURL.add(new URL(imageURL));
+				url = new URL(imageURL);
+				BufferedImage bi = ImageIO.read(url);
+				images.add(bi);
+
+				if (bi.getHeight() < minHeight) {
+					minHeight = bi.getHeight();
+				}
+				if (bi.getWidth() < minWidth) {
+					minWidth = bi.getWidth();
+				}
+			} catch (MalformedURLException e) {
+				System.out.println(e);
+			} catch (IOException e) {
+				System.out.println(e);
+			}
+
+		}
+
+
+
+
+		// create blob and upload to bucket
+
+		Random rand = new Random();
+	    int randInt = rand.nextInt(10000);
+	    String collageName = "collage-" + randInt;
+
+		// test to see if we're actually retrieving the images correctly...
+		int counter = 0;
+		// for (BufferedImage i : images) {
+		// 	String singleImageFileName = collageName + "-" + counter + ".jpg";
+		// 	File outFile = new File(singleImageFileName);
+		// 	counter++;
+		// 	try {
+		// 		ImageIO.write(i, "jpg", outFile);
+		// 	} catch (IOException e) {
+		// 		System.out.println(e);
+		// 	}
+
+
+		// }
+
+
+		// NOTE: Change these if you want the individual images to be smaller or larger
+		// square it off based off the min of 
+		int targetHeight = (minWidth <= minHeight) ? minWidth : minHeight;
+		int targetWidth = (minWidth <= minHeight) ? minWidth : minHeight;
+
+		for (BufferedImage image : images) {
+			BufferedImage crop = image.getSubimage(image.getWidth()/2 - targetWidth/2, image.getHeight()/2-targetHeight/2, targetWidth, targetHeight);
+			croppedImages.add(crop);
+		}
+
+		// for (BufferedImage i : croppedImages) {
+		// 	String singleImageFileName = collageName + "-" + counter + ".jpg";
+		// 	File outFile = new File(singleImageFileName);
+		// 	counter++;
+		// 	try {
+		// 		ImageIO.write(i, "jpg", outFile);
+		// 	} catch (IOException e) {
+		// 		System.out.println(e);
+		// 	}
+
+		// }
+
+		// loop through the images and write them to a new bufferedImage
+		BufferedImage collage = new BufferedImage(targetWidth * 5, targetHeight * 2, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g2 = collage.createGraphics();
+		g2.setPaint(Color.WHITE);
+		g2.fillRect(0, 0, targetWidth * 5, targetHeight * 2);
+		
+		int xStart = 0;
+		int yStart = 0;
+
+		// System.out.println("attempting to draw at: xStart=" + xStart + ", yStart=" + yStart);
+		// g2.drawImage(croppedImages.get(0), xStart, yStart, targetWidth, targetHeight, null);
+
+		for (BufferedImage croppedImage : croppedImages) {
+			System.out.println("attempting to draw at: xStart=" + xStart + ", yStart=" + yStart);
+			g2.drawImage(croppedImage, xStart, yStart, targetWidth, targetHeight, null);
+
+			xStart += targetWidth;
+			
+			// loop down to second row...
+			if (xStart == targetWidth * 5) {
+				yStart = targetHeight;
+				xStart = 0;
+			}
+		}
+
+		g2.dispose();
+
+
+		// // may not need to save to file before uploading...
+		String fileName = collageName + ".jpg";
+		// File outputFile = new File(fileName);
+	 //    try {
+		// 	ImageIO.write(collage, "jpg", outputFile);
+			System.out.println("check out the collage at " + fileName);
+		// } catch (IOException e) {
+		// 	System.out.println(e);
+		// }
+
+		// get bytes of collage
+
+		byte[] collageBytes = null;
+		try {
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			ImageIO.write(collage, "jpg", outStream);
+			outStream.flush();
+			collageBytes = outStream.toByteArray();
+			outStream.close();
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+
+		Storage storage = StorageOptions.getDefaultInstance().getService();
+		BlobId blobId = BlobId.of("csci-310-images", collageName + ".jpg");
+		String publicCollagePath = imagePathBaseURL + collageName + ".jpg";
+		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/jpeg").build();
+		Blob blob = storage.create(blobInfo, collageBytes);
+
+		
+		// return "http://www.calendarpedia.com/when-is/images/thanksgiving-day-turkey.jpg";
+		return publicCollagePath;
 	}
 
 	private ArrayList<Restaurant> parseJSON(JSONObject json, Integer numResults) throws NumberFormatException, MalformedURLException, IOException{
@@ -1034,8 +1236,84 @@ public class Controller {
 
 	}
 
+
+
+	public ArrayList<ImageData> retrieveImageData(String searchQuery, Integer numResults) {
+		ArrayList<ImageData> allImageData = new ArrayList<ImageData>();
+
+		if (searchQuery == null || searchQuery.equals("")) {
+			return allImageData;
+		}
+
+		try {
+			System.out.println("Retrieving image URLs...");
+			HttpResponse<com.mashape.unirest.http.JsonNode> response = Unirest.get("https://api.cognitive.microsoft.com/bing/v7.0/images/search")
+					.header("Ocp-Apim-Subscription-Key", "8aa5d7ae8be04b1ca0b6bab3df69cbd1")
+					.queryString("q", searchQuery)
+					.queryString("count", 10)
+					.asJson();
+
+			
+			String allDataString = response.getBody().toString();
+			// System.out.println(allDataString);
+
+			// convert to a usable jackson JSONNode
+			ObjectMapper mapper = new ObjectMapper();
+    		JsonNode root = mapper.readTree(allDataString);
+
+    		JsonNode resultsNode = root.path("value");
+
+    		for (JsonNode result : resultsNode) {
+    			
+    			ImageData image = new ImageData();
+    			
+				if (result.get("name") != null) {
+					image.setName(result.get("name").toString());
+				}
+
+				if (result.get("thumbnailUrl") != null) {
+					image.setThumbnailUrl(result.get("thumbnailUrl").toString().replaceAll("\"", ""));
+					// NOTE: for logging
+					System.out.println(result.get("thumbnailUrl").toString().replaceAll("\"", ""));
+				}
+
+				if (result.get("contentUrl") != null) {
+					image.setContentUrl(result.get("contentUrl").toString().replaceAll("\"", ""));
+				}
+
+				if (result.get("height") != null) {
+					image.setHeight(Integer.parseInt(result.get("height").toString()));
+				}
+
+				if (result.get("width") != null) {
+					image.setWidth(Integer.parseInt(result.get("width").toString()));
+				}
+
+				if (image.thumbnailUrl != null || image.contentUrl != null) {
+					allImageData.add(image);
+				}
+
+    		}
+    		return allImageData;
+
+		} catch (UnirestException e) {
+			System.out.println(e);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		return null;
+	}
+
+
+
+
+
+
+
+
+
 	// retrieves the first 10 results that match the search query from the Google Images API and return an ArrayList of URLs to them
-	public ArrayList<String> createCollage(String searchQuery) {
+	public ArrayList<String> fetchImageURLs(String searchQuery) {
 
 		String encodeQuery = "";
 		try {
