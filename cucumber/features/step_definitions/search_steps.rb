@@ -612,3 +612,9 @@ end
 Then(/^I should see next results loaded$/) do
 	expect(page).not_to have_content('Curry House Japanese Curry & Spaghetti')
 end
+
+When(/^I login with valid credentials$/) do
+	fill_in("email", with: "test_wayne@test.com")
+	fill_in("password", with: "password")
+	find('#login-btn').click
+end

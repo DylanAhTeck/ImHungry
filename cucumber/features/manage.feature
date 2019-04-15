@@ -2,22 +2,25 @@ Feature: Test the List Management page
 
 Background:
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 
 Scenario: S401 - Test that clicking on an item takes the user to the corresponding restaurant or recipe page
 
- 	Given I am on the Search page
-    When I perform a search for 'Burgers' and click on the first restaurant result
-    And I add the restaurant to the 'Favorites' list
-    And I click on the 'Back to Results' button
-    And I select the 'Favorites' option from the 'list management' dropdown box
-    And I click on the 'Manage List' button
-    And I click on the restaurant in the 'Favorites' list
- 		Then I should be on the Restaurant page for the item
+ 	Given I am on the Login page
+	And I login with valid credentials
+  When I perform a search for 'Burgers' and click on the first restaurant result
+  And I add the restaurant to the 'Favorites' list
+  And I click on the 'Back to Results' button
+  And I select the 'Favorites' option from the 'list management' dropdown box
+  And I click on the 'Manage List' button
+  And I click on the restaurant in the 'Favorites' list
+	Then I should be on the Restaurant page for the item
 
 Scenario: S402 - Test that an item may be removed from a list
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 	When I perform a search for 'Burgers' and click on the first recipe result
 	And I add the recipe to the 'To Explore' list
 	And I click on the 'Back to Results' button
@@ -28,7 +31,8 @@ Scenario: S402 - Test that an item may be removed from a list
 
 Scenario: S403 - Test that an item may be moved to another list
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 	When I perform a search for 'Burgers' and click on the first recipe result
 	And I add the recipe to the 'To Explore' list
 	And I click on the 'Back to Results' button
@@ -41,7 +45,8 @@ Scenario: S403 - Test that an item may be moved to another list
 
 Scenario: S404 - Test that the 'Results Page' button takes the user back to the Results Page
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 	When I perform a search for 'Burgers'
 	And I select the 'Favorites' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
@@ -50,7 +55,8 @@ Scenario: S404 - Test that the 'Results Page' button takes the user back to the 
 
 Scenario: S405 - Test that the 'Return to Search Page' button takes the user back to the Search Page
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 	When I perform a search for 'Burgers'
 	And I select the 'Favorites' option from the 'list management' dropdown box
 	And I click on the 'Manage List' button
@@ -96,7 +102,8 @@ Scenario: S411 - Test that the 'Manage List' button does not cause a transition 
 
 Scenario: S412 - Test that rows in the lists alternate their background color between two different shades of gray
 
-	Given I am on the Search page
+	Given I am on the Login page
+	And I login with valid credentials
 	When I perform a search for 'Burgers' and input two search results
 	And I click on the first restaurant result
 	And I add the restaurant to the 'To Explore' list
