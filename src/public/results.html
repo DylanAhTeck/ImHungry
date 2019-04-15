@@ -246,7 +246,7 @@
       let radius = sessionStorage.getItem("radius");
       let parameters = "searchQuery=" + query + "&numResults=" + numResults  +  "&radius=" + radius;
       let xhttp = new XMLHttpRequest();
-      xhttp.open('GET', "http://localhost:8080/search?" + parameters, true);
+      xhttp.open('GET', "https://csci310-project2.herokuapp.com/search?" + parameters, true);
       xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -284,36 +284,36 @@
           priorSearchContainer.style.width = 520*(priorSearchData.length+1) + "px";
 
           // Card for current search
-          let currentCollageURL = JSONObj.collageURL;
-          let currentQuery = sessionStorage.getItem('query');
-          let currentNumResults = sessionStorage.getItem("numResults");
-          let currentRadius = sessionStorage.getItem("radius");
-
-          let currentCard = document.createElement('div');
-          currentCard.className = "card prior-search-card";
-          let currentCardBody = document.createElement('div');
-          currentCardBody.className = "card-body";
-          let currentCardText = document.createElement('p');
-          currentCardText.innerHTML = currentQuery;
-          currentCardText.className = "card-text";
-          currentCardBody.appendChild(currentCardText);
-          let currentImg = document.createElement('img');
-          currentImg.src = currentCollageURL;
-          currentImg.style.width = "100%";
-          currentImg.style.height = "auto";
-          currentImg.style.position = "absolute";
-          currentImg.style.opacity = 0.5;
-          currentCard.appendChild(currentImg);
-
-          currentCard.appendChild(currentCardBody);
-          currentCard.onclick = function() {
-            sessionStorage.setItem("query", currentQuery);
-            sessionStorage.setItem("numResults", currentNumResults);
-            sessionStorage.setItem("radius", currentRadius);
-            searchAgain();
-          }
-
-          priorSearchContainer.appendChild(currentCard);
+          // let currentCollageURL = JSONObj.collageURL;
+          // let currentQuery = sessionStorage.getItem('query');
+          // let currentNumResults = sessionStorage.getItem("numResults");
+          // let currentRadius = sessionStorage.getItem("radius");
+          //
+          // let currentCard = document.createElement('div');
+          // currentCard.className = "card prior-search-card";
+          // let currentCardBody = document.createElement('div');
+          // currentCardBody.className = "card-body";
+          // let currentCardText = document.createElement('p');
+          // currentCardText.innerHTML = currentQuery;
+          // currentCardText.className = "card-text";
+          // currentCardBody.appendChild(currentCardText);
+          // let currentImg = document.createElement('img');
+          // currentImg.src = currentCollageURL;
+          // currentImg.style.width = "100%";
+          // currentImg.style.height = "auto";
+          // currentImg.style.position = "absolute";
+          // currentImg.style.opacity = 0.5;
+          // currentCard.appendChild(currentImg);
+          //
+          // currentCard.appendChild(currentCardBody);
+          // currentCard.onclick = function() {
+          //   sessionStorage.setItem("query", currentQuery);
+          //   sessionStorage.setItem("numResults", currentNumResults);
+          //   sessionStorage.setItem("radius", currentRadius);
+          //   searchAgain();
+          // }
+          //
+          // priorSearchContainer.appendChild(currentCard);
 
 
           // Cards for previous searches
@@ -568,7 +568,7 @@
       // Send UID to backend server
       let xhttp = new XMLHttpRequest();
       let params = "userUID=" + sessionStorage.getItem("userUID");
-      xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+      xhttp.open("GET", "https://csci310-project2.herokuapp.com/signUserOut?" + params, true);
       xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {

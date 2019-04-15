@@ -151,34 +151,35 @@
           listElement.className = "mb-2";
           listElement.appendChild(document.createTextNode(ingredients[i]));
           let addButton = document.createElement("button");
-          addButton.className= "btn btn-primary";
+          addButton.className = "btn btn-primary";
           addButton.style.padding = "1px 6px";
           addButton.style.borderRadius = "50%";
           addButton.style.marginLeft = "5px";
           let addIcon = document.createElement("i");
-          addIcon.className="fas fa-plus";
+          addIcon.className = "fas fa-plus";
           addButton.appendChild(addIcon);
           addButton.onclick = function() {
-              let xhttp = new XMLHttpRequest();
-              let parameters =
-                "ingredient=" + ingredients[i];
-              xhttp.open(
-                "GET",
-                "http://localhost:8080/addIngredient?" + parameters,
-                true
-              );
-              xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-              xhttp.onreadystatechange = function() {
-                if (xhttp.readyState == 4 && xhttp.status == 200) {
-                  if (xhttp.responseText) {
-                    console.log(this.responseText);
-                    if(this.responseText == "true") alert("Added ingredient to grocery list!")
-                    //location.reload();
-                  }
+            let xhttp = new XMLHttpRequest();
+            let parameters = "ingredient=" + ingredients[i];
+            xhttp.open(
+              "GET",
+              "https://csci310-project2.herokuapp.com/addIngredient?" +
+                parameters,
+              true
+            );
+            xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+            xhttp.onreadystatechange = function() {
+              if (xhttp.readyState == 4 && xhttp.status == 200) {
+                if (xhttp.responseText) {
+                  console.log(this.responseText);
+                  if (this.responseText == "true")
+                    alert("Added ingredient to grocery list!");
+                  //location.reload();
                 }
-              };
-              xhttp.send();
+              }
             };
+            xhttp.send();
+          };
           listElement.appendChild(addButton);
           firstIngredientsList.appendChild(listElement);
         }
@@ -191,34 +192,35 @@
           listElement.className = "mb-2";
           listElement.appendChild(document.createTextNode(ingredients[i]));
           let addButton = document.createElement("button");
-          addButton.className= "btn btn-primary";
+          addButton.className = "btn btn-primary";
           addButton.style.padding = "1px 6px";
           addButton.style.borderRadius = "50%";
           addButton.style.marginLeft = "5px";
           let addIcon = document.createElement("i");
-          addIcon.className="fas fa-plus";
+          addIcon.className = "fas fa-plus";
           addButton.appendChild(addIcon);
           addButton.onclick = function() {
-              let xhttp = new XMLHttpRequest();
-              let parameters =
-                "ingredient=" + ingredients[i];
-              xhttp.open(
-                "GET",
-                "http://localhost:8080/addIngredient?" + parameters,
-                true
-              );
-              xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-              xhttp.onreadystatechange = function() {
-                if (xhttp.readyState == 4 && xhttp.status == 200) {
-                  if (xhttp.responseText) {
-                    console.log(this.responseText);
-                    if(this.responseText == "true") alert("Added ingredient to grocery list!")
-                    //location.reload();
-                  }
+            let xhttp = new XMLHttpRequest();
+            let parameters = "ingredient=" + ingredients[i];
+            xhttp.open(
+              "GET",
+              "https://csci310-project2.herokuapp.com/addIngredient?" +
+                parameters,
+              true
+            );
+            xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+            xhttp.onreadystatechange = function() {
+              if (xhttp.readyState == 4 && xhttp.status == 200) {
+                if (xhttp.responseText) {
+                  console.log(this.responseText);
+                  if (this.responseText == "true")
+                    alert("Added ingredient to grocery list!");
+                  //location.reload();
                 }
-              };
-              xhttp.send();
+              }
             };
+            xhttp.send();
+          };
           listElement.appendChild(addButton);
           secondIngredientsList.appendChild(listElement);
         }
@@ -243,7 +245,7 @@
         var xhttp = new XMLHttpRequest();
         xhttp.open(
           "GET",
-          "http://localhost:8080/addToList?" + parameters,
+          "https://csci310-project2.herokuapp.com/addToList?" + parameters,
           true
         );
         xhttp.onreadystatechange = function() {
@@ -273,7 +275,11 @@
         // Send UID to backend server
         let xhttp = new XMLHttpRequest();
         let params = "userUID=" + sessionStorage.getItem("userUID");
-        xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+        xhttp.open(
+          "GET",
+          "https://csci310-project2.herokuapp.com/signUserOut?" + params,
+          true
+        );
         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
         xhttp.onreadystatechange = function() {
           if (xhttp.readyState == 4 && xhttp.status == 200) {
