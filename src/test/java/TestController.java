@@ -63,7 +63,7 @@ public class TestController {
 		controller.retrieveRestaurants("null", numResults, 5);
 		controller.retrieveRestaurants(query, 1, 5);
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
-		assertEquals(16, result.size());
+		assertEquals(18, result.size());
 	}
 
 	@Test
