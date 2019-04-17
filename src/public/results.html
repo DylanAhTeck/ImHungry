@@ -567,7 +567,7 @@
     function logoutUser() {
       // Send UID to backend server
       let xhttp = new XMLHttpRequest();
-      let params = "userUID=" + sessionStorage.getItem("userUID");
+      let params = "userUID=" + sessionStorage.getItem('userUID');
       xhttp.open("GET", "https://csci310-project2.herokuapp.com/signUserOut?" + params, true);
       xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhttp.onreadystatechange = function() {
