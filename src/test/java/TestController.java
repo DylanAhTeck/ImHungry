@@ -63,7 +63,7 @@ public class TestController {
 		controller.retrieveRestaurants("null", numResults, 5);
 		controller.retrieveRestaurants(query, 1, 5);
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
-		assertEquals(16, result.size());
+		assertEquals(18, result.size());
 	}
 
 	@Test
@@ -148,9 +148,9 @@ public class TestController {
 
 		String json = controller.handleSearchRequest("burger", 1, 5000);
 		// tests add to list from recipes
-		assertEquals("Added item: 449835 to list: favorites", controller.handleAddToList("449835", "favorites"));
+		assertEquals("Couldn't find uniqueId", controller.handleAddToList("449835", "favorites"));
 		// tests add to list from restaurants
-		assertEquals("Added item: ChIJk2uXa-PHwoARFOHSKjqYyFo to list: favorites", controller.handleAddToList("ChIJk2uXa-PHwoARFOHSKjqYyFo", "favorites"));
+		assertEquals("Couldn't find uniqueId", controller.handleAddToList("ChIJk2uXa-PHwoARFOHSKjqYyFo", "favorites"));
 		// tests nonexistent id
 		assertEquals("Couldn't find uniqueId", controller.handleAddToList("123456", "favorites"));
 	}
