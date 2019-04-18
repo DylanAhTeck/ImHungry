@@ -325,7 +325,7 @@
             let collageURL = json.collageURL;
 
             let newCard = document.createElement('div');
-            newCard.className = "card prior-search-card";
+            newCard.className = "card prior-search-card query-" + query.replace(/\s+/g, '') + " numResults-" + numResults + " radius-" + radius;
             let newCardBody = document.createElement('div');
             newCardBody.className = "card-body";
             let newCardText = document.createElement('p');
@@ -334,6 +334,7 @@
             newCardBody.appendChild(newCardText);
             if(collageURL) {
               let img = document.createElement('img');
+              img.className = "collage-img";
               img.src = collageURL;
               img.style.width = "100%";
               img.style.height = "auto";
