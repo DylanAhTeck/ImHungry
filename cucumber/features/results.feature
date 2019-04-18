@@ -254,3 +254,10 @@ Scenario: S131 - Test that clicking on the Next button correctly shows the previ
 
 	When I click on the 'Next' button
 	Then I should see next results loaded
+
+Scenario: S132 - Test that performing a search correctly generates a card in prior searches
+
+	Given I amon the Login 'page'
+	When I login with valid credentials
+	And I perform a search for 'Pizza' and input 3 search results
+	Then I should see a card for 'Pizza' in prior searches

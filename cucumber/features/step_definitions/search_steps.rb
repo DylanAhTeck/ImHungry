@@ -618,3 +618,17 @@ When(/^I login with valid credentials$/) do
 	fill_in("password", with: "password")
 	find('#login-btn').click
 end
+
+When(/^I perform a search for 'Pizza' and input 3 search results$/) do
+	fill_in('query', with: "Pizza")
+	fill_in('num-results', with: "3")
+	fill_in('radius', with: "5")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+end
+
+Then(/^I should see a card for 'Pizza' in prior searches$/) do
+	expect(page).to have_css('.query-Pizza')
+	expect(page).to have_css('.numResults-3')
+	expect(page).to have_css('.radius-5')
+end
