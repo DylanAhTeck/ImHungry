@@ -71,33 +71,31 @@
     let currentIndex = 0;
 
     document.addEventListener("DOMContentLoaded", function() {
-    	firebase.auth().onAuthStateChanged(function(user) {
-       	  if (user) { //User is signed in
-       		let xhttp = new XMLHttpRequest();
-            let parameters =
-              "id=" +
-              user.uid;
-            console.log(parameters);
-            xhttp.open(
-              "GET",
-              "http://localhost:8080/loginUser?" + parameters,
-              true
-            );
-            xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-            xhttp.onreadystatechange = function() {
-              if (xhttp.readyState == 4 && xhttp.status == 200) {
-                if (xhttp.responseText) {
-                  console.log(this.responseText);
-                  
-                }
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          //User is signed in
+          let xhttp = new XMLHttpRequest();
+          let parameters = "id=" + user.uid;
+          console.log(parameters);
+          xhttp.open(
+            "GET",
+            "https://csci310-project2.herokuapp.com/loginUser?" + parameters,
+            true
+          );
+          xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+          xhttp.onreadystatechange = function() {
+            if (xhttp.readyState == 4 && xhttp.status == 200) {
+              if (xhttp.responseText) {
+                console.log(this.responseText);
               }
-            };
-            xhttp.send();
-       	  } else {
-       	    // No user is signed in.
-       		location.href = "login.html";
-       	  }
-       	});
+            }
+          };
+          xhttp.send();
+        } else {
+          // No user is signed in.
+          location.href = "login.html";
+        }
+      });
       let listName = sessionStorage.getItem("listName");
       document.getElementById("list-name-title").innerHTML = listName;
       retrieveList();
@@ -119,7 +117,11 @@
         sessionStorage.getItem("listName")
       );
       let parameters = "listName=" + listNameParameter;
-      xhttp.open("GET", "http://localhost:8080/getList?" + parameters, true);
+      xhttp.open(
+        "GET",
+        "https://csci310-project2.herokuapp.com/getList?" + parameters,
+        true
+      );
       xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -178,7 +180,7 @@
         console.log(parameters);
         xhttp.open(
           "GET",
-          "http://localhost:8080/removeFromList?" + parameters,
+          "https://csci310-project2.herokuapp.com/removeFromList?" + parameters,
           true
         );
         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -214,7 +216,8 @@
             moveDestParam;
           xhttp.open(
             "GET",
-            "http://localhost:8080/moveBetweenLists?" + parameters,
+            "https://csci310-project2.herokuapp.com/moveBetweenLists?" +
+              parameters,
             true
           );
           xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -318,67 +321,68 @@
       /*
        * Moving an item up or down
        */
-       let newMoveIdxCol = document.createElement("div");
-       newMoveIdxCol.className = "col-1 icon-container";
-       //Up Arrow
-       let newMoveUpIcon = document.createElement("i");
-       newMoveUpIcon.className =
-         "fas fa-chevron-up fa-2x moveUp_" + currentIndex;
-       newMoveUpIcon.id = "moveUp-" + JSONObj[listNameParameter][idx].uniqueId;
-       newMoveUpIcon.onclick = function() {
-         let xhttp = new XMLHttpRequest();
-         let parameters =
-           "uniqueId=" +
-           JSONObj[listNameParameter][idx].uniqueId +
-           "&listName=" +
-           listNameParameter;
-         xhttp.open(
-           "GET",
-           "http://localhost:8080/moveUpOne?" + parameters,
-           true
-         );
-         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-         xhttp.onreadystatechange = function() {
-           if (xhttp.readyState == 4 && xhttp.status == 200) {
-             if (xhttp.responseText) {
-               console.log(this.responseText);
-               location.reload();
-             }
-           }
-         };
-         xhttp.send();
-       };
-       newMoveIdxCol.appendChild(newMoveUpIcon);
+      let newMoveIdxCol = document.createElement("div");
+      newMoveIdxCol.className = "col-1 icon-container";
+      //Up Arrow
+      let newMoveUpIcon = document.createElement("i");
+      newMoveUpIcon.className =
+        "fas fa-chevron-up fa-2x moveUp_" + currentIndex;
+      newMoveUpIcon.id = "moveUp-" + JSONObj[listNameParameter][idx].uniqueId;
+      newMoveUpIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "uniqueId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&listName=" +
+          listNameParameter;
+        xhttp.open(
+          "GET",
+          "https://csci310-project2.herokuapp.com/moveUpOne?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newMoveIdxCol.appendChild(newMoveUpIcon);
       //Down Arrow
-       let newMoveDownIcon = document.createElement("i");
-       newMoveDownIcon.className =
-         "fas fa-chevron-down fa-2x moveDown_" + currentIndex;
-       newMoveDownIcon.id = "moveDown-" + JSONObj[listNameParameter][idx].uniqueId;
-       newMoveDownIcon.onclick = function() {
-         let xhttp = new XMLHttpRequest();
-         let parameters =
-           "uniqueId=" +
-           JSONObj[listNameParameter][idx].uniqueId +
-           "&listName=" +
-           listNameParameter;
-         xhttp.open(
-           "GET",
-           "http://localhost:8080/moveDownOne?" + parameters,
-           true
-         );
-         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-         xhttp.onreadystatechange = function() {
-           if (xhttp.readyState == 4 && xhttp.status == 200) {
-             if (xhttp.responseText) {
-               console.log(this.responseText);
-               location.reload();
-             }
-           }
-         };
-         xhttp.send();
-       };
-       newMoveIdxCol.appendChild(newMoveDownIcon);
-       
+      let newMoveDownIcon = document.createElement("i");
+      newMoveDownIcon.className =
+        "fas fa-chevron-down fa-2x moveDown_" + currentIndex;
+      newMoveDownIcon.id =
+        "moveDown-" + JSONObj[listNameParameter][idx].uniqueId;
+      newMoveDownIcon.onclick = function() {
+        let xhttp = new XMLHttpRequest();
+        let parameters =
+          "uniqueId=" +
+          JSONObj[listNameParameter][idx].uniqueId +
+          "&listName=" +
+          listNameParameter;
+        xhttp.open(
+          "GET",
+          "https://csci310-project2.herokuapp.com/moveDownOne?" + parameters,
+          true
+        );
+        xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+            if (xhttp.responseText) {
+              console.log(this.responseText);
+              location.reload();
+            }
+          }
+        };
+        xhttp.send();
+      };
+      newMoveIdxCol.appendChild(newMoveDownIcon);
+
       newCardCol.appendChild(newCard);
       newRow.appendChild(newCardCol);
       newRow.appendChild(newRemoveCol);
@@ -409,7 +413,7 @@
           listNameParameter;
         xhttp.open(
           "GET",
-          "http://localhost:8080/removeFromList?" + parameters,
+          "https://csci310-project2.herokuapp.com/removeFromList?" + parameters,
           true
         );
         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -445,7 +449,8 @@
             moveDestParam; // Change later
           xhttp.open(
             "GET",
-            "http://localhost:8080/moveBetweenLists?" + parameters,
+            "https://csci310-project2.herokuapp.com/moveBetweenLists?" +
+              parameters,
             true
           );
           xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -532,11 +537,11 @@
         sessionStorage.setItem("currentItem", JSON.stringify(currentItem));
         location.href = "recipe.html";
       };
-      
+
       /*
-      * Moving an item up or down
-      */
-      
+       * Moving an item up or down
+       */
+
       let newMoveIdxCol = document.createElement("div");
       newMoveIdxCol.className = "col-1 icon-container";
       //Up Arrow
@@ -553,7 +558,7 @@
           listNameParameter;
         xhttp.open(
           "GET",
-          "http://localhost:8080/moveUpOne?" + parameters,
+          "https://csci310-project2.herokuapp.com/moveUpOne?" + parameters,
           true
         );
         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -568,11 +573,12 @@
         xhttp.send();
       };
       newMoveIdxCol.appendChild(newMoveUpIcon);
-    //Down Arrow
+      //Down Arrow
       let newMoveDownIcon = document.createElement("i");
       newMoveDownIcon.className =
         "fas fa-chevron-down fa-2x moveDown_" + currentIndex;
-      newMoveDownIcon.id = "moveDown-" + JSONObj[listNameParameter][idx].uniqueId;
+      newMoveDownIcon.id =
+        "moveDown-" + JSONObj[listNameParameter][idx].uniqueId;
       newMoveDownIcon.onclick = function() {
         let xhttp = new XMLHttpRequest();
         let parameters =
@@ -582,7 +588,7 @@
           listNameParameter;
         xhttp.open(
           "GET",
-          "http://localhost:8080/moveDownOne?" + parameters,
+          "https://csci310-project2.herokuapp.com/moveDownOne?" + parameters,
           true
         );
         xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
@@ -623,7 +629,11 @@
       // Send UID to backend server
       let xhttp = new XMLHttpRequest();
       let params = "userUID=" + sessionStorage.getItem("userUID");
-      xhttp.open("GET", "http://localhost:8080/signUserOut?" + params, true);
+      xhttp.open(
+        "GET",
+        "https://csci310-project2.herokuapp.com/signUserOut?" + params,
+        true
+      );
       xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {

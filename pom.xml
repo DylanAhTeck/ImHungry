@@ -99,6 +99,11 @@
     <groupId>org.springframework</groupId>
     <artifactId>spring-test</artifactId>
     </dependency>
+    <dependency>
+	    <groupId>io.github.cdimascio</groupId>
+	    <artifactId>java-dotenv</artifactId>
+	    <version>5.0.1</version>
+	</dependency>
     
     	<!--  Firebase  -->
     	<dependency>
@@ -117,6 +122,11 @@
             <exclusion>
                 <groupId>io.opencensus</groupId>
                 <artifactId>opencensus-api</artifactId>
+            </exclusion>
+            <exclusion>
+                <!-- NOTE: Ignored gax to resolve conflict with older version in Firestore - might need to revisit this -->
+                <groupId>com.google.api</groupId>
+                <artifactId>gax</artifactId>
             </exclusion>
           </exclusions>
         </dependency>
