@@ -97,6 +97,7 @@
     }
 
     let currentPage = 1;
+    let totalPages;
 
     let activeButton = null;
 
@@ -131,12 +132,24 @@
     }
 
     function setupPagination() {
+    	console.log("CURRENT PAGE: " + currentPage);
     	let numResults = sessionStorage.getItem('numResults');
     	let numPages = Math.ceil(numResults/5);
+    	totalPages = numPages;
     	var numArray = [];
-    	for(var i = 1; i <= numPages; i++) {
+    	let startNumber = currentPage - 2;
+    	if(startNumber < 1) startNumber = 1;
+    	let lastNumber = startNumber + 4;
+    	if(lastNumber > numPages) {
+    		lastNumber = numPages;
+    		startNumber = lastNumber - 4;
+    	}
+    
+    	console.log(startNumber + " " + lastNumber)
+    	for(var i = startNumber; i <= lastNumber; i++) {
     		numArray.push(i);
     	}
+    	document.getElementById("pagination-list").innerHTML = "";
     	let paginationList = document.getElementById("pagination-list");
     	var leftArrow = document.createElement("li");
     	leftArrow.className = "page-item";
@@ -169,18 +182,20 @@
     			}
     			loadRestaurants(currentPage);
     			loadRecipes(currentPage);
+    			setupPagination();
     		}
     	}
     	paginationList.appendChild(leftArrow);
 
     	for(let i in numArray){
+    		console.log(numArray[i])
     		var listItem = document.createElement("li");
     		listItem.className = "page-item";
-    		if(i == 0) {
+    		if(numArray[i] == currentPage) {
     			listItem.classList.add("active");
     			activeButton = listItem;
     		}
-    		listItem.id = "page-" + i;
+    		listItem.id = "page-" + numArray[i];
     		var link = document.createElement("a");
     		link.className = "page-link";
     		link.appendChild(document.createTextNode(numArray[i]));
@@ -198,6 +213,7 @@
     			loadRestaurants(numArray[i]);
     			loadRecipes(numArray[i]);
     			currentPage = numArray[i];
+    			setupPagination();
 
     		}
     		paginationList.appendChild(listItem);
@@ -234,6 +250,7 @@
     			}
     			loadRestaurants(currentPage);
     			loadRecipes(currentPage);
+    			setupPagination();
     		}
     	}
     	paginationList.appendChild(rightArrow);

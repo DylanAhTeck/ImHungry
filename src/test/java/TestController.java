@@ -19,6 +19,8 @@ import org.junit.runners.MethodSorters;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import hello.Controller;
@@ -502,6 +504,30 @@ public class TestController {
 		controller.addIngredient("banana");
 		assertEquals(controller.removeIngredient(""), false);
 		assertEquals(controller.removeIngredient("banana"), true);
+	}
+	
+	@Test
+	public void testNumberOfPages() throws IOException {
+		String json = controller.handleSearchRequest("coffee", 5, 5);
+		JsonObject object = new Gson().fromJson(json, JsonObject.class);
+		JsonArray jsonArray = object.getAsJsonArray("recipes");
+		System.out.println(jsonArray);
+		ArrayList<Result> results = new Gson().fromJson(jsonArray, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("1.0", Double.toString(Math.ceil(results.size()/5.0)));
+		
+		String json2 = controller.handleSearchRequest("coffee", 6, 5);
+		JsonObject object2 = new Gson().fromJson(json2, JsonObject.class);
+		JsonArray jsonArray2 = object2.getAsJsonArray("recipes");
+		System.out.println(jsonArray2);
+		ArrayList<Result> results2 = new Gson().fromJson(jsonArray2, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("2.0", Double.toString(Math.ceil(results2.size()/5.0)));
+		
+		String json3 = controller.handleSearchRequest("coffee", 21, 5);
+		JsonObject object3 = new Gson().fromJson(json3, JsonObject.class);
+		JsonArray jsonArray3 = object3.getAsJsonArray("recipes");
+		System.out.println(jsonArray3);
+		ArrayList<Result> results3 = new Gson().fromJson(jsonArray3, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("5.0", Double.toString(Math.ceil(results3.size()/5.0)));
 	}
 
 
