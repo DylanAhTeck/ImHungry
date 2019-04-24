@@ -42,5 +42,8 @@ body {
 	display: inline-block; 
     width: 15%;  
     /* border:1px solid;  */
-    vertical-align:top
+	vertical-align:top;
+	word-wrap: break-word;
+
+
 }
