@@ -99,12 +99,36 @@ public class TestController {
 
 		controller.handleSearchRequest("burger", 1, 5);
 		// tests valid handleGetResult() call
-		String expectedJson = "{\"uniqueId\":\"219957\",\"type\":\"Recipe\",\"name\":\"Carrot & sesame burgers\",\"rating\":98.0,\"prepTime\":30.0,\"cookTime\":20.0,\"ingredients\":[\"750g carrots, peeled and grated\",\"410g can chickpeas, drained and rinsed\",\"1 small onion, roughly chopped\",\"2 tbsp tahini paste, plus 1 tsp to serve\",\"1 tsp ground cumin\",\"1 egg\",\"3 tbsp olive oil\",\"100g wholemeal breadcrumbs\",\"zest 1 lemon, plus 1 tsp juice\",\"150ml pot natural yogurt\",\"6 buns, rocket leaves, sliced red onion, sliced avocado and chilli sauce, to serve\",\"3 tbsp sesame seeds\"],\"instructions\":[\"Put a third of the grated carrot in a food processor with the chickpeas, onion, 2 tbsp tahini, cumin and egg. Whizz to a thick paste, then scrape into a large bowl.\",\"Heat 1 tbsp oil in your largest frying pan, tip in the remaining carrot and cook for 8-10 mins, stirring until the carrot is softened  it will become more golden as it is cooked.\",\"Add this cooked carrot to the whizzed paste with the breadcrumbs, lemon zest and sesame seeds.\",\"Add seasoning, then mix together well with your hands.\",\"Divide the mixture into 6, then using wet hands shape into burgers. Cover and chill until serving.\",\"Mix the yogurt with the remaining tahini and lemon juice, then chill.\",\"Fire up the barbecue, or heat a non-stick frying pan and brush the burgers with the remaining oil. Cook the burgers for 5 mins on each side, until golden and crisp. Meanwhile warm or toast the buns (or sit them on the barbecue alongside the burgers). When the burgers are ready, spread each bun with some of the lemony sesame yogurt, add the avocado, top with the burger, onion and rocket. Finish with a drizzle of chilli sauce.\"],\"sourceURL\":\"https://www.bbcgoodfood.com/recipes/11011/carrot-and-sesame-burgers\",\"imageURL\":\"https://spoonacular.com/recipeImages/Carrot---sesame-burgers-219957.jpg\",\"isFavorite\":false}";
+	
 		String actualJson = controller.handleGetResult("219957");
 		System.out.println(expectedJson);
 		System.out.println(actualJson);
 		assertEquals(expectedJson, actualJson);
 	}
+
+
+	@Test
+	public void testHandleSearchRadius() {
+		// test for invalid parameters
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
+
+		String resultFiveFiveFive = controller.handleSearchRequest("burger", 5, 5, 5);
+		BufferedReader reader = new BufferedReader(new FileReader("burger-5-5-5-json.txt"));
+		String line = reader.readLine();
+		assertEquals(line, resultFiveFiveFive);
+
+
+		String resultFiveFiveOne = controller.handleSearchRequest("burger", 5, 5, 1);
+		BufferedReader reader = new BufferedReader(new FileReader("burger-5-5-1-json.txt"));
+		String line = reader.readLine();
+		assertEquals(line, resultFiveFiveOne);
+	}
+
 
 	@Test
 	public void testHandleSearchRequest() {
