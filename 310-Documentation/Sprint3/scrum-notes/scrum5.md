@@ -1,12 +1,12 @@
 # Scrum #4
 
 ## Logistics
-- Date: 23nd April 2019
-- Time: 10:30am
-- Location: JFF 410
-- Participants: Ankur, Andrew, Dylan, Chris
-- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/sprint3-scrum4.jpg
-- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/tasks-sprint3-post-scrum4.png
+- Date: 25th April 2019
+- Time: 8:00pm
+- Location: JFF 319
+- Participants: Andrew, Wayne, Dylan, Chris
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/sprint3-scrum5.jpg
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/tasks-sprint3-post-scrum5.png
 
 ## Agile Questions Notes:
 
