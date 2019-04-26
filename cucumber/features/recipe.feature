@@ -4,6 +4,7 @@ Background:
   Given I am on the Login page
   And I login with valid credentials
 
+
 Scenario: S301 - Test that page displays the title of the recipe
 
   Given I am on the Login page
@@ -83,7 +84,6 @@ Scenario: 310 = Test that grocery list item can be deleted
   Given I am on the Login page
   And I login with valid credentials
   When I perform a search for 'Burgers'
-  And I click on the first recipe result for 'Burgers'
   And I click on the first recipe result for 'Burgers'
   And I click on the first add ingredient button
   When I click on the grocery page button
