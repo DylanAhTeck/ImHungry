@@ -7,7 +7,7 @@ Background:
 Scenario: S101 - Test that the collage is displayed
 
 	Given I am on the Login page
-And I login with valid credentials
+	And I login with valid credentials
 	When I perform a search for 'Burgers'
 	Then I should see a collage of photos of 'Burgers'
 
@@ -247,10 +247,41 @@ And I login with valid credentials
 
 Scenario: S130 - Test that clicking on the Prev button correctly shows the previous results
 
-	When I click on the 'Prev' button
+	Given I am on the Login page
+	And I login with valid credentials
+	And I perform a search for 'Curry' and input 10 search results
+	And I click on the 'page 2' button
+	And I click on the 'Prev' button
 	Then I should see previous results loaded
 
 Scenario: S131 - Test that clicking on the Next button correctly shows the previous results
 
-	When I click on the 'Next' button
+	Given I am on the Login page
+	And I login with valid credentials
+	And I perform a search for 'Curry' and input 10 search results
+	And I click on the 'Next' button
 	Then I should see next results loaded
+
+Scenario: S132 - Test that performing a search correctly generates a card in prior searches
+
+	Given I am on the Login page
+	When I login with valid credentials
+	And I perform a search for 'Pizza' and input 3 search results with a radius of 5 miles
+	Then I should see a card for 'Pizza' in prior searches
+
+Scenario: S133 - Test that the generated card persists through another search
+
+	Given I am on the Login page
+	When I login with valid credentials
+	And I perform a search for 'Burrito' and input 4 search results with a radius of 3 miles
+	Then I should see a card for 'Pizza' in prior searches
+	And I should see a card for 'Burrito' in prior searches
+
+Scenario: S134 - Test that clicking on a card performs the corresponding search
+
+	Given I am on the Login page
+	When I login with valid credentials
+	And I perform a search for 'Burgers' and input two search results
+	And I click on the prior search card for Pizza
+	Then I should be on the Results Page
+	And I should see results for 'Pizza' loaded

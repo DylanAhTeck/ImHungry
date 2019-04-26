@@ -73,10 +73,6 @@ When(/^I click on the 'Feed Me!' button$/) do
 	find('#feedMeButton').click
 end
 
-When(/^I click on the 'Feed Me!' button$/) do
-	find('#groceryListButton').click
-end
-
 Then(/^I should be on the Results Page$/) do
 	expect(page).to have_current_path("#{Constants.file_path}results.html")
 end
@@ -116,7 +112,8 @@ When(/^I perform a search for 'Burgers'$/) do
 end
 
 Then(/^I should see a collage of photos of 'Burgers'$/) do
-	expect(page).to have_css("img")
+	Capybara.default_max_wait_time = 10
+	expect(page).to have_css(".collage-img")
 end
 
 Then(/^I should see a title of 'Results for Burgers'$/) do
@@ -179,7 +176,7 @@ end
 Then(/^I should see two restaurant search results on the Results page$/) do
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
-	expect(find('#restaurants')['childElementCount']).to eq '3'
+	expect(find('#restaurants')['childElementCount']).to eq '2'
 end
 
 Then(/^I should see the name, address, star rating, minutes of driving, and price range of each restaurant listed$/) do
@@ -223,7 +220,7 @@ end
 Then(/^I should see two recipe search results on the Results page$/) do
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
-	expect(find('#recipes')['childElementCount']).to eq '3'
+	expect(find('#recipes')['childElementCount']).to eq '2'
 end
 
 Then(/^I should see the name, star rating, prep time, and cook time of each recipe listed$/) do
@@ -356,12 +353,12 @@ Then(/^I should see the restaurant website link$/) do
 	expect(page).to have_selector('#website')
 end
 
-Then(/^I should be presented with the correct information for 'The Habit Burger Grill'$/) do
+Then(/^I should be presented with the correct information for 'Umami Burger'$/) do
 	expect(page).to have_current_path("#{Constants.file_path}restaurant.html")
-	expect(find('#restaurantName')['innerText']).to eq 'The Habit Burger Grill'
-	expect(find('#address')['innerText']).to eq '3607 Trousdale Pkwy, Los Angeles, CA 90089, USA'
-	expect(find('#phoneNumber')['innerText']).to eq '(213) 740-2311'
-	expect(find('#website')['innerText']).to eq 'https://www.habitburger.com/locations/echo-park/'
+	expect(find('#restaurantName')['innerText']).to eq 'Umami Burger'
+	expect(find('#address')['innerText']).to eq '852 S Broadway, Los Angeles, CA 90014, USA'
+	expect(find('#phoneNumber')['innerText']).to eq '(213) 413-8626'
+	expect(find('#website')['innerText']).to eq 'https://www.umamiburger.com/locations/broadway/?utm_source=Google%20My%20Business&utm_medium=Website%20Button&utm_campaign=Los%20Angeles'
 end
 
 Then(/^'Printable Version' button should exist$/) do
@@ -383,20 +380,20 @@ Then(/^I should see a 'list select' dropdown box which is empty by default$/) do
 	expect(find_field('listDropdown').value).to eq ''
 end
 
-When(/^I click on the address for 'The Habit Burger Grill'$/) do
+When(/^I click on the address for 'Umami Burger'$/) do
 	find('#address').click
 end
 
 Then(/^I should be redirected to Google Maps directions page with destination prefilled and starting point set to Tommy Trojan$/) do
-	expect(page).to have_current_path('https://www.google.com/maps/dir/Tommy+Trojan/3607+Trousdale+Pkwy,+Los+Angeles,+CA+90089,+USA')
+	expect(page).to have_current_path('https://www.google.com/maps/dir/Tommy+Trojan/852+S+Broadway,+Los+Angeles,+CA+90014,+USA')
 end
 
-When(/^I click on the website for 'The Habit Burger Grill'$/) do
+When(/^I click on the website for 'Umami Burger'$/) do
 	find('#website').click
 end
 
 Then(/^I should be redirected to the restaurant home page$/) do
-	expect(page).to have_current_path('https://www.habitburger.com/locations/echo-park/')
+	expect(page).to have_current_path('https://www.umamiburger.com/locations/broadway/?utm_source=Google%20My%20Business&utm_medium=Website%20Button&utm_campaign=Los%20Angeles')
 end
 
 Then(/^I should see the recipe name$/) do
@@ -456,8 +453,8 @@ Then(/^I should be on the List Management Page$/) do
 end
 
 When(/^I click on the restaurant in the 'Favorites' list$/) do
+		Capybara.match = :first
     $itemName = find('.restaurant-name')['innerText'];
-    Capybara.match = :first
     find('.card').click
 end
 
@@ -497,7 +494,7 @@ Then(/^I should see the collage$/) do
 	expect(page).to have_css('.card')
 
 	expect(page).to have_css("#collage")
-	expect(page).to have_css(".dynamicImage")
+	expect(page).to have_css(".collage-img")
 end
 
 When(/^I click on the 'Results Page' button on the List Management Page$/) do
@@ -556,12 +553,12 @@ When(/^I click on the logout button$/) do
 	find('#logout-btn').click
 end
 
-And(/^I click on the Move Up button for the first item$/) do
+And(/^I click on the Move Down button for the first item$/) do
 	find('.moveDown_0').click
 end
 
 Then(/^the first item should be in second from the top$/) do
-	expect('Wahlburgers').to appear_before('The Habit Burger Grill')
+	expect('Wahlburgers').to appear_before('Umami Burger')
 end
 
 When(/^I click on the first ingredient$/) do
@@ -638,4 +635,43 @@ end
 
 When(/And I click on the first grocery item checkbox$/) do
 	find("#delete_0").set(false)
+
+When(/^I perform a search for 'Pizza' and input 3 search results with a radius of 5 miles$/) do
+	fill_in('query', with: "Pizza")
+	fill_in('num-results', with: "3")
+	fill_in('radius', with: "5")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+end
+
+Then(/^I should see a card for 'Pizza' in prior searches$/) do
+	expect(page).to have_css('.query-Pizza')
+	expect(page).to have_css('.numResults-3')
+	expect(page).to have_css('.radius-5')
+end
+
+When(/^I perform a search for 'Burrito' and input 4 search results with a radius of 3 miles$/) do
+	fill_in('query', with: "Burrito")
+	fill_in('num-results', with: "4")
+	fill_in('radius', with: "3")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+end
+
+Then(/^I should see a card for 'Burrito' in prior searches$/) do
+	expect(page).to have_css('.query-Burrito')
+	expect(page).to have_css('.numResults-4')
+	expect(page).to have_css('.radius-3')
+end
+
+When(/^I click on the prior search card for Pizza$/) do
+	find(".query-Pizza").click
+end
+
+Then(/^I should see results for 'Pizza' loaded$/) do
+	expect(page).to have_content("Results for Pizza")
+end
+
+When(/^I set the radius to zero$/) do
+	fill_in('radius', with: '0')
 end
