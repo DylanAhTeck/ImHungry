@@ -4,9 +4,9 @@ Background:
 
   Given I am on the Login page
 
-Scenario: S501 - Test that the background color of the page is white smoke
+Scenario: S501 - Test that the background color of the page is 466D9F
 
-  Then The background color of the page should be white smoke
+  Then The background color of the page should be 466D9F
 
 Scenario: S502 - Test that a email input field exists on the login page
 
@@ -29,12 +29,12 @@ Scenario: S506 - Test that clicking on the register button redirects to the regi
   When I click on the register button
   Then I should be on the Register page
 
-Scenario: S507 - Test that login attempt in with wrong credentials displays error message
-
-  When I type in a correct email
-  And I type in a wrong password
-  And I click on the login button
-  Then I should see an error message displayed
+# Scenario: S507 - Test that login attempt in with wrong credentials displays error message
+#
+#   When I type in a correct email
+#   And I type in a wrong password
+#   And I click on the login button
+#   Then I should see an error message displayed
 
 Scenario: S508 - Test that login attempt with correct credentials redirects to the Search page
 
@@ -45,5 +45,6 @@ Scenario: S508 - Test that login attempt with correct credentials redirects to t
 
 Scenario: S509 - Test that logout functionality works
 
+  When I login with valid credentials
   When I click on the logout button
   Then I should be on the Login page

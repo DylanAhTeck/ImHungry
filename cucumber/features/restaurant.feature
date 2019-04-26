@@ -50,7 +50,7 @@ Scenario: S206 - test that the restaurant information is correctly rendered
 And I login with valid credentials
   When I perform a search for 'Burgers'
   And I click on the first restaurant result for 'Burgers'
-  Then I should be presented with the correct information for 'The Habit Burger Grill'
+  Then I should be presented with the correct information for 'Umami Burger'
 
 Scenario: S207 - Test that the 'Printable Version' button exists
 
@@ -82,7 +82,7 @@ Scenario: S210 - Test that clicking on the address redirects to Google Maps dire
 And I login with valid credentials
   When I perform a search for 'Burgers'
   And I click on the first restaurant result for 'Burgers'
-  And I click on the address for 'The Habit Burger Grill'
+  And I click on the address for 'Umami Burger'
   Then I should be redirected to Google Maps directions page with destination prefilled and starting point set to Tommy Trojan
 
 Scenario: S211 - Test that clicking on the website link takes you to the restaurant’s home page, if it exists
@@ -90,5 +90,5 @@ Scenario: S211 - Test that clicking on the website link takes you to the restaur
 And I login with valid credentials
   When I perform a search for 'Burgers'
   And I click on the first restaurant result for 'Burgers'
-  And I click on the website for 'The Habit Burger Grill'
+  And I click on the website for 'Umami Burger'
   Then I should be redirected to the restaurant home page
