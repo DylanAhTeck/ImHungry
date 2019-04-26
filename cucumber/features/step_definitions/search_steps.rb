@@ -655,3 +655,7 @@ end
 Then(/^I should see results for 'Pizza' loaded$/) do
 	expect(page).to have_content("Results for Pizza")
 end
+
+When(/^I set the radius to zero$/) do
+	fill_in('radius', with: '0')
+end
