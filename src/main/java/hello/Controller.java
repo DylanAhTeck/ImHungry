@@ -257,7 +257,7 @@ public class Controller {
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5") Integer radius) {
 
-		if (searchQuery == null) {
+		if (searchQuery == null || radius == 0) {
 			return "Thanks for searching!";
 		}
 
@@ -330,21 +330,22 @@ public class Controller {
 		JsonNode rootNode = mapper.createObjectNode();
 		try {
 			if (listName.equals("favorites")) {
-				((ObjectNode) rootNode).set("favorites", mapper.readTree(mapper.writeValueAsString(listManager.getFavorites())));
+				return new Gson().toJson(listManager.getFavorites());
+				//((ObjectNode) rootNode).set("favorites", mapper.readTree(mapper.writeValueAsString(listManager.getFavorites())));
 			} else if (listName.equals("toExplore")) {
-				((ObjectNode) rootNode).set("toExplore", mapper.readTree(mapper.writeValueAsString(listManager.getToExplore())));
+				return new Gson().toJson(listManager.getToExplore());
+				//((ObjectNode) rootNode).set("toExplore", mapper.readTree(mapper.writeValueAsString(listManager.getToExplore())));
 			} else if (listName.equals("doNotShow")) {
-				((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getdoNotShow())));
+				return new Gson().toJson(listManager.getdoNotShow());
+				//((ObjectNode) rootNode).set("doNotShow", mapper.readTree(mapper.writeValueAsString(listManager.getdoNotShow())));
 			} else {
 				return "Invalid list name";
 			}
 
-			return mapper.writeValueAsString(rootNode);
+			//return mapper.writeValueAsString(rootNode);
+			
 
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			return "JsonProcessing Exception";
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "IOException";
 		}
@@ -383,6 +384,7 @@ public class Controller {
 		// search mostRecentRecipes for uniqueId
 		for (int i=0; i<mostRecentRecipes.size(); i++) {
 			// current element uniqueId matches uniqueId searching for
+			System.out.println(mostRecentRecipes.get(i).getUniqueId());
 			if (mostRecentRecipes.get(i).getUniqueId().equals(itemToAddId)) {
 				// change value of toAdd to corresponding result
 				toAdd = mostRecentRecipes.get(i);
@@ -395,6 +397,7 @@ public class Controller {
 			// search mostRecentRestaurants for uniqueId
 			for (int i=0; i<mostRecentRestaurants.size(); i++) {
 				// current element uniqueId matches uniqueId searching for
+				System.out.println(mostRecentRestaurants.get(i).getUniqueId());
 				if (mostRecentRestaurants.get(i).getUniqueId().equals(itemToAddId)) {
 					toAdd = mostRecentRestaurants.get(i);
 					foundItem = true;
@@ -768,12 +771,14 @@ public class Controller {
 	//
 	public Result getResult(String uniqueId) {
 		for (Recipe recipe : mostRecentRecipes) {
+			System.out.println(recipe.getUniqueId());
 			if (recipe.getUniqueId().equals(uniqueId)) {
 				return recipe;
 			}
 		}
 
 		for (Restaurant restaurant : mostRecentRestaurants) {
+			System.out.println(restaurant.getUniqueId());
 			if (restaurant.getUniqueId().equals(uniqueId)) {
 				return restaurant;
 			}

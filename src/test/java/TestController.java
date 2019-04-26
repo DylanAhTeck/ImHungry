@@ -14,9 +14,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import hello.Controller;
@@ -26,6 +30,7 @@ import hello.Recipe;
 import hello.Restaurant;
 import hello.Result;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestController {
 
 	private static Controller controller;
@@ -34,7 +39,7 @@ public class TestController {
 	public static void setup() {
 		controller = new Controller();
 	}
-	
+
 
 //	@Test
 //	public void testGetResult() {
@@ -63,7 +68,7 @@ public class TestController {
 		controller.retrieveRestaurants("null", numResults, 5);
 		controller.retrieveRestaurants(query, 1, 5);
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
-		assertEquals(18, result.size());
+		assertEquals(19, result.size());
 	}
 
 	@Test
@@ -89,15 +94,73 @@ public class TestController {
 		// test for invalid parameters
 		assertEquals("uniqueId == null", controller.handleGetResult(null));
 		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
 
-		controller.handleSearchRequest("burger", 1, 5000);
+		controller.handleSearchRequest("burger", 1, 5);
 		// tests valid handleGetResult() call
-		String expectedJson = "{\"uniqueId\":\"449835\",\"type\":\"Recipe\",\"name\":\"Kickin' Turkey Burger with Caramelized Onions and Spicy Sweet Mayo\",\"rating\":81.0,\"prepTime\":15.0,\"cookTime\":20.0,\"ingredients\":[\"2 tablespoons barbeque sauce\",\"1 teaspoon ground cayenne pepper\",\"1 1/4 pounds ground turkey breast\",\"5 hamburger buns, split\",\"1/4 cup honey\",\"1 tablespoon prepared horseradish\",\"1 jalapeno pepper, seeded and minced\",\"1 cup light mayonnaise\",\"1/4 teaspoon liquid smoke flavoring\",\"Spicy Sweet Mayo\",\"1/4 cup coarse-grain mustard\",\"1 tablespoon olive oil\",\"1/2 large onion, sliced\",\"hot pepper sauce (e.g. ) to taste\",\"1 teaspoon dry mesquite flavored seasoning mix\",\"1 tablespoon steak seasoning\",\"Burgers\",\"2 tablespoons Worcestershire sauce\"],\"instructions\":[\"Combine mayonnaise, mustard, honey, horseradish, hot pepper sauce, and cayenne pepper in a bowl. Cover and refrigerate.\",\"Mix ground turkey, grated onion, jalapeno, barbeque sauce, Worcestershire sauce, liquid smoke, steak seasoning, and mesquite seasoning in a large bowl. Form into 5 patties.\",\"Heat the olive oil in a skillet over medium heat. Stir in the onion; cook and stir until the onion has softened and turned translucent, about 5 minutes. Reduce heat to medium-low, and continue cooking and stirring until the onion is very tender and dark brown, 15 to 20 minutes more.\",\"Cook the patties in a medium skillet over medium heat, turning once, to an internal temperature of 180 degrees F (85 degrees C), about 6 minutes per side.\",\"Serve on buns topped with spicy sweet mayo and caramelized onions.\"],\"sourceURL\":\"http://allrecipes.com/recipe/kickin-turkey-burger-with-caramelized-onions-and-spicy-sweet-mayo/detail.aspx\",\"imageURL\":\"https://spoonacular.com/recipeImages/Kickin-Turkey-Burger-with-Caramelized-Onions-and-Spicy-Sweet-Mayo-449835.jpg\",\"isFavorite\":false}";
-		String actualJson = controller.handleGetResult("449835");
+		String expectedJson = "{\"uniqueId\":\"219957\",\"type\":\"Recipe\",\"name\":\"Carrot & sesame burgers\",\"rating\":98.0,\"prepTime\":30.0,\"cookTime\":20.0,\"ingredients\":[\"750g carrots, peeled and grated\",\"410g can chickpeas, drained and rinsed\",\"1 small onion, roughly chopped\",\"2 tbsp tahini paste, plus 1 tsp to serve\",\"1 tsp ground cumin\",\"1 egg\",\"3 tbsp olive oil\",\"100g wholemeal breadcrumbs\",\"zest 1 lemon, plus 1 tsp juice\",\"150ml pot natural yogurt\",\"6 buns, rocket leaves, sliced red onion, sliced avocado and chilli sauce, to serve\",\"3 tbsp sesame seeds\"],\"instructions\":[\"Put a third of the grated carrot in a food processor with the chickpeas, onion, 2 tbsp tahini, cumin and egg. Whizz to a thick paste, then scrape into a large bowl.\",\"Heat 1 tbsp oil in your largest frying pan, tip in the remaining carrot and cook for 8-10 mins, stirring until the carrot is softened  it will become more golden as it is cooked.\",\"Add this cooked carrot to the whizzed paste with the breadcrumbs, lemon zest and sesame seeds.\",\"Add seasoning, then mix together well with your hands.\",\"Divide the mixture into 6, then using wet hands shape into burgers. Cover and chill until serving.\",\"Mix the yogurt with the remaining tahini and lemon juice, then chill.\",\"Fire up the barbecue, or heat a non-stick frying pan and brush the burgers with the remaining oil. Cook the burgers for 5 mins on each side, until golden and crisp. Meanwhile warm or toast the buns (or sit them on the barbecue alongside the burgers). When the burgers are ready, spread each bun with some of the lemony sesame yogurt, add the avocado, top with the burger, onion and rocket. Finish with a drizzle of chilli sauce.\"],\"sourceURL\":\"https://www.bbcgoodfood.com/recipes/11011/carrot-and-sesame-burgers\",\"imageURL\":\"https://spoonacular.com/recipeImages/Carrot---sesame-burgers-219957.jpg\",\"isFavorite\":false}";
+		String actualJson = controller.handleGetResult("219957");
 		System.out.println(expectedJson);
 		System.out.println(actualJson);
 		assertEquals(expectedJson, actualJson);
 	}
+
+
+	@Test
+	public void testHandleSearchRadius() throws IOException {
+		// test for invalid parameters
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
+
+		String resultFiveFive = controller.handleSearchRequest("burger", 5, 5);
+		BufferedReader reader = new BufferedReader(new FileReader("burger-5-5-json.txt"));
+		String line = reader.readLine();
+		JsonObject resultJson = new Gson().fromJson(resultFiveFive, JsonObject.class);
+		JsonObject lineJson = new Gson().fromJson(line, JsonObject.class);
+		JsonArray resultList = resultJson.get("restaurants").getAsJsonArray();
+		JsonArray lineList = lineJson.get("restaurants").getAsJsonArray();
+		assertEquals(resultList, lineList);
+		System.out.println("actual json  : " + line);
+		System.out.println("expected json: " + resultFiveFive);
+
+		//assertEquals(line.substring(0, line.length()-50), resultFiveFive.substring(0, resultFiveFive.length()-50));
+
+
+		String resultFiveOne = controller.handleSearchRequest("burger", 5, 1);
+		BufferedReader readerTwo = new BufferedReader(new FileReader("burger-5-1-json.txt"));
+		String lineTwo = readerTwo.readLine();
+		System.out.println("Result: " + resultFiveOne);
+		//assertEquals(lineTwo.substring(0, lineTwo.length()-50), resultFiveOne.substring(0, resultFiveOne.length()-50));
+		JsonObject o1 = new Gson().fromJson(resultFiveOne, JsonObject.class);
+		JsonObject o2 = new Gson().fromJson(lineTwo, JsonObject.class);
+		JsonArray list1 = o1.get("restaurants").getAsJsonArray();
+		JsonArray list2 = o2.get("restaurants").getAsJsonArray();
+		assertEquals(list1, list2);
+		System.out.println("actual json  : " + lineTwo);
+		System.out.println("expected json: " + resultFiveOne);
+	}
+
+	@Test
+	public void testHandleSearchRadiusBoundary() throws IOException {
+		// test for invalid parameters
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
+
+		String resultFiveZero = controller.handleSearchRequest("burger", 5, 0);
+		assertEquals("Thanks for searching!", resultFiveZero);
+	}
+
 
 	@Test
 	public void testHandleSearchRequest() {
@@ -125,12 +188,17 @@ public class TestController {
 	@Test
 	public void testGetList() {
 		controller.handleSearchRequest("burger", 1, 5000);
+		controller.loginUser("hCHdoXQkudPGxBP4E4ur0eSKbNN2");
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
 		// list is null
 		assertEquals("Invalid list name", controller.getList(null));
 		// test retrieving lists
-		assertEquals("{\"favorites\":[]}", controller.getList("favorites"));
-		assertEquals("{\"toExplore\":[]}", controller.getList("toExplore"));
-		assertEquals("{\"doNotShow\":[]}", controller.getList("doNotShow"));
+		assertEquals("[]", controller.getList("favorites"));
+		assertEquals("[]", controller.getList("toExplore"));
+		assertEquals("[]", controller.getList("doNotShow"));
 		// test invalid list
 		assertEquals("Invalid list name", controller.getList("invalidList"));
 	}
@@ -146,11 +214,13 @@ public class TestController {
 		// tests empty listname
 		assertEquals("No targetListName provided", controller.handleAddToList("123456", ""));
 
-		String json = controller.handleSearchRequest("burger", 1, 5000);
+		String json = controller.handleSearchRequest("burger", 1, 5);
 		// tests add to list from recipes
-		assertEquals("Couldn't find uniqueId", controller.handleAddToList("449835", "favorites"));
+
+		assertEquals("Added item: 219957 to list: favorites", controller.handleAddToList("219957", "favorites"));
 		// tests add to list from restaurants
-		assertEquals("Couldn't find uniqueId", controller.handleAddToList("ChIJk2uXa-PHwoARFOHSKjqYyFo", "favorites"));
+		assertEquals("Added item: ChIJJewhXDol6IARKGxyEnT4sIA to list: favorites", controller.handleAddToList("ChIJJewhXDol6IARKGxyEnT4sIA", "favorites"));
+
 		// tests nonexistent id
 		assertEquals("Couldn't find uniqueId", controller.handleAddToList("123456", "favorites"));
 	}
@@ -163,7 +233,7 @@ public class TestController {
 		assertEquals("originListName == null", controller.handleRemoveFromList("123456", null));
 		assertEquals("originListName is empty", controller.handleRemoveFromList("123456", ""));
 
-		controller.handleSearchRequest("burger", 1, 5000);
+		controller.handleSearchRequest("burger", 1, 5);
 		controller.handleAddToList("449835", "favorites");
 		// tests valid removal
 		assertEquals("Removed item: 449835 from list: favorites", controller.handleRemoveFromList("449835", "favorites"));
@@ -265,7 +335,7 @@ public class TestController {
 	        Random rand = new Random();
             int randInt = rand.nextInt(1000);
             String userEmail = "test" + randInt + "@test.com";
-            String password = "test" + randInt;
+            String password = "password" + randInt;
             assertEquals("success", controller.registerUser(userEmail, password));
 	}
 	//test to ensure successful signout
@@ -352,40 +422,55 @@ public class TestController {
 		Random rand = new Random();
         int randInt = rand.nextInt(1000);
 		controller.registerUser("test"+randInt+"@test.com", "password");
+
 		ListManager listManager = controller.getListManager();
+		listManager.setDoNotShow(new ArrayList<Result>());
+		listManager.setFavorites(new ArrayList<Result>());
+		listManager.setToExplore(new ArrayList<Result>());
+
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
 		Result r3 = new Result("id3");
 		Result r4 = new Result("id4");
 		Result r5 = new Result("id5");
 		Result r6 = new Result("id6");
+
 		listManager.addToList(r1, "favorites");
 		listManager.addToList(r2, "favorites");
 		listManager.addToList(r3, "toExplore");
 		listManager.addToList(r4, "toExplore");
 		listManager.addToList(r5, "doNotShow");
 		listManager.addToList(r6, "doNotShow");
+
 		ArrayList<Result> favorites = listManager.getFavorites();
 		ArrayList<Result> toExplore = listManager.getToExplore();
 		ArrayList<Result> doNotShow = listManager.getdoNotShow();
+
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
 		controller.addToDB("toExplore", r3);
 		controller.addToDB("toExplore", r4);
 		controller.addToDB("doNotShow", r5);
 		controller.addToDB("doNotShow", r6);
+
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
 		assertEquals(true, toExplore.get(0).getUniqueId().equals("id3"));
 		assertEquals(true, toExplore.get(1).getUniqueId().equals("id4"));
 		assertEquals(true, doNotShow.get(0).getUniqueId().equals("id5"));
 		assertEquals(true, doNotShow.get(1).getUniqueId().equals("id6"));
+
 		controller.moveUpOne("id2", "favorites");
 		controller.moveUpOne("id4", "toExplore");
-		controller.moveUpOne("id6", "doNotShow");
+
+
 		assertEquals(false, controller.moveUpOne("id2", "advasdf"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
+
+		//Testing moving up one index at index 0
+		controller.moveUpOne("id5", "doNotShow");
+		assertEquals(true, doNotShow.get(0).getUniqueId().equals("id5"));
 	}
 
 	//Test for moving a result down one in list
@@ -393,44 +478,61 @@ public class TestController {
 	public void testMoveDownOne() throws IOException {
 		Random rand = new Random();
         int randInt = rand.nextInt(1000);
-		controller.registerUser("test"+randInt+"@test.com", "password");;
+		controller.registerUser("test"+randInt+"@test.com", "password");
+
 		ListManager listManager = controller.getListManager();
+		listManager.setDoNotShow(new ArrayList<Result>());
+		listManager.setFavorites(new ArrayList<Result>());
+		listManager.setToExplore(new ArrayList<Result>());
+
 		Result r1 = new Result("id1");
 		Result r2 = new Result("id2");
 		Result r3 = new Result("id3");
 		Result r4 = new Result("id4");
 		Result r5 = new Result("id5");
 		Result r6 = new Result("id6");
+
 		listManager.addToList(r1, "favorites");
 		listManager.addToList(r2, "favorites");
 		listManager.addToList(r3, "toExplore");
 		listManager.addToList(r4, "toExplore");
 		listManager.addToList(r5, "doNotShow");
 		listManager.addToList(r6, "doNotShow");
+
 		ArrayList<Result> favorites = listManager.getFavorites();
 		ArrayList<Result> toExplore = listManager.getToExplore();
 		ArrayList<Result> doNotShow = listManager.getdoNotShow();
+
 		controller.addToDB("favorites", r1);
 		controller.addToDB("favorites", r2);
 		controller.addToDB("toExplore", r3);
 		controller.addToDB("toExplore", r4);
 		controller.addToDB("doNotShow", r5);
 		controller.addToDB("doNotShow", r6);
+
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
 		assertEquals(true, toExplore.get(0).getUniqueId().equals("id3"));
 		assertEquals(true, toExplore.get(1).getUniqueId().equals("id4"));
 		assertEquals(true, doNotShow.get(0).getUniqueId().equals("id5"));
 		assertEquals(true, doNotShow.get(1).getUniqueId().equals("id6"));
+
 		controller.moveDownOne("id1", "favorites");
 		controller.moveDownOne("id3", "toExplore");
-		controller.moveDownOne("id5", "doNotShow");
+
+
 		assertEquals(false, controller.moveDownOne("id2", "advasdf"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id2"));
+
 		controller.moveDownOne("id2", "favorites");
+
 		assertEquals(true, favorites.get(0).getUniqueId().equals("id1"));
 		assertEquals(true, favorites.get(1).getUniqueId().equals("id2"));
+
+		//Testing moving down on last index
+		controller.moveDownOne("id6", "doNotShow");
+		assertEquals(true, doNotShow.get(1).getUniqueId().equals("id6"));
 	}
 
 	//Test for conversion to meters
