@@ -131,7 +131,7 @@
             sessionStorage.setItem("userUID", user.uid);
           	let parameters = "id=" + user.uid;
        	    let xhttp = new XMLHttpRequest();
-       	    xhttp.open('GET', "https://csci310-project2.herokuapp.com/loginUser?" + parameters, true);
+       	    xhttp.open('GET', "http://localhost:8080/loginUser?" + parameters, true);
        	    xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
        	    xhttp.onreadystatechange = function() {
          	    if (xhttp.readyState == 4 && xhttp.status == 200) {
