@@ -139,11 +139,12 @@ Scenario: S412 - Test that rows in the lists alternate their background color be
 	And I click on the 'Manage List' button
 	Then I should see rows with alternating shades of gray on the List Management Page
 
-# Scenario: S413 - Test that reordering of lists work properly
-#
-# 	Given I am on the List Mnaagement page
-# 	When I perform a search for 'Burgers' and input two search results
-# 	And I select the 'To Explore' option from the 'list management' dropdown box
-# 	And I click on the 'Manage List' button
-# 	And I click on the Move Down button for the first item
-# 	Then the first item should be in second from the top
+Scenario: S413 - Test that reordering of lists work properly
+
+	Given I am on the Login page
+	And I login with valid credentials
+	When I perform a search for 'Burgers'
+	And I select the 'Favorites' option from the 'list management' dropdown box
+	And I click on the 'Manage List' button
+	And I click on the Move Down button for the first item
+	Then the first item should be in second from the top
