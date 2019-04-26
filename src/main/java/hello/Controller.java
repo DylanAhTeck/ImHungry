@@ -7,13 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicLong;
 
 
 import javax.swing.text.Document;
-
-import java.util.Map;
-import java.util.HashMap;
 
 // for image manipulation
 import java.awt.image.BufferedImage;
@@ -561,6 +559,7 @@ public class Controller {
 			docData.put("doNotShow", new ArrayList<Result>());
 			docData.put("favorites", new ArrayList<Result>());
 			docData.put("toExplore", new ArrayList<Result>());
+			docData.put("groceryList", new ArrayList<String>());
 			docData.put("priorSearchQueries", new ArrayList<PriorSearch>()); // NOTE: this will depend on chris and dylan's work
 			this.userId = userRecord.getUid();
 			ApiFuture<WriteResult> future = db.collection("users").document(userId).set(docData);
@@ -662,19 +661,77 @@ public class Controller {
 	//TODO: Ingredient string is added to database
 	public boolean addIngredient(@RequestParam(defaultValue="null") String ingredient)
 	{
+		if(ingredient == null || ingredient == "" || userId == null || userId == "") return false;
+		DocumentReference docRef = db.collection("users").document(userId);
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		
+		boolean canAdd = false;
+		int amount = 0;
+		
+		DocumentSnapshot document;
+		//Seperate into amount and rest of string
+		String arr[] = ingredient.split(" ", 2);
+		try {
+			amount = Integer.parseInt(arr[0]);
+			canAdd = true;
+		} catch(NumberFormatException e) {
+			canAdd = false;
+		}
+		String theRest = arr[1];
+		try {
+			document = future.get();
+			if (document.exists()) {
+				  ArrayList<String> groceryList = (ArrayList<String>) document.getData().get("groceryList");
+				  int i = 0;
+				  if(canAdd) {
+					  for(i = 0; i < groceryList.size(); i++) {
+						  JsonObject o = new Gson().fromJson(groceryList.get(i), JsonObject.class);
+						  String currentIngredient = o.get("ingredient").toString();
+						  currentIngredient = currentIngredient.substring(1, currentIngredient.length()-1);
+						  System.out.println(currentIngredient + " vs. " + ingredient);
+						  String splitArray[] = currentIngredient.split(" ", 2);
+						  int currentAmount = Integer.parseInt(splitArray[0]);
+						  String currentRest = splitArray[1];
+						  if(currentRest.contentEquals(theRest)) {
+							  amount += currentAmount;
+							  JsonObject temp = new JsonObject();
+							  temp.addProperty("checked", false);
+							  temp.addProperty("ingredient", amount + " " + theRest);
+							  groceryList.set(i, temp.toString());
+							  break;
+						  }
+						  
+					  }
+				  }
+				  if(i == groceryList.size() || canAdd == false) {
+					  JsonObject temp = new JsonObject();
+					  temp.addProperty("checked", false);
+					  temp.addProperty("ingredient", ingredient);
+					  groceryList.add(temp.toString());
+				  }
+				  System.out.println("Grocery list now: " + groceryList.toString());
+				  //upated in firebase
+				  DocumentReference updateRef = db.collection("users").document(userId);
 
-		if(this.userId == "" || this.userId == null || ingredient == "") return false;
-		Gson gson = new Gson();
-		DocumentReference docRef= db.collection("users").document(userId);
-			try{
-				ApiFuture<WriteResult> arrayUnion = docRef.update("groceryList",
-						FieldValue.arrayUnion(ingredient));
-						return true;
-			}catch (Exception e)
-			{
-				e.printStackTrace();
-				return false;
-			}
+				  // (async) Update one field
+				  ApiFuture<WriteResult> futureUpdate = docRef.update("groceryList", groceryList);
+				  
+				  WriteResult result = futureUpdate.get();
+				  System.out.println("Write result: " + result);
+				  
+				  return true;
+					
+				} else {
+				  System.out.println("No such document!");
+				}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@RequestMapping("/removeIngredient")
@@ -682,18 +739,105 @@ public class Controller {
 	public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
 		{
 			if(this.userId == "" || this.userId == null || ingredient == "") return false;
-			Gson gson = new Gson();
 			DocumentReference docRef = db.collection("users").document(userId);
-				try{
-					ApiFuture<WriteResult> arrayRm = docRef.update("groceryList",
-						FieldValue.arrayRemove(ingredient));
-						return true;
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-					return false;
-				}
+			ApiFuture<DocumentSnapshot> future = docRef.get();
+			// ...
+			// future.get() blocks on response
+			DocumentSnapshot document;
+			
+			try {
+				document = future.get();
+				if (document.exists()) {
+					  ArrayList<String> groceryList = (ArrayList<String>) document.getData().get("groceryList");
+					  int i;
+					  for(i = 0; i < groceryList.size(); i++) {
+						  JsonObject o = new Gson().fromJson(groceryList.get(i), JsonObject.class);
+						  String currentIngredient = o.get("ingredient").toString();
+						  currentIngredient = currentIngredient.substring(1, currentIngredient.length()-1);
+						  System.out.println(currentIngredient + " vs. " + ingredient);
+						  if(currentIngredient.equals(ingredient)) {
+							  groceryList.remove(i);
+						  }
+						  
+					  }
+					 
+					  System.out.println("Grocery list now: " + groceryList.toString());
+					  //upated in firebase
+					  DocumentReference updateRef = db.collection("users").document(userId);
+
+					  // (async) Update one field
+					  ApiFuture<WriteResult> futureUpdate = docRef.update("groceryList", groceryList);
+					  
+					  WriteResult result = futureUpdate.get();
+					  System.out.println("Write result: " + result);
+					  
+					  return true;
+						
+					} else {
+					  System.out.println("No such document!");
+					}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
 		}
+	
+	@RequestMapping("/updateIngredient")
+	@CrossOrigin
+	public boolean updateIngredient(@RequestParam(defaultValue="null") String ingredient, @RequestParam boolean checked) {
+		System.out.println("attempting to update " + ingredient + " to " + checked);
+		if(ingredient == null || ingredient == "" || userId == null) return false;
+		DocumentReference docRef = db.collection("users").document(userId);
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		// ...
+		// future.get() blocks on response
+		DocumentSnapshot document;
+		try {
+			document = future.get();
+			if (document.exists()) {
+				  ArrayList<String> groceryList = (ArrayList<String>) document.getData().get("groceryList");
+				  for(int i = 0; i < groceryList.size(); i++) {
+					  JsonObject o = new Gson().fromJson(groceryList.get(i), JsonObject.class);
+					  String currentIngredient = o.get("ingredient").toString();
+					  System.out.println(currentIngredient.substring(1, currentIngredient.length()-1) + " vs. " + ingredient);
+					  if(currentIngredient.substring(1, currentIngredient.length()-1).equals(ingredient)) {
+						  JsonObject updated = new JsonObject();
+						  updated.addProperty("checked", checked);
+						  updated.addProperty("ingredient", ingredient);
+						  groceryList.set(i, updated.toString());
+					  }
+					  
+				  }
+				  System.out.println("Grocery list now: " + groceryList.toString());
+				  //upated in firebase
+				  DocumentReference updateRef = db.collection("users").document(userId);
+
+				  // (async) Update one field
+				  ApiFuture<WriteResult> futureUpdate = docRef.update("groceryList", groceryList);
+				  
+				  WriteResult result = futureUpdate.get();
+				  System.out.println("Write result: " + result);
+				  
+				  return true;
+					
+				} else {
+				  System.out.println("No such document!");
+				}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return false;
+	}
   
 	@RequestMapping("/testRetrieveImages")
 	@CrossOrigin

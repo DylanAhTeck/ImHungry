@@ -546,18 +546,59 @@ public class TestController {
 	@Test
 	public void testAddIngredient() throws IOException {
 		//Test remove but user not logged in
-		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
+		String login = controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
 		assertEquals(controller.addIngredient(""), false);
-		assertEquals(controller.addIngredient("apple"), true);
+		assertEquals(controller.addIngredient("2 apples"), true);
+		assertEquals(controller.addIngredient("1 cup of rice"), true);
+		assertEquals(controller.addIngredient("2 apples"), true);
+		assertEquals(controller.addIngredient("100g apples"), true);
+		assertEquals(controller.addIngredient("50g apples"), true);
+		
+		
 	}
 
 	@Test
 	public void testRemoveIngredient() throws IOException {
 		//Test remove but user not logged in
-		String login = controller.loginUser("kVsDRFOWJxU8Xdw5aDATPwTSkuY2");
-		controller.addIngredient("banana");
+		String login = controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
+		controller.addIngredient("2 bananas");
 		assertEquals(controller.removeIngredient(""), false);
-		assertEquals(controller.removeIngredient("banana"), true);
+		assertEquals(controller.removeIngredient("2 bananas"), true);
+	}
+	
+	@Test
+	public void testNumberOfPages() throws IOException {
+		String json = controller.handleSearchRequest("coffee", 5, 5);
+		JsonObject object = new Gson().fromJson(json, JsonObject.class);
+		JsonArray jsonArray = object.getAsJsonArray("recipes");
+		System.out.println(jsonArray);
+		ArrayList<Result> results = new Gson().fromJson(jsonArray, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("1.0", Double.toString(Math.ceil(results.size()/5.0)));
+		
+		String json2 = controller.handleSearchRequest("coffee", 6, 5);
+		JsonObject object2 = new Gson().fromJson(json2, JsonObject.class);
+		JsonArray jsonArray2 = object2.getAsJsonArray("recipes");
+		System.out.println(jsonArray2);
+		ArrayList<Result> results2 = new Gson().fromJson(jsonArray2, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("2.0", Double.toString(Math.ceil(results2.size()/5.0)));
+		
+		String json3 = controller.handleSearchRequest("coffee", 21, 5);
+		JsonObject object3 = new Gson().fromJson(json3, JsonObject.class);
+		JsonArray jsonArray3 = object3.getAsJsonArray("recipes");
+		System.out.println(jsonArray3);
+		ArrayList<Result> results3 = new Gson().fromJson(jsonArray3, new TypeToken<ArrayList<Result>>(){}.getType());
+		assertEquals("5.0", Double.toString(Math.ceil(results3.size()/5.0)));
+	}
+	
+	@Test
+	public void testUpdateIngredient() throws IOException {
+		controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
+		controller.addIngredient("apple");
+		assertEquals(true, controller.updateIngredient("apple", true));
+		assertEquals(true, controller.updateIngredient("apple", false));
+		assertEquals(false, controller.updateIngredient(null, false));
+		assertEquals(false, controller.updateIngredient("", false));
+		controller.removeIngredient("apple");
 	}
 
 
