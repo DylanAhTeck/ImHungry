@@ -536,6 +536,9 @@ public class Controller {
 	@CrossOrigin
 	public String signUserOut() {
 		this.userId = "";
+		listManager.setDoNotShow(new ArrayList<Result>());
+		listManager.setFavorites(new ArrayList<Result>());
+		listManager.setToExplore(new ArrayList<Result>());
 		return "success";
 	}
 	//Registering a user and setting database
