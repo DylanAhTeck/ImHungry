@@ -99,14 +99,67 @@
         }
       });
     });
+    
 
     function displayList(ingredients) {
       let list = document.getElementById("ingredients-list");
-      ingredients.forEach(function(ingredient, i) {
+      ingredients.forEach(function(obj, i) {
+    	let json = JSON.parse(obj);
+    	let ingredient = json.ingredient;
+    	let checked = json.checked;
         let listItem = document.createElement("li");
         listItem.className =
           "list-group-item d-flex justify-content-between align-items-center";
         listItem.id = "ingredient_" + i;
+        //add check box
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = checked;
+        //on change function
+        checkbox.onchange = function() {
+        	if(checkbox.checked == true){
+            	
+                let xhttp = new XMLHttpRequest();
+                let parameters = "ingredient=" + ingredient + "&checked=true";
+                xhttp.open(
+                  "GET",
+                  "http://localhost:8080/updateIngredient?" +
+                    parameters,
+                  true
+                );
+                xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+                xhttp.onreadystatechange = function() {
+                  if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    if (xhttp.responseText) {
+                      console.log(this.responseText);
+                      //if (this.responseText == "true") location.reload();
+                    }
+                  }
+                };
+                xhttp.send();
+        	}else{
+        	
+                let xhttp = new XMLHttpRequest();
+                let parameters = "ingredient=" + ingredient + "&checked=false";
+                xhttp.open(
+                  "GET",
+                  "http://localhost:8080/updateIngredient?" +
+                    parameters,
+                  true
+                );
+                xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+                xhttp.onreadystatechange = function() {
+                  if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    if (xhttp.responseText) {
+                      console.log(this.responseText);
+                      //if (this.responseText == "true") location.reload();
+                    }
+                  }
+                };
+                xhttp.send();
+       		}
+        }
+        listItem.appendChild(checkbox);
         listItem.appendChild(document.createTextNode(ingredient));
         let removeBadge = document.createElement("span");
         removeBadge.className = "badge badge-danger badge-pill";

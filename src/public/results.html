@@ -142,7 +142,7 @@
     	let lastNumber = startNumber + 4;
     	if(lastNumber > numPages) {
     		lastNumber = numPages;
-    		startNumber = lastNumber - 4;
+    		startNumber = Math.max(lastNumber - 4, 1);
     	}
     
     	console.log(startNumber + " " + lastNumber)

@@ -52,6 +52,17 @@
             Printable Version
           </button>
           <br />
+          <a href="grocerylist.html">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="groceryListButton"
+            >
+              Grocery List
+            </button>
+          </a>
+          <br />
+          <br />
           <button
             id="back-to-results"
             type="button"
@@ -163,7 +174,7 @@
             let parameters = "ingredient=" + ingredients[i];
             xhttp.open(
               "GET",
-              "https://csci310-project2.herokuapp.com/addIngredient?" +
+              "http://localhost:8080/addIngredient?" +
                 parameters,
               true
             );
@@ -204,7 +215,7 @@
             let parameters = "ingredient=" + ingredients[i];
             xhttp.open(
               "GET",
-              "https://csci310-project2.herokuapp.com/addIngredient?" +
+              "http://localhost:8080/addIngredient?" +
                 parameters,
               true
             );
