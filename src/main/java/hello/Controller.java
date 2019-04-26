@@ -674,6 +674,7 @@ public class Controller {
 		
 		boolean canAdd = false;
 		int amount = 0;
+		String theRest = "";
 		
 		DocumentSnapshot document;
 		//Seperate into amount and rest of string
@@ -681,10 +682,11 @@ public class Controller {
 		try {
 			amount = Integer.parseInt(arr[0]);
 			canAdd = true;
+			theRest = arr[1];
 		} catch(NumberFormatException e) {
 			canAdd = false;
 		}
-		String theRest = arr[1];
+		 
 		try {
 			document = future.get();
 			if (document.exists()) {
@@ -697,7 +699,12 @@ public class Controller {
 						  currentIngredient = currentIngredient.substring(1, currentIngredient.length()-1);
 						  System.out.println(currentIngredient + " vs. " + ingredient);
 						  String splitArray[] = currentIngredient.split(" ", 2);
-						  int currentAmount = Integer.parseInt(splitArray[0]);
+						  int currentAmount = 0;
+						  try {
+							 currentAmount = Integer.parseInt(splitArray[0]);
+						  } catch (NumberFormatException e) {
+							  continue;
+						  }
 						  String currentRest = splitArray[1];
 						  if(currentRest.contentEquals(theRest)) {
 							  amount += currentAmount;
@@ -745,7 +752,7 @@ public class Controller {
 	@CrossOrigin
 	public boolean removeIngredient(@RequestParam(defaultValue="null") String ingredient)
 		{
-			if(this.userId == "" || this.userId == null || ingredient == "") return false;
+			if(this.userId == "" || this.userId == null || ingredient.equals("")) return false;
 			DocumentReference docRef = db.collection("users").document(userId);
 			ApiFuture<DocumentSnapshot> future = docRef.get();
 			// ...
