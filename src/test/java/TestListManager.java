@@ -49,11 +49,11 @@ public class TestListManager {
 	public void testMoveBetweenLists() {
 		listManager.addToList(result, "favorites");
 		
-		assertEquals(true, listManager.moveBetweenLists("123456", "favorites", "toExplore"));
-		assertEquals(true, listManager.moveBetweenLists("123456", "toExplore", "doNotShow"));
-		assertEquals(true, listManager.moveBetweenLists("123456", "doNotShow", "favorites"));
-		assertEquals(false, listManager.moveBetweenLists("fakeId", "favorites", "doNotShow"));
-		assertEquals(false, listManager.moveBetweenLists("123456", "favorites", "fakeList"));
+		assertEquals(true, listManager.moveBetweenLists("123456", "favorites", "toExplore").getUniqueId().equals("123456"));
+		assertEquals(true, listManager.moveBetweenLists("123456", "toExplore", "doNotShow").getUniqueId().equals("123456"));
+		assertEquals(true, listManager.moveBetweenLists("123456", "doNotShow", "favorites").getUniqueId().equals("123456"));
+		assertEquals(null, listManager.moveBetweenLists("fakeId", "favorites", "doNotShow"));
+		assertEquals(null, listManager.moveBetweenLists("123456", "favorites", "fakeList"));
 	}
 
 	@Test
