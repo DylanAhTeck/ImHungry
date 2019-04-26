@@ -5,8 +5,8 @@
 - Time: 8:00pm
 - Location: JFF 319
 - Participants: Andrew, Wayne, Dylan, Chris
-- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/sprint3-scrum5.jpg
-- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/tasks-sprint3-post-scrum5.png
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint3/images/sprint3-scrum5.jpg
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint3/images/tasks-sprint3-post-scrum5.png
 
 ## Agile Questions Notes:
 
@@ -32,11 +32,11 @@ Wayne
 3. Nothing yet.
 
 Dylan
-1. Reviewed notes from demo meeting.
-2. Create more tests. 
-3. Nothing.
+1. Created some tests
+2. Finish testing 
+3. Finals
 
 Chris
-1. Made progress on front-end repairs.
-2. Continue to work on front-end.
+1. Finished UI and merged.
+2. Work on other tests and Sprint 3 Report.
 3. Scheduling.
