@@ -474,47 +474,7 @@ public class Controller {
 			try {
 				DocumentSnapshot document = future.get();
 				if (document.exists()) {
-					//Setting all the list to the ones from the database. Have to convert from string to object though.
-					ArrayList<String> doNotShowString = (ArrayList<String>) document.get("doNotShow");
-					ArrayList<Result> doNotShow = new ArrayList<Result>();
-					for(int i = 0; i < doNotShowString.size(); i++) {
-						Gson gson = new Gson();
-						JsonElement element = gson.fromJson(doNotShowString.get(i), JsonElement.class);
-						JsonObject object = element.getAsJsonObject();
-						if(object.get("type").getAsString().equals("Recipe")) {
-							doNotShow.add(gson.fromJson(doNotShowString.get(i), Recipe.class));
-						} else {
-							doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
-						}
-
-					}
-					ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
-					ArrayList<Result> favorites = new ArrayList<Result>();
-					for(int i = 0; i < favoritesString.size(); i++) {
-						Gson gson = new Gson();
-						JsonElement element = gson.fromJson(favoritesString.get(i), JsonElement.class);
-						JsonObject object = element.getAsJsonObject();
-						if(object.get("type").getAsString().equals("Recipe")) {
-							favorites.add(gson.fromJson(favoritesString.get(i), Recipe.class));
-						} else {
-							favorites.add(gson.fromJson(favoritesString.get(i), Restaurant.class));
-						}
-					}
-					ArrayList<String> toExploreString = (ArrayList<String>) document.get("toExplore");
-					ArrayList<Result> toExplore = new ArrayList<Result>();
-					for(int i = 0; i < toExploreString.size(); i++) {
-						Gson gson = new Gson();
-						JsonElement element = gson.fromJson(toExploreString.get(i), JsonElement.class);
-						JsonObject object = element.getAsJsonObject();
-						if(object.get("type").getAsString().equals("Recipe")) {
-							toExplore.add(gson.fromJson(toExploreString.get(i), Recipe.class));
-						} else {
-							toExplore.add(gson.fromJson(toExploreString.get(i), Restaurant.class));
-						}
-					}
-					listManager.setDoNotShow(doNotShow);
-					listManager.setFavorites(favorites);
-					listManager.setToExplore(toExplore);
+					setList(document);
 				}
 			} catch (Exception e){
 				e.printStackTrace();
@@ -528,6 +488,50 @@ public class Controller {
 
 
 		return "failed";
+	}
+	
+	public void setList(DocumentSnapshot document) {
+		//Setting all the list to the ones from the database. Have to convert from string to object though.
+		ArrayList<String> doNotShowString = (ArrayList<String>) document.get("doNotShow");
+		ArrayList<Result> doNotShow = new ArrayList<Result>();
+		for(int i = 0; i < doNotShowString.size(); i++) {
+			Gson gson = new Gson();
+			JsonElement element = gson.fromJson(doNotShowString.get(i), JsonElement.class);
+			JsonObject object = element.getAsJsonObject();
+			if(object.get("type").getAsString().equals("Recipe")) {
+				doNotShow.add(gson.fromJson(doNotShowString.get(i), Recipe.class));
+			} else {
+				doNotShow.add(gson.fromJson(doNotShowString.get(i), Restaurant.class));
+			}
+
+		}
+		ArrayList<String> favoritesString = (ArrayList<String>) document.get("favorites");
+		ArrayList<Result> favorites = new ArrayList<Result>();
+		for(int i = 0; i < favoritesString.size(); i++) {
+			Gson gson = new Gson();
+			JsonElement element = gson.fromJson(favoritesString.get(i), JsonElement.class);
+			JsonObject object = element.getAsJsonObject();
+			if(object.get("type").getAsString().equals("Recipe")) {
+				favorites.add(gson.fromJson(favoritesString.get(i), Recipe.class));
+			} else {
+				favorites.add(gson.fromJson(favoritesString.get(i), Restaurant.class));
+			}
+		}
+		ArrayList<String> toExploreString = (ArrayList<String>) document.get("toExplore");
+		ArrayList<Result> toExplore = new ArrayList<Result>();
+		for(int i = 0; i < toExploreString.size(); i++) {
+			Gson gson = new Gson();
+			JsonElement element = gson.fromJson(toExploreString.get(i), JsonElement.class);
+			JsonObject object = element.getAsJsonObject();
+			if(object.get("type").getAsString().equals("Recipe")) {
+				toExplore.add(gson.fromJson(toExploreString.get(i), Recipe.class));
+			} else {
+				toExplore.add(gson.fromJson(toExploreString.get(i), Restaurant.class));
+			}
+		}
+		listManager.setDoNotShow(doNotShow);
+		listManager.setFavorites(favorites);
+		listManager.setToExplore(toExplore);
 	}
 
 
