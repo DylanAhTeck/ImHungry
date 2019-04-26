@@ -5,8 +5,8 @@
 - Time: 8:00pm
 - Location: JFF 238
 - Participants: Ankur, Andrew, Wayne
-- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/sprint3-scrum2.png
-- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint2/images/tasks-sprint3-post-scrum2.png
+- Group Selfie Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint3/images/sprint3-scrum2.png
+- Post-Meeting Task Chart Link: https://github.com/weiyuyu/CSCI310-Project2/blob/master/310-Documentation/Sprint3/images/tasks-sprint3-post-scrum2.png
 
 ## Agile Questions Notes:
 
