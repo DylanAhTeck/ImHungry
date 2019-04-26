@@ -116,7 +116,8 @@ When(/^I perform a search for 'Burgers'$/) do
 end
 
 Then(/^I should see a collage of photos of 'Burgers'$/) do
-	expect(page).to have_css("img")
+	Capybara.default_max_wait_time = 10
+	expect(page).to have_css(".collage-img")
 end
 
 Then(/^I should see a title of 'Results for Burgers'$/) do
@@ -179,7 +180,7 @@ end
 Then(/^I should see two restaurant search results on the Results page$/) do
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
-	expect(find('#restaurants')['childElementCount']).to eq '3'
+	expect(find('#restaurants')['childElementCount']).to eq '2'
 end
 
 Then(/^I should see the name, address, star rating, minutes of driving, and price range of each restaurant listed$/) do
@@ -223,7 +224,7 @@ end
 Then(/^I should see two recipe search results on the Results page$/) do
 	Capybara.default_max_wait_time = 10
 	expect(page).to have_css('.card')
-	expect(find('#recipes')['childElementCount']).to eq '3'
+	expect(find('#recipes')['childElementCount']).to eq '2'
 end
 
 Then(/^I should see the name, star rating, prep time, and cook time of each recipe listed$/) do
@@ -497,7 +498,7 @@ Then(/^I should see the collage$/) do
 	expect(page).to have_css('.card')
 
 	expect(page).to have_css("#collage")
-	expect(page).to have_css(".dynamicImage")
+	expect(page).to have_css(".collage-img")
 end
 
 When(/^I click on the 'Results Page' button on the List Management Page$/) do
@@ -617,4 +618,44 @@ When(/^I login with valid credentials$/) do
 	fill_in("email", with: "test_wayne@test.com")
 	fill_in("password", with: "password")
 	find('#login-btn').click
+end
+
+When(/^I perform a search for 'Pizza' and input 3 search results with a radius of 5 miles$/) do
+	fill_in('query', with: "Pizza")
+	fill_in('num-results', with: "3")
+	fill_in('radius', with: "5")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+end
+
+Then(/^I should see a card for 'Pizza' in prior searches$/) do
+	expect(page).to have_css('.query-Pizza')
+	expect(page).to have_css('.numResults-3')
+	expect(page).to have_css('.radius-5')
+end
+
+When(/^I perform a search for 'Burrito' and input 4 search results with a radius of 3 miles$/) do
+	fill_in('query', with: "Burrito")
+	fill_in('num-results', with: "4")
+	fill_in('radius', with: "3")
+	find('#feedMeButton').click
+	Capybara.default_max_wait_time = 10
+end
+
+Then(/^I should see a card for 'Burrito' in prior searches$/) do
+	expect(page).to have_css('.query-Burrito')
+	expect(page).to have_css('.numResults-4')
+	expect(page).to have_css('.radius-3')
+end
+
+When(/^I click on the prior search card for Pizza$/) do
+	find(".query-Pizza").click
+end
+
+Then(/^I should see results for 'Pizza' loaded$/) do
+	expect(page).to have_content("Results for Pizza")
+end
+
+When(/^I set the radius to zero$/) do
+	fill_in('radius', with: '0')
 end

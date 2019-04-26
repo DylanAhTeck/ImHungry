@@ -88,3 +88,11 @@ Scenario: S14 - Test that the grumpy emoji face changes to a smiling emoji face 
 And I login with valid credentials
 	When I click on the grumpy emoji face
 	Then I should see a smiling emoji face
+
+Scenario: S15 - Test that a search request is not made when radius is set to zero
+
+	Given I am on the Login page
+	And I login with valid credentials
+	When I enter text into the 'Enter Food' text box
+	And I set the radius to zero
+	Then I should be on the Search Page
