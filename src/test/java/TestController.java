@@ -68,7 +68,7 @@ public class TestController {
 		controller.retrieveRestaurants("null", numResults, 5);
 		controller.retrieveRestaurants(query, 1, 5);
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
-		assertEquals(18, result.size());
+		assertEquals(19, result.size());
 	}
 
 	@Test
@@ -107,6 +107,60 @@ public class TestController {
 		System.out.println(actualJson);
 		assertEquals(expectedJson, actualJson);
 	}
+
+
+	@Test
+	public void testHandleSearchRadius() throws IOException {
+		// test for invalid parameters
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
+
+		String resultFiveFive = controller.handleSearchRequest("burger", 5, 5);
+		BufferedReader reader = new BufferedReader(new FileReader("burger-5-5-json.txt"));
+		String line = reader.readLine();
+		JsonObject resultJson = new Gson().fromJson(resultFiveFive, JsonObject.class);
+		JsonObject lineJson = new Gson().fromJson(line, JsonObject.class);
+		JsonArray resultList = resultJson.get("restaurants").getAsJsonArray();
+		JsonArray lineList = lineJson.get("restaurants").getAsJsonArray();
+		assertEquals(resultList, lineList);
+		System.out.println("actual json  : " + line);
+		System.out.println("expected json: " + resultFiveFive);
+
+		//assertEquals(line.substring(0, line.length()-50), resultFiveFive.substring(0, resultFiveFive.length()-50));
+
+
+		String resultFiveOne = controller.handleSearchRequest("burger", 5, 1);
+		BufferedReader readerTwo = new BufferedReader(new FileReader("burger-5-1-json.txt"));
+		String lineTwo = readerTwo.readLine();
+		System.out.println("Result: " + resultFiveOne);
+		//assertEquals(lineTwo.substring(0, lineTwo.length()-50), resultFiveOne.substring(0, resultFiveOne.length()-50));
+		JsonObject o1 = new Gson().fromJson(resultFiveOne, JsonObject.class);
+		JsonObject o2 = new Gson().fromJson(lineTwo, JsonObject.class);
+		JsonArray list1 = o1.get("restaurants").getAsJsonArray();
+		JsonArray list2 = o2.get("restaurants").getAsJsonArray();
+		assertEquals(list1, list2);
+		System.out.println("actual json  : " + lineTwo);
+		System.out.println("expected json: " + resultFiveOne);
+	}
+
+	@Test
+	public void testHandleSearchRadiusBoundary() throws IOException {
+		// test for invalid parameters
+		assertEquals("uniqueId == null", controller.handleGetResult(null));
+		assertEquals("uniqueId is empty", controller.handleGetResult(""));
+		ListManager lm = controller.getListManager();
+		lm.setDoNotShow(new ArrayList<Result>());
+		lm.setFavorites(new ArrayList<Result>());
+		lm.setToExplore(new ArrayList<Result>());
+
+		String resultFiveZero = controller.handleSearchRequest("burger", 5, 0);
+		assertEquals("Thanks for searching!", resultFiveZero);
+	}
+
 
 	@Test
 	public void testHandleSearchRequest() {

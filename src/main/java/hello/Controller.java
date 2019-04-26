@@ -255,7 +255,7 @@ public class Controller {
 	// TODO: Once the internal function calls exist, we'll need to put in the appropriate sequential calls here.
 	public String handleSearchRequest(@RequestParam(defaultValue="null") String searchQuery, @RequestParam(defaultValue="5") Integer numResults, @RequestParam(defaultValue="5") Integer radius) {
 
-		if (searchQuery == null) {
+		if (searchQuery == null || radius == 0) {
 			return "Thanks for searching!";
 		}
 
