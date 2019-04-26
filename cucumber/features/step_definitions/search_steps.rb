@@ -636,7 +636,6 @@ Then(/I should not see the ingredient$/) do
 	expect(page).not_to have_content $currentIngredient
 end
 
-#Need to add id to grocery list 
 When(/And I click on the first grocery item checkbox$/) do
 	find("#delete_0").set(false)
 end
