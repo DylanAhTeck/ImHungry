@@ -18,4 +18,32 @@ body {
 .btn-secondary {
 	background-color: #F5F7F7 !important;
 	color: #466D9F !important;
+	margin-left: 0%;
+
+}
+
+.btn-secondary-logout {
+	background-color: #F5F7F7 !important;
+	color: #466D9F !important;
+
+	/* Add */
+	margin-left: 87%;
+	margin-top: 1.9%;
+}
+
+
+ .container mt-5 {
+  height: 100%;
+ }  
+
+
+/*ADDED CLASS FOR TEXT FIELDS*/
+.col-6 {
+	display: inline-block; 
+    width: 15%;  
+    /* border:1px solid;  */
+	vertical-align:top;
+	word-wrap: break-word;
+
+
 }
