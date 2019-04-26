@@ -68,7 +68,7 @@ public class TestController {
 		controller.retrieveRestaurants("null", numResults, 5);
 		controller.retrieveRestaurants(query, 1, 5);
 		ArrayList<Restaurant> result = controller.retrieveRestaurants(query, numResults, 5);
-		assertEquals(19, result.size());
+		assertEquals(16, result.size());
 	}
 
 	@Test
@@ -126,9 +126,8 @@ public class TestController {
 		JsonObject lineJson = new Gson().fromJson(line, JsonObject.class);
 		JsonArray resultList = resultJson.get("restaurants").getAsJsonArray();
 		JsonArray lineList = lineJson.get("restaurants").getAsJsonArray();
+		System.out.println("burger-5-5-json.txt should be: " + resultJson);
 		assertEquals(resultList, lineList);
-		System.out.println("actual json  : " + line);
-		System.out.println("expected json: " + resultFiveFive);
 
 		//assertEquals(line.substring(0, line.length()-50), resultFiveFive.substring(0, resultFiveFive.length()-50));
 
@@ -136,15 +135,12 @@ public class TestController {
 		String resultFiveOne = controller.handleSearchRequest("burger", 5, 1);
 		BufferedReader readerTwo = new BufferedReader(new FileReader("burger-5-1-json.txt"));
 		String lineTwo = readerTwo.readLine();
-		System.out.println("Result: " + resultFiveOne);
-		//assertEquals(lineTwo.substring(0, lineTwo.length()-50), resultFiveOne.substring(0, resultFiveOne.length()-50));
 		JsonObject o1 = new Gson().fromJson(resultFiveOne, JsonObject.class);
 		JsonObject o2 = new Gson().fromJson(lineTwo, JsonObject.class);
 		JsonArray list1 = o1.get("restaurants").getAsJsonArray();
 		JsonArray list2 = o2.get("restaurants").getAsJsonArray();
+		System.out.println("burger-5-1-json.txt should be: " + resultJson);
 		assertEquals(list1, list2);
-		System.out.println("actual json  : " + lineTwo);
-		System.out.println("expected json: " + resultFiveOne);
 	}
 
 	@Test
@@ -323,7 +319,7 @@ public class TestController {
 	@Test
 	public void testLoginUser() throws IOException {
 		// String registerJSON = new String Files.readAllBytes(Paths.get("testLoginCredentials.json"));
-		String userId = "kVsDRFOWJxU8Xdw5aDATPwTSkuY2";
+		String userId = "RWb2eNBbemRJTtgFaqnZLoNeIA73";
 		assertEquals("success", controller.loginUser(userId));
 		userId = "doesnotexist";
 		assertEquals("failed", controller.loginUser(userId));
@@ -333,7 +329,7 @@ public class TestController {
 	@Test
 	public void testRegisterUser() throws IOException {
 	        Random rand = new Random();
-            int randInt = rand.nextInt(1000);
+            int randInt = rand.nextInt(10000);
             String userEmail = "test" + randInt + "@test.com";
             String password = "password" + randInt;
             assertEquals("success", controller.registerUser(userEmail, password));
@@ -546,21 +542,24 @@ public class TestController {
 	@Test
 	public void testAddIngredient() throws IOException {
 		//Test remove but user not logged in
-		String login = controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
+		String login = controller.loginUser("RWb2eNBbemRJTtgFaqnZLoNeIA73");
 		assertEquals(controller.addIngredient(""), false);
 		assertEquals(controller.addIngredient("2 apples"), true);
 		assertEquals(controller.addIngredient("1 cup of rice"), true);
 		assertEquals(controller.addIngredient("2 apples"), true);
 		assertEquals(controller.addIngredient("100g apples"), true);
 		assertEquals(controller.addIngredient("50g apples"), true);
-		
+		controller.removeIngredient("3 apples");
+		controller.removeIngredient("1 cup of rice");
+		controller.removeIngredient("100g apples");
+		controller.removeIngredient("50g apples");
 		
 	}
 
 	@Test
 	public void testRemoveIngredient() throws IOException {
 		//Test remove but user not logged in
-		String login = controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
+		String login = controller.loginUser("RWb2eNBbemRJTtgFaqnZLoNeIA73");
 		controller.addIngredient("2 bananas");
 		assertEquals(controller.removeIngredient(""), false);
 		assertEquals(controller.removeIngredient("2 bananas"), true);
@@ -592,7 +591,7 @@ public class TestController {
 	
 	@Test
 	public void testUpdateIngredient() throws IOException {
-		controller.loginUser("v2m5dQ3Cm3dAvkFaVjCsrVCste63");
+		controller.loginUser("RWb2eNBbemRJTtgFaqnZLoNeIA73");
 		controller.addIngredient("apple");
 		assertEquals(true, controller.updateIngredient("apple", true));
 		assertEquals(true, controller.updateIngredient("apple", false));
