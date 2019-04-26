@@ -623,18 +623,19 @@ end
 
 When(/^I click on the grocery page button$/) do
 	find("#groceryListButton").click
-end 
+end
 
-Then(/I should see the ingredient$/) do 
+Then(/^I should see the ingredient$/) do
 	expect(page).to have_content $currentIngredient
 end
-	
-Then(/I should not see the ingredient$/) do 
+
+Then(/^I should not see the ingredient$/) do
 	expect(page).not_to have_content $currentIngredient
 end
 
-When(/And I click on the first grocery item checkbox$/) do
+When(/^I click on the first grocery item checkbox$/) do
 	find("#delete_0").set(false)
+end
 
 When(/^I perform a search for 'Pizza' and input 3 search results with a radius of 5 miles$/) do
 	fill_in('query', with: "Pizza")
