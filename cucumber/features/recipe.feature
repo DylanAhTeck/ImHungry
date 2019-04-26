@@ -4,6 +4,7 @@ Background:
   Given I am on the Login page
   And I login with valid credentials
 
+
 Scenario: S301 - Test that page displays the title of the recipe
 
   Given I am on the Login page
@@ -67,3 +68,24 @@ Scenario: S308 - Test that the 'list select' dropdown box exists and is empty by
   When I perform a search for 'Burgers'
   And I click on the first recipe result for 'Burgers'
   Then I should see a 'list select' dropdown box which is empty by default
+
+Scenario: 309 - Test that ingredient can be added to grocery list 
+
+  Given I am on the Login page
+  And I login with valid credentials
+  When I perform a search for 'Burgers'
+  And I click on the first recipe result for 'Burgers'
+  And I click on the first add ingredient button
+  When I click on the grocery page button
+  Then I should see the ingredient
+
+Scenario: 310 = Test that grocery list item can be deleted 
+
+  Given I am on the Login page
+  And I login with valid credentials
+  When I perform a search for 'Burgers'
+  And I click on the first recipe result for 'Burgers'
+  And I click on the first add ingredient button
+  When I click on the grocery page button
+  And I click on the first grocery item checkbox
+  Then I should not see the ingredient 
