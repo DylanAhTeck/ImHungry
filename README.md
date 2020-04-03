@@ -27,11 +27,10 @@ To run this you'll need to have Maven installed, which can be done by running `b
 
 ## Team Members:
 
-- William Borie
+- Dylan Ah Teck
 - Ankur Rastogi
-- David Tupper
+- Andrew Yalung
 - Wayne Yu
-- Sally Zuo
 
 ### Quick Guides
 
